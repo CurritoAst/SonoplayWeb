@@ -2,6 +2,10 @@
    SONOPLAY — Interactive Script
    ============================================ */
 
+const supabaseUrl = 'https://srkhevcgfuqchidmzdtb.supabase.co';
+const supabaseKey = 'sb_publishable_LqVWg8_0_ocYfxH4be7Y6Q_rs55mQmz';
+const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // ---- NAVBAR SCROLL ----
