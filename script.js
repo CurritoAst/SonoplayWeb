@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     passBtn.addEventListener('click', () => {
-      if (passInput.value === 'Celuhaztefotos123') {
+      const val = passInput.value.trim().toLowerCase();
+      if (val === 'celuhaztefotos123') {
         lockOverlay.style.opacity = '0';
         lockOverlay.style.transition = 'opacity 0.4s ease';
         setTimeout(() => lockOverlay.style.display = 'none', 400);
