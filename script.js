@@ -8,6 +8,41 @@ const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUr
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ---- PASSWORD PROTECTION ----
+  const lockOverlay = document.getElementById('site-lock-overlay');
+  const passInput = document.getElementById('site-password-input');
+  const passBtn = document.getElementById('site-password-btn');
+  const passError = document.getElementById('site-password-error');
+
+  if (lockOverlay && passBtn && passInput && passError) {
+    if (sessionStorage.getItem('sonoplay-unlocked') === 'true') {
+      lockOverlay.style.display = 'none';
+      document.body.style.overflow = '';
+    } else {
+      document.body.style.overflow = 'hidden';
+      // Force scroll to top just in case
+      window.scrollTo(0, 0);
+    }
+
+    passBtn.addEventListener('click', () => {
+      if (passInput.value === 'Celuhaztefotos123') {
+        lockOverlay.style.opacity = '0';
+        lockOverlay.style.transition = 'opacity 0.4s ease';
+        setTimeout(() => lockOverlay.style.display = 'none', 400);
+        document.body.style.overflow = '';
+        sessionStorage.setItem('sonoplay-unlocked', 'true');
+      } else {
+        passError.style.display = 'block';
+        passInput.value = '';
+        passInput.focus();
+      }
+    });
+
+    passInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') passBtn.click();
+    });
+  }
+
   // ---- NAVBAR SCROLL ----
   const navbar = document.getElementById('navbar');
   let isNavScrollTicking = false;
