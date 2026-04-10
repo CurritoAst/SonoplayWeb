@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SONOPLAY — Tu DJ para cada momento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preload" href="images/logosonoplay-largo.png" as="image" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+
+  <!-- ======== NAV ======== -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="logo">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY — Servicios Audiovisuales" style="height: 55px; width: auto; ">
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about">Nosotros</a></li>
+        <li><a href="#ceremonia-civil">Servicios</a></li>
+        <li><a href="#weddings">Bodas</a></li>
+        <li><a href="#djs">Nuestros DJs</a></li>
+        <li><a href="#reviews">Opiniones</a></li>
+        <li><a href="#contact" class="btn-nav">Contactar</a></li>
+        <li id="nav-auth-item"><a href="#" id="nav-login-btn" style="color: var(--cyan) !important; font-weight: 700;">Iniciar sesión</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======== HERO ======== -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+      <div class="particles" id="particles"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">DOSSIER WEDDINGS</p>
+      <h1 class="hero-title">
+        <span class="title-sono">2025</span><span class="title-play">/26</span>
+      </h1>
+      <p class="hero-subtitle" data-content-key="content-hero-subtitle">Aquí comienza tu fiesta...</p>
+      <div class="hero-rating">
+        <div class="stars">★★★★★</div>
+        <span data-content-key="hero-rating"><span data-content-key="content-rating">4.9</span> / 5 &nbsp;·&nbsp; +<span data-content-key="content-reviews-count">424</span> reseñas en Google</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="#weddings" class="btn-primary">Descubre nuestras bodas</a>
+        <a href="#" id="btn-create-budget" class="btn-outline" style="border-color: var(--cyan); color: #fff;">Crea tu presupuesto</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Desplázate</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ======== STATS RIBBON ======== -->
+  <section class="stats-ribbon">
+    <div class="stat">
+      <span class="stat-num" data-target="424" data-content-target="content-reviews-count">0</span><span class="stat-suffix">+</span>
+      <span class="stat-label">Reseñas en Google</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-num" data-content-key="content-rating">4.9</span><span class="stat-suffix">★</span>
+      <span class="stat-label">Valoración media</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-num" data-target="2013">0</span>
+      <span class="stat-label">Año de fundación</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-num" data-target="96">0</span><span class="stat-suffix">%</span>
+      <span class="stat-label">Recomendaciones Facebook</span>
+    </div>
+  </section>
+
+  <!-- ======== ABOUT ======== -->
+  <section id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-visual">
+          <div class="about-img-frame">
+            <div class="about-img-placeholder">
+              <div class="vinyl-record">
+                <div class="vinyl-inner">
+                  <div class="vinyl-label">
+                    <span>SONO</span>
+                    <span>PLAY</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="about-badge">
+            <span class="badge-year">Desde</span>
+            <span class="badge-num">2013</span>
+          </div>
+        </div>
+        <div class="about-text">
+          <p class="section-eyebrow">Sobre nosotros</p>
+          <h2 class="section-title">Más de una década de<br><em>sonido y espectáculo</em></h2>
+          <p>Desde 2013, en Sonoplay nos hemos dedicado a llevar el mejor sonido y espectáculo a todo tipo de eventos. Con más de una década de experiencia en el sector audiovisual, hemos evolucionado hasta convertirnos en una empresa referente en la producción de conciertos, conferencias, eventos corporativos y, sobre todo, bodas.</p>
+          
+          <h3 style="color: var(--cyan); margin-top: 20px; margin-bottom: 10px; font-size: 1.2rem;">Nuestra pasión por las bodas</h3>
+          <p>Las bodas son uno de nuestros pilares fundamentales. No nos conformamos con ofrecer un simple servicio de sonido; buscamos reinventar la fiesta en cada celebración. Creemos que cada pareja tiene una historia única, y nuestro objetivo es dar vida a su visión para que su gran día sea auténtico, emocionante e inolvidable.</p>
+          
+          <h3 style="color: var(--cyan); margin-top: 20px; margin-bottom: 10px; font-size: 1.2rem;">Espectáculos que marcan la diferencia</h3>
+          <p>Nuestra experiencia en la producción de espectáculos nos ha permitido fusionar lo mejor del mundo del entretenimiento con el sector nupcial. No solo ponemos música; creamos momentos memorables con efectos visuales, iluminación espectacular y una puesta en escena que transforma cualquier espacio en una auténtica celebración.</p>
+          <p>Nos gusta romper esquemas y sorprender, innovando en cada evento con ideas frescas y personalizadas. Sabemos que cada boda es especial y, por eso, ponemos todo nuestro talento y equipo técnico al servicio de nuestros clientes, garantizando una experiencia única.</p>
+          <p><strong>Juntos, haremos que cada boda sea una fiesta inolvidable.</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== CEREMONIA CIVIL ======== -->
+  <section id="ceremonia-civil" style="background: var(--dark); border-top: 1px solid var(--border);">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-text ceremonia-glass">
+          <h2 class="section-title cyan-gradient-text" style="font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 20px;">Ceremonia<br>Civil</h2>
+          <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text);">La ceremonia es uno de los momentos más especiales de la boda, donde la decoración y el buen gusto juegan un papel fundamental. Por eso, cuidamos cada detalle para que nuestra presencia técnica pase desapercibida, manteniendo un sonido claro y nítido. Nos aseguramos de que quienes ofician el acto sean perfectamente audibles para todos los asistentes, sin afectar la estética del espacio.</p>
+          <hr style="border: 0; border-top: 2px solid rgba(255,255,255,0.1); margin: 30px 0;">
+          <ul style="list-style: none; padding: 0;">
+            <li style="font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+              <span style="color: var(--cyan);">&bull;</span> Equipo de sonido
+            </li>
+            <li style="font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+              <span style="color: var(--cyan);">&bull;</span> Pareja de micrófonos
+            </li>
+            <li style="font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+              <span style="color: var(--cyan);">&bull;</span> Técnico de sonido
+            </li>
+          </ul>
+          <p data-price-key="ceremonia" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 25px;">242 €</p>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Ceremonia Civil" data-price="242" data-price-key="ceremonia">+ Añadir al presupuesto</button>
+        </div>
+        <div class="about-visual">
+          <div class="about-img-frame" style="border-radius: 20px; border: none; background: transparent; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            <!-- Placeholder for ceremony image -->
+            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--dark3), var(--dark2)); display: flex; align-items: center; justify-content: center; border-radius: 20px; box-shadow: inset 0 0 30px rgba(0,0,0,0.4);">
+                <span class="cyan-gradient-text" style="font-weight: 700;">[Foto Ceremonia]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== PAQUETES BODAS ======== -->
+  <section id="weddings">
+    <div class="weddings-bg">
+      <div class="weddings-orb w1"></div>
+      <div class="weddings-orb w2"></div>
+    </div>
+    <div class="section-inner">
+      <div class="section-header light">
+        <p class="section-eyebrow">Bodas con SONOPLAY</p>
+        <h2 class="section-title">Opciones de <em>Montaje</em></h2>
+        <p class="section-desc">Tenemos un montaje ideal para cada espacio y estilo de celebración.</p>
+      </div>
+
+      <div class="wedding-packages" style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+        
+        <!-- BASIC -->
+        <div class="package-card wedding-package-row glass-card">
+          <div class="wedding-package-content">
+            <h3 class="cyan-gradient-text" style="font-size: 2rem; margin-bottom: 20px; font-weight: 900;">OPCION BASIC</h3>
+            <ul style="list-style: disc; margin-left: 20px; color: var(--text); line-height: 1.8;">
+              <li>Estructura de aluminio de 6 metros</li>
+              <li>Cabezas móviles Beam 7R (4 unid)</li>
+              <li>Par LED (2 unid) iluminación interior estructura</li>
+              <li>Cabina DJ</li>
+              <li>Equipo de sonido (adecuado al lugar)</li>
+              <li>Máquina de humo</li>
+            </ul>
+            <p style="color: #ef4444; margin-top: 20px; font-weight: bold; font-size: 0.9rem;">&bull; ESTA OPCION NO INCLUYE NI DJ NI ESCENARIO</p>
+            <p data-price-key="basic" data-format="dot" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 20px;">1.210 €</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+            <button class="cart-add-btn btn-cyan-glow" data-name="OPCION BASIC" data-price="1210" data-price-key="basic" style="margin-top: 20px;">+ Añadir al presupuesto</button>
+          </div>
+          <div class="wedding-package-media">
+            <img loading="lazy" src="images/foto-basic.jpeg" alt="Montaje Basic" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+
+        <!-- TOTEMS -->
+        <div class="package-card wedding-package-row glass-card">
+          <div class="wedding-package-content">
+            <h3 class="cyan-gradient-text" style="font-size: 2rem; margin-bottom: 20px; font-weight: 900;">OPCION TOTEMS</h3>
+            <ul style="list-style: disc; margin-left: 20px; color: var(--text); line-height: 1.8;">
+              <li>Totems verticales (6 unid)</li>
+              <li>Cabezas móviles Beam 7R (4 unid)</li>
+              <li>Cabezas móviles Aura pro (2 unid)</li>
+              <li>Par LED RGB (6 unid) iluminación interior estructura</li>
+              <li>Cabina DJ</li>
+              <li>Equipo de sonido (adecuado al lugar)</li>
+              <li>Máquina de humo</li>
+            </ul>
+            <p style="color: #ef4444; margin-top: 20px; font-weight: bold; font-size: 0.9rem;">&bull; ESTA OPCION NO INCLUYE NI DJ NI ESCENARIO</p>
+            <p data-price-key="totems" data-format="dot" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 20px;">1.573 €</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+            <button class="cart-add-btn btn-cyan-glow" data-name="OPCION TOTEMS" data-price="1573" data-price-key="totems" style="margin-top: 20px;">+ Añadir al presupuesto</button>
+          </div>
+          <div class="wedding-package-media">
+            <img loading="lazy" src="images/foto-totems.jpeg" alt="Montaje Totems" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+
+        <!-- DUO -->
+        <div class="package-card wedding-package-row glass-card">
+          <div class="wedding-package-content">
+            <h3 class="cyan-gradient-text" style="font-size: 2rem; margin-bottom: 20px; font-weight: 900;">OPCION DUO</h3>
+            <ul style="list-style: disc; margin-left: 20px; color: var(--text); line-height: 1.8;">
+              <li>Doble estructura de aluminio de 6 metros (delantera y trasera)</li>
+              <li>Cabezas móviles Beam 7R (6 unid)</li>
+              <li>Cabezas móviles Aura pro (2 unid)</li>
+              <li>Par LED (4 unid) iluminación interior estructura</li>
+              <li>Cabina DJ</li>
+              <li>Equipo de sonido (adecuado al lugar)</li>
+              <li>Máquina de humo</li>
+            </ul>
+            <p style="color: #ef4444; margin-top: 20px; font-weight: bold; font-size: 0.9rem;">&bull; ESTA OPCION NO INCLUYE NI DJ NI ESCENARIO</p>
+            <p data-price-key="duo" data-format="dot" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 20px;">1.936 €</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+            <button class="cart-add-btn btn-cyan-glow" data-name="OPCION DUO" data-price="1936" data-price-key="duo" style="margin-top: 20px;">+ Añadir al presupuesto</button>
+          </div>
+          <div class="wedding-package-media">
+            <img loading="lazy" src="images/foto-duo.jpeg" alt="Montaje Duo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+
+        <!-- CUBO -->
+        <div class="package-card wedding-package-row glass-card">
+          <div class="wedding-package-content">
+            <h3 class="cyan-gradient-text" style="font-size: 2rem; margin-bottom: 20px; font-weight: 900;">OPCION CUBO</h3>
+            <ul style="list-style: disc; margin-left: 20px; color: var(--text); line-height: 1.8;">
+              <li>Estructura cuadrada de 25m2</li>
+              <li>Cabezas móviles Beam 7R (8 unid)</li>
+              <li>Strobos RGB (4 unid)</li>
+              <li>Par LED RGB (8 unid) iluminación interior estructura</li>
+              <li>Cabina DJ</li>
+              <li>Equipo de sonido (adecuado al lugar)</li>
+              <li>Máquina de humo</li>
+              <li>Escenario de 4m x 2m a 60 cm de altura</li>
+            </ul>
+            <p style="color: #ef4444; margin-top: 20px; font-weight: bold; font-size: 0.9rem;">&bull; ESTA OPCION NO INCLUYE DJ</p>
+            <p class="price-sensitive" style="margin-top: 10px; font-weight: bold; font-size: 1rem; color: #fff;">PANTALLAS LED OPCIONAL — 100€/M2 IVA INCLUIDO</p>
+            <p data-price-key="cubo" data-format="dot" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 20px;">2.420 €</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+            <button class="cart-add-btn btn-cyan-glow" data-name="OPCION CUBO" data-price="2420" data-price-key="cubo" style="margin-top: 20px;">+ Añadir al presupuesto</button>
+          </div>
+          <div class="wedding-package-media">
+            <img loading="lazy" src="images/foto-cubo.jpeg" alt="Montaje Cubo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+        
+        <!-- EQUIS -->
+        <div class="package-card wedding-package-row glass-card">
+          <div class="wedding-package-content">
+            <h3 class="cyan-gradient-text" style="font-size: 2rem; margin-bottom: 20px; font-weight: 900;">OPCION EQUIS</h3>
+            <ul style="list-style: disc; margin-left: 20px; color: var(--text); line-height: 1.8;">
+              <li>Estructura en equis de 6m x 6m</li>
+              <li>Cabezas móviles Beam 7R (4 unid)</li>
+              <li>Cabezas móviles Aura pro (4 unid)</li>
+              <li>Par LED RGB (6 unid) iluminación interior estructura</li>
+              <li>Cabina DJ</li>
+              <li>Equipo de sonido (adecuado al lugar)</li>
+              <li>Máquina de humo</li>
+              <li>Escenario de 4m x 2m a 60cm de altura</li>
+              <li>Bolas de espejo (5 unid)</li>
+            </ul>
+            <p style="color: #ef4444; margin-top: 20px; font-weight: bold; font-size: 0.9rem;">&bull; ESTA OPCION NO INCLUYE DJ</p>
+            <p data-price-key="equis" data-format="dot" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 20px;">2.600 €</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+            <button class="cart-add-btn btn-cyan-glow" data-name="OPCION EQUIS" data-price="2600" data-price-key="equis" style="margin-top: 20px;">+ Añadir al presupuesto</button>
+          </div>
+          <div class="wedding-package-media">
+            <img loading="lazy" src="images/foto-equis.jpeg" alt="Montaje Equis" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+
+        <!-- HEXA -->
+        <div class="package-card glass-card" style="display: flex; flex-direction: column; align-items: center; gap: 30px; text-align: center; padding: 40px;">
+          <div style="max-width: 700px;">
+            <h3 class="cyan-gradient-text" style="font-size: 2rem; margin-bottom: 20px; font-weight: 900;">OPCION HEXA</h3>
+            <ul style="list-style: disc; margin-left: 20px; color: var(--text); line-height: 1.8; text-align: left;">
+              <li>Estructura medio hexágono (medidas según el lugar)</li>
+              <li>Cabezas móviles Beam 7R (8 unid)</li>
+              <li>Cabezas móviles Aura pro (4 unid)</li>
+              <li>Par LED RGB (8 unid) iluminación interior estructura</li>
+              <li>Cabina DJ con pantalla LED</li>
+              <li>Pantalla LED (medidas según dimensiones del montaje)</li>
+              <li>Equipo de sonido (adecuado al lugar)</li>
+              <li>Máquina de humo</li>
+              <li>Técnico de iluminación</li>
+              <li>Escenario de 6m x 3m a doble altura</li>
+              <li>Strobos RGB (8 unid)</li>
+            </ul>
+            <p style="color: #ef4444; margin-top: 20px; font-weight: bold; font-size: 0.9rem;">&bull; ESTA OPCION NO INCLUYE DJ</p>
+            <p data-price-key="hexa" data-format="dot" style="font-size: 2.2rem; font-weight: 900; color: var(--cyan); margin-top: 20px;">4.000 €</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">IVA incluido</p>
+            <button class="cart-add-btn btn-cyan-glow" data-name="OPCION HEXA" data-price="4000" data-price-key="hexa">+ Añadir al presupuesto</button>
+          </div>
+          <div class="wedding-package-hexa-media">
+            <div style="border-radius: 16px; overflow: hidden;">
+              <img loading="lazy" src="images/foto-hexa.jpeg" alt="Montaje Opción Hexa" class="lightbox-img" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 16px; cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="document.getElementById('lightbox').style.display='flex'; document.getElementById('lightbox-src').src=this.src;">
+            </div>
+            <div style="border-radius: 16px; overflow: hidden; position: relative; cursor: pointer;" onmouseover="this.querySelector('div').style.transform='scale(1.1)'" onmouseout="this.querySelector('div').style.transform='scale(1)'" onclick="document.getElementById('video-lightbox').style.display='flex'">
+              <video src="images/video-hexa.mp4" muted style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 16px;"></video>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.35); border-radius: 16px; transition: transform 0.3s;">
+                <div style="width: 60px; height: 60px; background: var(--cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(6,182,212,0.5);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== DJs ======== -->
+  <section id="djs" style="background: var(--dark2); overflow: hidden;">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="section-eyebrow">El equipo</p>
+        <h2 class="section-title">Elige tu <em>DJ</em></h2>
+        <p class="section-desc">Profesionales apasionados por la música. Haz clic en tu favorito para seleccionarlo.</p>
+        <div class="price-sensitive" style="margin-top: 20px; text-align: center;">
+          <p data-price-key="dj" style="font-size: 2rem; font-weight: 900; color: var(--cyan);">484 €</p>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">IVA incluido · 5 horas</p>
+          <p data-price-key="dj-extra" data-suffix="/h" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Hora extra: 70 €/h</p>
+        </div>
+
+      </div>
+      <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 10px; margin-bottom: -10px;">Haz clic en el DJ del centro para seleccionarlo</p>
+
+      <!-- DJ Coverflow Carousel -->
+      <div id="dj-coverflow" style="position: relative; width: 100%; max-width: 900px; margin: 0 auto; height: 520px;">
+
+        <!-- Arrow Left -->
+        <button id="dj-prev" aria-label="DJ anterior" style="position: absolute; left: 10px; top: 45%; transform: translateY(-50%); z-index: 20; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: #fff; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">&#8592;</button>
+
+        <!-- Arrow Right -->
+        <button id="dj-next" aria-label="DJ siguiente" style="position: absolute; right: 10px; top: 45%; transform: translateY(-50%); z-index: 20; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: #fff; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">&#8594;</button>
+
+        <!-- Slides -->
+        <div id="dj-carousel-track" style="position: relative; width: 100%; height: 100%;">
+
+          <!-- DJ 1: Juanfran Montes -->
+          <div class="dj-slide" data-dj="Juanfran Montes" style="position: absolute; width: 260px; top: 20px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+            <div style="background: #f0ece6; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
+              <img loading="lazy" src="images/dj-juanfran.jpg" alt="DJ Juanfran Montes" style="width: 100%; height: 100%; object-fit: cover; object-position: center 30%;">
+            </div>
+            <div style="text-align: center; margin-top: 18px;">
+              <img loading="lazy" src="images/logo-juanfran.png" alt="Juanfran Montes" style="width: 180px; height: auto; display: block; margin: 0 auto;">
+            </div>
+          </div>
+
+          <!-- DJ 2: Rafa -->
+          <div class="dj-slide" data-dj="Rafa" style="position: absolute; width: 260px; top: 20px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+            <div style="background: #f0ece6; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
+              <img loading="lazy" src="images/dj-rafa-new.png" alt="DJ Rafa" style="width: 100%; height: 100%; object-fit: cover; object-position: center 45%;">
+            </div>
+            <div style="text-align: center; margin-top: -15px;">
+              <img loading="lazy" src="images/logo-rafa.png" alt="Rafa" style="height: 150px; filter: invert(1); display: block; margin: 0 auto;">
+            </div>
+          </div>
+
+          <!-- DJ 3: JR (Jona Rivas) -->
+          <div class="dj-slide" data-dj="JR Jona Rivas" style="position: absolute; width: 260px; top: 20px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+            <div style="background: #fff; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
+              <img loading="lazy" src="images/dj-jr.jpg" alt="JR - Jona Rivas DJ" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+            </div>
+            <div style="text-align: center; margin-top: 8px;">
+              <img loading="lazy" src="images/logo-jr-white.png" alt="JR Jona Rivas DJ" style="height: 130px; display: block; margin: 0 auto;">
+            </div>
+          </div>
+
+          <!-- DJ 4: Celu Martinez -->
+          <div class="dj-slide" data-dj="Celu Martinez" style="position: absolute; width: 260px; top: 20px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+            <div style="background: #111; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              <span style="font-family: 'Montserrat', sans-serif; font-size: 4rem; font-weight: 700; color: #333;">CM</span>
+            </div>
+            <div style="text-align: center; margin-top: -5px;">
+              <img loading="lazy" src="images/logo-celu.png" alt="Celu Martinez" style="width: 180px; height: auto; display: block; margin: 0 auto;">
+            </div>
+          </div>
+
+          <!-- DJ 5: Cristian White -->
+          <div class="dj-slide" data-dj="Cristian White" style="position: absolute; width: 260px; top: 20px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+            <div style="background: #fff; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
+              <img loading="lazy" src="images/dj-cristian-white.png" alt="Cristian White" style="width: 100%; height: 100%; object-fit: cover; object-position: center 40%; transform: scale(1.4);">
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+              <img loading="lazy" src="images/logo-cristian-v3.png" alt="Cristian White" style="width: 220px; height: auto; display: block; margin: 0 auto;">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dots -->
+        <div id="dj-dots" style="display: flex; justify-content: center; gap: 10px; margin-top: 10px; position: relative; z-index: 15;">
+          <span class="dj-dot" style="width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); cursor: pointer; transition: all 0.3s;"></span>
+          <span class="dj-dot" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s;"></span>
+          <span class="dj-dot" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s;"></span>
+          <span class="dj-dot" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s;"></span>
+          <span class="dj-dot" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s;"></span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== SERVICIOS EXTRAS ======== -->
+  <section id="extras" style="background: var(--dark); border-top: 1px solid var(--border);">
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="section-eyebrow">Personaliza tu evento</p>
+        <h2 class="section-title">Servicios <em>Extras</em></h2>
+        <p class="section-desc">Incorpora estos servicios adicionales a la opción de montaje que hayas seleccionado.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Lluvia de confetti Blaster con CO2</h4>
+          <p data-extra-key="confetti" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">290 €</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">IVA incluido</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Lluvia de confetti Blaster con CO2" data-price="290" data-extra-key="confetti">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Videoanimación 360º</h4>
+          <p data-extra-key="video360" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">600 €</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">IVA incluido</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Videoanimación 360º" data-price="600" data-extra-key="video360">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Fotomatón 3h con álbum</h4>
+          <p data-extra-key="fotomaton" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">500 €</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">IVA incluido</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Fotomatón 3h con álbum" data-price="500" data-extra-key="fotomaton">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Pantallas LED</h4>
+          <p data-extra-key="pantallas" data-unit="/m2" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">100 €<span style="font-size: 0.9rem; font-weight: 400;">/m²</span></p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">IVA incluido</p>
+          <div class="qty-selector" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px;">
+            <button class="qty-btn qty-minus" data-target="qty-pantallas" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">−</button>
+            <input type="number" id="qty-pantallas" value="1" min="1" max="999" style="width: 55px; text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--cyan); font-size: 1.1rem; font-weight: 700; padding: 6px; font-family: inherit; outline: none;">
+            <button class="qty-btn qty-plus" data-target="qty-pantallas" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">m²</span>
+          </div>
+          <p class="qty-subtotal" data-qty-input="qty-pantallas" data-unit-price="100" style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; min-height: 24px;">= 100 €</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Pantallas LED" data-price="100" data-unit="m2" data-extra-key="pantallas" data-qty-input="qty-pantallas">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Pistola CO2 con botella</h4>
+          <p data-extra-key="pistola" data-unit="/u" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">200 €<span style="font-size: 0.9rem; font-weight: 400;">/u</span></p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">IVA incluido</p>
+          <div class="qty-selector" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px;">
+            <button class="qty-btn qty-minus" data-target="qty-pistola" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">−</button>
+            <input type="number" id="qty-pistola" value="1" min="1" max="99" style="width: 55px; text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--cyan); font-size: 1.1rem; font-weight: 700; padding: 6px; font-family: inherit; outline: none;">
+            <button class="qty-btn qty-plus" data-target="qty-pistola" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">uds</span>
+          </div>
+          <p class="qty-subtotal" data-qty-input="qty-pistola" data-unit-price="200" style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; min-height: 24px;">= 200 €</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Pistola CO2 con botella" data-price="200" data-unit="u" data-extra-key="pistola" data-qty-input="qty-pistola">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Escenario homologado</h4>
+          <p data-extra-key="escenario" data-unit="/m2" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">18 €<span style="font-size: 0.9rem; font-weight: 400;">/m²</span></p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">IVA incluido</p>
+          <div class="qty-selector" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px;">
+            <button class="qty-btn qty-minus" data-target="qty-escenario" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">−</button>
+            <input type="number" id="qty-escenario" value="1" min="1" max="999" style="width: 55px; text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--cyan); font-size: 1.1rem; font-weight: 700; padding: 6px; font-family: inherit; outline: none;">
+            <button class="qty-btn qty-plus" data-target="qty-escenario" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">m²</span>
+          </div>
+          <p class="qty-subtotal" data-qty-input="qty-escenario" data-unit-price="18" style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; min-height: 24px;">= 18 €</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Escenario homologado" data-price="18" data-unit="m2" data-extra-key="escenario" data-qty-input="qty-escenario">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Fotógrafo barra libre 3h</h4>
+          <p data-extra-key="fotografo" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">300 €</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">IVA incluido</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Fotógrafo barra libre 3h" data-price="300" data-extra-key="fotografo">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Máquina fuego frío</h4>
+          <p data-extra-key="fuegofrio" data-unit="/u" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">130 €<span style="font-size: 0.9rem; font-weight: 400;">/u</span></p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">IVA incluido</p>
+          <div class="qty-selector" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px;">
+            <button class="qty-btn qty-minus" data-target="qty-fuegofrio" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">−</button>
+            <input type="number" id="qty-fuegofrio" value="1" min="1" max="99" style="width: 55px; text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--cyan); font-size: 1.1rem; font-weight: 700; padding: 6px; font-family: inherit; outline: none;">
+            <button class="qty-btn qty-plus" data-target="qty-fuegofrio" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">uds</span>
+          </div>
+          <p class="qty-subtotal" data-qty-input="qty-fuegofrio" data-unit-price="130" style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; min-height: 24px;">= 130 €</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Máquina fuego frío" data-price="130" data-unit="u" data-extra-key="fuegofrio" data-qty-input="qty-fuegofrio">+ Añadir</button>
+        </div>
+
+        <div class="extra-card extra-card-glass">
+          <h4 style="color: #fff; font-size: 1.05rem; font-weight: 600; margin-bottom: 8px;">Videofest barra libre</h4>
+          <p data-extra-key="videofest" style="font-size: 1.8rem; font-weight: 900; color: var(--cyan); margin-bottom: 4px;">420 €</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">IVA incluido</p>
+          <button class="cart-add-btn btn-cyan-glow" data-name="Videofest barra libre" data-price="420" data-extra-key="videofest">+ Añadir</button>
+        </div>
+
+      </div>
+
+      <div style="text-align: center; margin-top: 50px;">
+        <button onclick="document.getElementById('cart-btn').click();" style="background: var(--cyan); color: #000; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; padding: 16px 36px; border-radius: 50px; border: none; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 10px 30px rgba(6,182,212,0.4);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 40px rgba(6,182,212,0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(6,182,212,0.4)';">Confirma tu presupuesto</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== REVIEWS ======== -->
+  <section id="reviews">
+    <div class="reviews-bg"></div>
+    <div class="section-inner">
+      <div class="section-header">
+        <p class="section-eyebrow">Lo que dicen de nosotros</p>
+        <h2 class="section-title">Opiniones <em>reales</em></h2>
+        <div class="reviews-overall">
+          <div class="reviews-score" data-content-key="content-rating">4.9</div>
+          <div class="reviews-detail">
+            <div class="stars large">★★★★★</div>
+            <span>Basado en +<span data-content-key="content-reviews-count">424</span> reseñas de Google</span>
+          </div>
+        </div>
+      </div>
+      <div class="reviews-track" id="reviews-track">
+        <div class="reviews-slide">
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Increíble experiencia. Desde el primer momento nos atendieron genial y nos asesoraron en todo. El día de la boda fue espectacular, los invitados no pararon de bailar. ¡Totalmente recomendables!"</p>
+            <div class="review-author">
+              <div class="reviewer-avatar">MR</div>
+              <div>
+                <span class="reviewer-name">María R.</span>
+                <span class="reviewer-date">Google · hace 2 semanas</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Súper profesionales. Nos ayudaron a elegir el montaje perfecto para nuestra finca y el resultado fue impresionante. El sonido y la iluminación de otro nivel. Repetiríamos sin duda."</p>
+            <div class="review-author">
+              <div class="reviewer-avatar">JP</div>
+              <div>
+                <span class="reviewer-name">Javier P.</span>
+                <span class="reviewer-date">Google · hace 1 mes</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Muy atentos y profesionales. Nos resolvieron todas las dudas y el día de la boda todo salió perfecto. La relación calidad-precio es excelente. ¡No dudéis en contactarlos!"</p>
+            <div class="review-author">
+              <div class="reviewer-avatar">RC</div>
+              <div>
+                <span class="reviewer-name">Rocío C.</span>
+                <span class="reviewer-date">Google · hace 3 semanas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reviews-slide">
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Desde la primera llamada te atienden de maravilla. Te hacen sentir que tu boda es tan importante para ellos como para ti. El trato cercano y profesional marca la diferencia."</p>
+            <div class="review-author">
+              <div class="reviewer-avatar">AM</div>
+              <div>
+                <span class="reviewer-name">Ana M.</span>
+                <span class="reviewer-date">Google · hace 1 mes</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"No teníamos ni idea de montajes y nos asesoraron de 10. El equipo técnico es de altísima calidad y el resultado superó todas nuestras expectativas. Gracias por todo."</p>
+            <div class="review-author">
+              <div class="reviewer-avatar">DR</div>
+              <div>
+                <span class="reviewer-name">Daniel R.</span>
+                <span class="reviewer-date">Google · hace 2 meses</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Nuestra boda fue perfecta gracias a Sonoplay. Captaron exactamente el ambiente que queríamos. Los invitados no pararon de bailar en toda la noche. ¡Gracias por hacer nuestro día inolvidable!"</p>
+            <div class="review-author">
+              <div class="reviewer-avatar">LF</div>
+              <div>
+                <span class="reviewer-name">Laura &amp; Fernando</span>
+                <span class="reviewer-date">Google · hace 5 meses</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reviews-controls">
+        <button class="rev-btn" id="rev-prev" aria-label="Anterior">&#8592;</button>
+        <div class="rev-dots">
+          <span class="rev-dot active"></span>
+          <span class="rev-dot"></span>
+        </div>
+        <button class="rev-btn" id="rev-next" aria-label="Siguiente">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== CONTACT ======== -->
+  <section id="contact" style="background: var(--dark3); border-top: 1px solid var(--border); padding-bottom: 2rem;">
+    <div class="section-inner" style="text-align: center;">
+      <h2 style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 300; margin-bottom: 15px; color: #fff;">¡No todo está en este dossier!</h2>
+      <p style="font-size: 1.1rem; color: var(--text); margin-bottom: 30px;">Convertimos tus ideas en realidad. Cuéntanos tu visión y crearemos el montaje perfecto para tu día.</p>
+      <h3 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 60px; color: #fff;">¿Te atreves?</h3>
+
+      <div style="margin-bottom: 40px;">
+        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 30px;">Imaginamos, creamos...</h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; text-align: left; position: relative;">
+          <!-- Background image or particles could go here if needed, keeping it clean for now -->
+          
+          <div class="contact-glass">
+            <h4 class="cyan-gradient-text" style="font-size: 1.2rem; font-weight: 900; margin-bottom: 15px;">CONSULTA SIN<br>COMPROMISO</h4>
+            <p style="font-size: 1rem; font-weight: 600;">Horario de atención:<br>09:00 h a 18:00 h</p>
+          </div>
+          
+          <div class="contact-glass">
+            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;">Instagram <span data-content-key="content-instagram">@sonoplay.es</span></p>
+            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;"><a data-content-key="content-email" href="mailto:producciones@sonoplay.es" style="color: inherit; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='inherit'">producciones@sonoplay.es</a></p>
+            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;"><a href="http://www.sonoplay.es" target="_blank" style="color: inherit; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='inherit'">www.sonoplay.es</a></p>
+            <p data-content-key="content-phone" style="font-size: 1rem; font-weight: 900; color: var(--cyan); margin-top: 10px;">657 46 86 85</p>
+          </div>
+
+          <div class="contact-glass">
+            <p style="font-size: 1rem; font-weight: 900; margin-bottom: 10px; color: var(--gold);"><em>Estamos en <span data-content-key="content-address">Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla), CP: 41740</span></em></p>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== LOGIN/REGISTER MODAL ======== -->
+  <div id="auth-modal" style="display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 420px; width: 90%; position: relative;">
+      <button onclick="document.getElementById('auth-modal').style.display='none'" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer;">&times;</button>
+
+      <div style="text-align: center; margin-bottom: 25px;">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 40px; margin-bottom: 15px;">
+        <h3 id="auth-title" style="color: #fff; font-size: 1.4rem; margin-bottom: 5px;">Iniciar sesión</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Accede para ver precios y presupuestos</p>
+      </div>
+
+      <form id="auth-form" style="display: flex; flex-direction: column; gap: 15px;">
+        <div id="auth-name-field" style="display: none;">
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Nombre</label>
+          <input type="text" id="auth-name" placeholder="Tu nombre" style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <div>
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Email</label>
+          <input type="email" id="auth-email" placeholder="tu@email.com" required style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <div id="auth-phone-field" style="display: none;">
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Teléfono</label>
+          <input type="tel" id="auth-phone" placeholder="600 000 000" style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <div>
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Contraseña</label>
+          <input type="password" id="auth-pass" placeholder="••••••••" required style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <p id="auth-error" style="color: #ef4444; font-size: 0.85rem; display: none; text-align: center;"></p>
+        <button type="submit" id="auth-submit" style="background: var(--cyan); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: opacity 0.3s;">Entrar</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
+        <span id="auth-toggle-text">¿No tienes cuenta?</span>
+        <a href="#" id="auth-toggle" style="color: var(--cyan); text-decoration: none; font-weight: 600;"> Regístrate</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ======== LIGHTBOX IMAGEN ======== -->
+  <div id="lightbox" onclick="this.style.display='none'" style="display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; cursor: zoom-out;">
+    <img id="lightbox-src" src="" alt="Imagen ampliada" style="max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8);">
+    <button onclick="document.getElementById('lightbox').style.display='none'" style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: #fff; font-size: 2.5rem; cursor: pointer;">&times;</button>
+  </div>
+
+  <!-- ======== LIGHTBOX VIDEO ======== -->
+  <div id="video-lightbox" onclick="if(event.target===this){this.style.display='none'; document.getElementById('video-lb-player').pause();}" style="display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; cursor: default;">
+    <video id="video-lb-player" src="images/video-hexa.mp4" controls autoplay style="max-width: 92vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8);"></video>
+    <button onclick="document.getElementById('video-lightbox').style.display='none'; document.getElementById('video-lb-player').pause();" style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: #fff; font-size: 2.5rem; cursor: pointer;">&times;</button>
+  </div>
+
+  <!-- ======== DJ TOAST NOTIFICATION ======== -->
+  <div id="dj-toast" style="position: fixed; top: -100px; left: 50%; transform: translateX(-50%); z-index: 2000; background: var(--cyan); color: #000; padding: 16px 32px; border-radius: 14px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 8px 30px rgba(6,182,212,0.5); transition: top 0.5s cubic-bezier(0.4,0,0.2,1); text-align: center; white-space: nowrap;"></div>
+
+  <!-- ======== CARRITO FLOTANTE ======== -->
+  <button id="cart-btn" aria-label="Abrir carrito" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; background: var(--cyan); border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(6,182,212,0.5); display: flex; align-items: center; justify-content: center; transition: transform 0.3s, box-shadow 0.3s;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+    <span id="cart-count" style="position: absolute; top: -4px; right: -4px; background: #ef4444; color: #fff; font-size: 0.75rem; font-weight: 700; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center;">0</span>
+  </button>
+
+  <!-- ======== CART SIDEBAR ======== -->
+  <div id="cart-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s;"></div>
+  <div id="cart-sidebar" style="position: fixed; top: 0; right: -420px; width: 400px; max-width: 90vw; height: 100vh; background: var(--dark2); z-index: 1002; transition: right 0.4s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; box-shadow: -5px 0 30px rgba(0,0,0,0.5);">
+    <div style="padding: 25px 25px 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="color: #fff; font-size: 1.3rem; font-weight: 700; margin: 0;">Tu Presupuesto</h3>
+      <button id="cart-close" style="background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; line-height: 1;">&times;</button>
+    </div>
+    <div id="cart-items" style="flex: 1; overflow-y: auto; padding: 20px 25px;">
+      <p id="cart-empty" style="color: var(--text-muted); text-align: center; margin-top: 40px;">No has añadido ningún servicio todavía.</p>
+    </div>
+    <div style="padding: 20px 25px; border-top: 1px solid var(--border); background: var(--dark3);">
+      <div id="cart-discount-info"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <span style="color: var(--text); font-size: 1rem;">Total estimado:</span>
+        <span id="cart-total" style="color: var(--cyan); font-size: 1.5rem; font-weight: 900;">0 €</span>
+      </div>
+      <button id="cart-contact-btn" style="display: block; width: 100%; text-align: center; background: var(--cyan); color: #000; font-weight: 700; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-size: 1rem; transition: opacity 0.3s; font-family: inherit;">Contactar</button>
+    </div>
+  </div>
+
+  <!-- ======== MODAL FICHA DJ ======== -->
+  <div id="dj-info-modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div class="glass-card" style="border: 1px solid var(--border); border-radius: 20px; padding: 0; max-width: 440px; width: 90%; text-align: center; position: relative; animation: cartSlideIn 0.3s; overflow: hidden; background: var(--dark2);">
+      <button onclick="document.getElementById('dj-info-modal-overlay').style.display='none'" style="position: absolute; top: 18px; right: 20px; background: none; border: none; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); font-size: 1.8rem; cursor: pointer; line-height: 1; z-index: 10;">&times;</button>
+      
+      <div id="dj-info-media" style="width: 100%; height: 260px; background: var(--dark3); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; position: relative;">
+        <!-- Inner HTML injected via JS -->
+      </div>
+      
+      <div style="padding: 30px; text-align: left;">
+        <h3 id="dj-info-name" style="color: #fff; font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">Nombre</h3>
+        <p id="dj-info-desc" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">Descripción provisional.</p>
+        
+        <button id="dj-info-action-btn" class="btn-cyan-glow" style="width: 100%; font-size: 1rem;">Más información</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== MODAL SOLICITAR PRESUPUESTO ======== -->
+  <div id="budget-modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div id="budget-modal" style="background: var(--dark2); border: 1px solid var(--border); border-radius: 20px; padding: 35px 30px; max-width: 420px; width: 90%; text-align: center; position: relative; animation: cartSlideIn 0.3s;">
+      <button id="budget-modal-close" style="position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--text-muted); font-size: 1.6rem; cursor: pointer; line-height: 1;">&times;</button>
+      <div style="font-size: 2.5rem; margin-bottom: 10px;">📞</div>
+      <h3 style="color: #fff; font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;">¿Cómo prefieres contactarnos?</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Elige tu método favorito para solicitar tu presupuesto personalizado</p>
+      <div id="budget-summary" style="background: var(--dark3); border-radius: 12px; padding: 15px; margin-bottom: 25px; text-align: left; max-height: 150px; overflow-y: auto;"></div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <a id="budget-call-btn" href="tel:+34657468685" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 20px; border-radius: 14px; background: var(--cyan); color: #000; font-weight: 700; font-size: 1rem; text-decoration: none; transition: opacity 0.3s;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          Llamar al 657 46 86 85
+        </a>
+        <a id="budget-whatsapp-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 20px; border-radius: 14px; background: #25d366; color: #fff; font-weight: 700; font-size: 1rem; text-decoration: none; transition: opacity 0.3s;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Enviar WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== FOOTER ======== -->
+  <footer id="footer" style="background: var(--dark); border-top: 1px solid var(--border); padding: 40px 20px 20px; text-align: center;">
+    <div style="margin-bottom: 20px;">
+      <a href="#hero" style="text-decoration: none; display: inline-block;">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 60px; width: auto; ">
+      </a>
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.8;">
+      <p>© 2025 SONOPLAY — Servicios Audiovisuales</p>
+      <p>Dossier Bodas 2025/26</p>
+      <p style="margin-top: 8px;">Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla) · 41740</p>
+      <p>657 46 86 85 · <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none;">producciones@sonoplay.es</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

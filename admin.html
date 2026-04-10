@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SONOPLAY — Panel de Administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cyan: #06b6d4;
+      --dark: #151520;
+      --dark2: #1c1c2e;
+      --dark3: #232340;
+      --text: #e8e8f4;
+      --text-muted: #9a9ac0;
+      --border: rgba(255,255,255,0.12);
+    }
+    body { background: var(--dark); color: var(--text); font-family: 'Montserrat', sans-serif; line-height: 1.6; }
+
+    .admin-header {
+      background: var(--dark2);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-header h1 { font-size: 1.3rem; color: #fff; }
+    .admin-header h1 span { color: var(--cyan); }
+    .admin-header-actions { display: flex; gap: 12px; align-items: center; }
+    .admin-header-actions a, .admin-header-actions button {
+      padding: 8px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: all 0.3s;
+    }
+    .btn-back { background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: var(--text); }
+    .btn-back:hover { background: rgba(255,255,255,0.15); }
+    .btn-logout { background: #ef4444; border: none; color: #fff; }
+    .btn-logout:hover { opacity: 0.8; }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: calc(100vh - 70px);
+    }
+
+    .admin-sidebar {
+      background: var(--dark2);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .admin-sidebar a {
+      display: block; padding: 12px 24px; color: var(--text-muted);
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: all 0.2s; border-left: 3px solid transparent;
+    }
+    .admin-sidebar a:hover, .admin-sidebar a.active {
+      color: #fff; background: rgba(255,255,255,0.05);
+      border-left-color: var(--cyan);
+    }
+
+    .admin-content { padding: 30px; }
+    .admin-content h2 { font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
+    .admin-content .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+
+    .admin-card {
+      background: var(--dark2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 25px; margin-bottom: 20px;
+    }
+    .admin-card h3 { font-size: 1.1rem; color: var(--cyan); margin-bottom: 15px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; font-weight: 500; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--dark3);
+      color: #fff; font-size: 0.95rem; font-family: inherit; outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--cyan); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    .btn-save {
+      background: var(--cyan); color: #000; border: none; padding: 12px 28px;
+      border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .btn-save:hover { opacity: 0.85; }
+
+    .btn-danger {
+      background: #ef4444; color: #fff; border: none; padding: 8px 18px;
+      border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+    }
+
+    .price-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
+    }
+    .price-item {
+      background: var(--dark3); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px; display: flex; flex-direction: column; gap: 10px;
+      transition: border-color 0.3s, transform 0.2s; overflow: hidden;
+    }
+    .price-item:hover { border-color: var(--cyan); transform: translateY(-2px); }
+    .price-item .price-label { font-size: 0.88rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .price-item .price-input-row {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .price-item input {
+      flex: 1; min-width: 0; text-align: center; font-size: 1.3rem; font-weight: 900;
+      padding: 8px 6px; border-radius: 10px; border: 2px solid var(--border);
+      background: var(--dark2); color: var(--cyan); font-family: inherit;
+      outline: none; transition: border-color 0.3s;
+    }
+    .price-item input:focus { border-color: var(--cyan); }
+    .price-item .price-unit { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+
+    .users-table { width: 100%; border-collapse: collapse; }
+    .users-table th { text-align: left; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .users-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+    .stat-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+    .stat-card .num { font-size: 2rem; font-weight: 900; color: var(--cyan); }
+    .stat-card .lbl { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    .toast {
+      position: fixed; top: -80px; left: 50%; transform: translateX(-50%);
+      background: #22c55e; color: #fff; padding: 14px 28px; border-radius: 12px;
+      font-weight: 600; font-size: 0.95rem; z-index: 9999;
+      transition: top 0.4s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 4px 20px rgba(34,197,94,0.4);
+    }
+    .toast.show { top: 20px; }
+
+    .img-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+    }
+    .img-card {
+      background: var(--dark3); border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px; display: flex; flex-direction: column; gap: 12px;
+      transition: border-color 0.3s;
+    }
+    .img-card:hover { border-color: var(--cyan); }
+    .img-card .img-label { font-size: 0.9rem; font-weight: 600; color: #fff; }
+    .img-card .img-preview {
+      width: 100%; height: 180px; border-radius: 10px; overflow: hidden;
+      background: var(--dark2); display: flex; align-items: center; justify-content: center;
+      border: 2px dashed var(--border); position: relative;
+    }
+    .img-card .img-preview img {
+      width: 100%; height: 100%; object-fit: contain;
+    }
+    .img-card .img-preview.logo-preview { height: 100px; }
+    .img-card .img-preview .img-placeholder {
+      color: var(--text-muted); font-size: 0.8rem; text-align: center;
+    }
+    .img-card .img-actions { display: flex; gap: 8px; }
+    .img-card .btn-upload {
+      flex: 1; padding: 10px; border-radius: 10px; border: none;
+      background: var(--cyan); color: #000; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: opacity 0.3s; text-align: center;
+    }
+    .img-card .btn-upload:hover { opacity: 0.85; }
+    .img-card .btn-reset {
+      padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-muted); font-size: 0.85rem;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .img-card .btn-reset:hover { border-color: #ef4444; color: #ef4444; }
+    .img-card input[type="file"] { display: none; }
+
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { display: flex; overflow-x: auto; padding: 0; border-right: none; border-bottom: 1px solid var(--border); }
+      .admin-sidebar a { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 14px 18px; }
+      .admin-sidebar a:hover, .admin-sidebar a.active { border-left-color: transparent; border-bottom-color: var(--cyan); }
+      .form-row { grid-template-columns: 1fr; }
+      .price-editor { grid-template-columns: 1fr; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="admin-toast">Cambios guardados</div>
+
+  <header class="admin-header">
+    <h1>SONO<span>PLAY</span> — Admin</h1>
+    <div class="admin-header-actions">
+      <a href="index.html" class="btn-back">Ver web</a>
+      <button class="btn-logout" id="admin-logout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <nav class="admin-sidebar">
+      <a href="#" class="active" data-panel="dashboard">Dashboard</a>
+      <a href="#" data-panel="precios">Precios</a>
+      <a href="#" data-panel="contenido">Contenido</a>
+      <a href="#" data-panel="extras">Servicios Extras</a>
+      <a href="#" data-panel="imagenes">Imágenes</a>
+      <a href="#" data-panel="usuarios">Usuarios</a>
+    </nav>
+
+    <main class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div class="admin-panel active" id="panel-dashboard">
+        <h2>Dashboard</h2>
+        <p class="subtitle">Resumen general del dossier</p>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="num" id="stat-users">0</div>
+            <div class="lbl">Usuarios registrados</div>
+          </div>
+          <div class="stat-card">
+            <div class="num">6</div>
+            <div class="lbl">Opciones de montaje</div>
+          </div>
+          <div class="stat-card">
+            <div class="num">9</div>
+            <div class="lbl">Servicios extras</div>
+          </div>
+          <div class="stat-card">
+            <div class="num">5</div>
+            <div class="lbl">DJs activos</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRECIOS -->
+      <div class="admin-panel" id="panel-precios">
+        <h2>Gestión de Precios</h2>
+        <p class="subtitle">Modifica los precios de montajes, DJs y ceremonia</p>
+
+        <div class="admin-card">
+          <h3>Descuentos Automáticos</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Aplica automáticamente un descuento a partir de cierto umbral en el carrito.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Umbral de precio (Mínimo €)</label>
+              <input type="number" id="price-discount-threshold" value="4000">
+            </div>
+            <div class="form-group">
+              <label>Porcentaje de descuento (%)</label>
+              <input type="number" id="price-discount-percent" value="10">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="admin-card">
+          <h3>Ceremonia y DJs</h3>
+          <div class="price-grid">
+            <div class="price-item">
+              <span class="price-label">Ceremonia Civil</span>
+              <div class="price-input-row">
+                <input type="number" id="price-ceremonia" value="242">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">DJ (5 horas)</span>
+              <div class="price-input-row">
+                <input type="number" id="price-dj" value="484">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Hora extra DJ</span>
+              <div class="price-input-row">
+                <input type="number" id="price-dj-extra" value="70">
+                <span class="price-unit">€/h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Opciones de Montaje</h3>
+          <div class="price-grid">
+            <div class="price-item">
+              <span class="price-label">BASIC</span>
+              <div class="price-input-row">
+                <input type="number" id="price-basic" value="1210">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">TOTEMS</span>
+              <div class="price-input-row">
+                <input type="number" id="price-totems" value="1573">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">DUO</span>
+              <div class="price-input-row">
+                <input type="number" id="price-duo" value="1936">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">CUBO</span>
+              <div class="price-input-row">
+                <input type="number" id="price-cubo" value="2420">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">EQUIS</span>
+              <div class="price-input-row">
+                <input type="number" id="price-equis" value="2600">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">HEXA</span>
+              <div class="price-input-row">
+                <input type="number" id="price-hexa" value="4000">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-save" id="save-prices">Guardar precios</button>
+      </div>
+
+      <!-- CONTENIDO -->
+      <div class="admin-panel" id="panel-contenido">
+        <h2>Contenido de la Web</h2>
+        <p class="subtitle">Edita textos e imágenes del dossier</p>
+
+        <div class="admin-card">
+          <h3>Hero / Portada</h3>
+          <div class="form-group">
+            <label>Subtítulo</label>
+            <input type="text" id="content-hero-subtitle" value="Aquí comienza tu fiesta...">
+          </div>
+          <div class="form-group">
+            <label>Número de reseñas</label>
+            <input type="number" id="content-reviews-count" value="424">
+          </div>
+          <div class="form-group">
+            <label>Valoración media</label>
+            <input type="text" id="content-rating" value="4.9">
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Datos de contacto</h3>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" id="content-phone" value="657468685">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="content-email" value="producciones@sonoplay.es">
+          </div>
+          <div class="form-group">
+            <label>Instagram</label>
+            <input type="text" id="content-instagram" value="@sonoplay.es">
+          </div>
+          <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" id="content-address" value="Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla), CP: 41740">
+          </div>
+        </div>
+
+        <button class="btn-save" id="save-content">Guardar contenido</button>
+      </div>
+
+      <!-- SERVICIOS EXTRAS -->
+      <div class="admin-panel" id="panel-extras">
+        <h2>Servicios Extras</h2>
+        <p class="subtitle">Gestiona precios de servicios adicionales</p>
+
+        <div class="admin-card">
+          <h3>Precios de Extras</h3>
+          <div class="price-grid">
+            <div class="price-item">
+              <span class="price-label">Confetti Blaster CO2</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-confetti" value="290">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Videoanimación 360º</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-video360" value="600">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Fotomatón 3h con álbum</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-fotomaton" value="500">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Pantallas LED</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-pantallas" value="100">
+                <span class="price-unit">€/m2</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Pistola CO2</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-pistola" value="200">
+                <span class="price-unit">€/u</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Escenario homologado</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-escenario" value="18">
+                <span class="price-unit">€/m2</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Fotógrafo barra libre 3h</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-fotografo" value="300">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Máquina fuego frío</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-fuegofrio" value="130">
+                <span class="price-unit">€/u</span>
+              </div>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Videofest barra libre</span>
+              <div class="price-input-row">
+                <input type="number" id="extra-videofest" value="420">
+                <span class="price-unit">€</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-save" id="save-extras">Guardar extras</button>
+      </div>
+
+      <!-- IMÁGENES -->
+      <div class="admin-panel" id="panel-imagenes">
+        <h2>Gestión de Imágenes</h2>
+        <p class="subtitle">Cambia las fotos y logos que se muestran en la web</p>
+
+        <div class="admin-card">
+          <h3>Logo Principal</h3>
+          <div class="img-grid">
+            <div class="img-card">
+              <span class="img-label">Logo SONOPLAY (cabecera y footer)</span>
+              <div class="img-preview logo-preview">
+                <img id="img-preview-logo" src="images/logosonoplay-largo.png" alt="Logo">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo" data-img-default="images/logosonoplay-largo.png"></label>
+                <button class="btn-reset" data-img-key="logo" data-img-default="images/logosonoplay-largo.png">Restaurar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Fotos de DJs</h3>
+          <div class="img-grid">
+            <div class="img-card">
+              <span class="img-label">DJ Juanfran Montes</span>
+              <div class="img-preview">
+                <img id="img-preview-dj-juanfran" src="images/dj-juanfran.jpg" alt="DJ Juanfran">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg"></label>
+                <button class="btn-reset" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">DJ Rafa</span>
+              <div class="img-preview">
+                <img id="img-preview-dj-rafa" src="images/dj-rafa-new.png" alt="DJ Rafa">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png"></label>
+                <button class="btn-reset" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">JR - Jona Rivas DJ</span>
+              <div class="img-preview">
+                <img id="img-preview-dj-jr" src="images/dj-jr.jpg" alt="DJ JR">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg"></label>
+                <button class="btn-reset" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Cristian White</span>
+              <div class="img-preview">
+                <img id="img-preview-dj-cristian" src="images/dj-cristian-white.png" alt="DJ Cristian">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png"></label>
+                <button class="btn-reset" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png">Restaurar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Logos de DJs</h3>
+          <div class="img-grid">
+            <div class="img-card">
+              <span class="img-label">Logo Juanfran Montes</span>
+              <div class="img-preview logo-preview">
+                <img id="img-preview-logo-juanfran" src="images/logo-juanfran.png" alt="Logo Juanfran">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png"></label>
+                <button class="btn-reset" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Logo Rafa</span>
+              <div class="img-preview logo-preview">
+                <img id="img-preview-logo-rafa" src="images/logo-rafa.png" alt="Logo Rafa">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png"></label>
+                <button class="btn-reset" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Logo JR Jona Rivas</span>
+              <div class="img-preview logo-preview">
+                <img id="img-preview-logo-jr" src="images/logo-jr-white.png" alt="Logo JR">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png"></label>
+                <button class="btn-reset" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Logo Celu Martinez</span>
+              <div class="img-preview logo-preview">
+                <img id="img-preview-logo-celu" src="images/logo-celu.png" alt="Logo Celu">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-celu" data-img-default="images/logo-celu.png"></label>
+                <button class="btn-reset" data-img-key="logo-celu" data-img-default="images/logo-celu.png">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Logo Cristian White</span>
+              <div class="img-preview logo-preview">
+                <img id="img-preview-logo-cristian" src="images/logo-cristian-v3.png" alt="Logo Cristian">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png"></label>
+                <button class="btn-reset" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png">Restaurar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Montajes</h3>
+          <div class="img-grid">
+            <div class="img-card">
+              <span class="img-label">Foto Montaje BASIC</span>
+              <div class="img-preview">
+                <img id="img-preview-foto-basic" src="images/foto-basic.jpeg" alt="Foto Basic" onerror="this.style.display='none'">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg"></label>
+                <button class="btn-reset" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Foto Montaje TOTEMS</span>
+              <div class="img-preview">
+                <img id="img-preview-foto-totems" src="images/foto-totems.jpeg" alt="Foto Totems" onerror="this.style.display='none'">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg"></label>
+                <button class="btn-reset" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Foto Montaje DUO</span>
+              <div class="img-preview">
+                <img id="img-preview-foto-duo" src="images/foto-duo.jpeg" alt="Foto Duo" onerror="this.style.display='none'">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg"></label>
+                <button class="btn-reset" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Foto Montaje CUBO</span>
+              <div class="img-preview">
+                <img id="img-preview-foto-cubo" src="images/foto-cubo.jpeg" alt="Foto Cubo" onerror="this.style.display='none'">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg"></label>
+                <button class="btn-reset" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Foto Montaje EQUIS</span>
+              <div class="img-preview">
+                <img id="img-preview-foto-equis" src="images/foto-equis.jpeg" alt="Foto Equis" onerror="this.style.display='none'">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg"></label>
+                <button class="btn-reset" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg">Restaurar</button>
+              </div>
+            </div>
+            <div class="img-card">
+              <span class="img-label">Foto Montaje HEXA</span>
+              <div class="img-preview">
+                <img id="img-preview-foto-hexa" src="images/foto-hexa.jpeg" alt="Foto Hexa">
+              </div>
+              <div class="img-actions">
+                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg"></label>
+                <button class="btn-reset" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg">Restaurar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USUARIOS -->
+      <div class="admin-panel" id="panel-usuarios">
+        <h2>Usuarios Registrados</h2>
+        <p class="subtitle">Listado de usuarios que se han registrado en el dossier</p>
+
+        <div class="admin-card">
+          <table class="users-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="users-list">
+            </tbody>
+          </table>
+          <p id="no-users" style="color: var(--text-muted); text-align: center; padding: 30px;">No hay usuarios registrados todavía.</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Check admin auth
+    const currentUser = JSON.parse(localStorage.getItem('sonoplay_user') || 'null');
+    if (!currentUser || currentUser.role !== 'admin') {
+      window.location.href = 'index.html';
+    }
+
+    // Sidebar navigation
+    document.querySelectorAll('.admin-sidebar a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.admin-sidebar a').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        link.classList.add('active');
+        document.getElementById('panel-' + link.dataset.panel).classList.add('active');
+      });
+    });
+
+    // Toast
+    function showToast(msg) {
+      const t = document.getElementById('admin-toast');
+      t.textContent = msg || 'Cambios guardados';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Load saved prices
+    function loadPrices() {
+      const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+      Object.keys(prices).forEach(key => {
+        const input = document.getElementById('price-' + key) || document.getElementById('extra-' + key);
+        if (input) input.value = prices[key];
+      });
+    }
+    loadPrices();
+
+    // Save prices
+    document.getElementById('save-prices').addEventListener('click', () => {
+      const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+      document.querySelectorAll('#panel-precios input[type="number"]').forEach(input => {
+        const key = input.id.replace('price-', '');
+        prices[key] = parseFloat(input.value);
+      });
+      localStorage.setItem('sonoplay_prices', JSON.stringify(prices));
+      showToast('Precios actualizados');
+    });
+
+    // Save extras
+    document.getElementById('save-extras').addEventListener('click', () => {
+      const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+      document.querySelectorAll('#panel-extras input[type="number"]').forEach(input => {
+        const key = input.id.replace('extra-', '');
+        prices[key] = parseFloat(input.value);
+      });
+      localStorage.setItem('sonoplay_prices', JSON.stringify(prices));
+      showToast('Servicios extras actualizados');
+    });
+
+    // Save content
+    document.getElementById('save-content').addEventListener('click', () => {
+      const content = {};
+      document.querySelectorAll('#panel-contenido input, #panel-contenido textarea').forEach(input => {
+        content[input.id] = input.value;
+      });
+      localStorage.setItem('sonoplay_content', JSON.stringify(content));
+      showToast('Contenido actualizado');
+    });
+
+    // Load content
+    const savedContent = JSON.parse(localStorage.getItem('sonoplay_content') || '{}');
+    Object.keys(savedContent).forEach(key => {
+      const el = document.getElementById(key);
+      if (el) el.value = savedContent[key];
+    });
+
+    // Users list
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem('sonoplay_users') || '[]');
+      const list = document.getElementById('users-list');
+      const noUsers = document.getElementById('no-users');
+      document.getElementById('stat-users').textContent = users.length;
+
+      if (users.length === 0) {
+        noUsers.style.display = 'block';
+        return;
+      }
+      noUsers.style.display = 'none';
+
+      list.innerHTML = users.map((u, i) => `
+        <tr>
+          <td>${u.name || '-'}</td>
+          <td>${u.email}</td>
+          <td>${u.phone || '-'}</td>
+          <td>${u.date || '-'}</td>
+          <td><button class="btn-danger" onclick="deleteUser(${i})">Eliminar</button></td>
+        </tr>
+      `).join('');
+    }
+    loadUsers();
+
+    window.deleteUser = function(idx) {
+      const users = JSON.parse(localStorage.getItem('sonoplay_users') || '[]');
+      users.splice(idx, 1);
+      localStorage.setItem('sonoplay_users', JSON.stringify(users));
+      loadUsers();
+      showToast('Usuario eliminado');
+    };
+
+    // === IMAGES MANAGEMENT ===
+    function loadSavedImages() {
+      const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+      Object.keys(images).forEach(key => {
+        const preview = document.getElementById('img-preview-' + key);
+        if (preview) preview.src = images[key];
+      });
+    }
+    loadSavedImages();
+
+    // File upload handlers
+    document.querySelectorAll('.img-card input[type="file"]').forEach(input => {
+      input.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        // Max 2MB check
+        if (file.size > 2 * 1024 * 1024) {
+          showToast('La imagen no puede superar 2MB');
+          return;
+        }
+
+        const key = this.dataset.imgKey;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64 = e.target.result;
+          // Update preview
+          const preview = document.getElementById('img-preview-' + key);
+          if (preview) preview.src = base64;
+          // Save to localStorage
+          const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+          images[key] = base64;
+          localStorage.setItem('sonoplay_images', JSON.stringify(images));
+          showToast('Imagen actualizada');
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Reset buttons
+    document.querySelectorAll('button.btn-reset').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const key = this.getAttribute('data-img-key');
+        const defaultSrc = this.getAttribute('data-img-default');
+        if (!key || !defaultSrc) return;
+        // Restore preview
+        const preview = document.getElementById('img-preview-' + key);
+        if (preview) preview.src = defaultSrc;
+        // Remove from localStorage
+        const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+        delete images[key];
+        localStorage.setItem('sonoplay_images', JSON.stringify(images));
+        showToast('Imagen restaurada');
+      });
+    });
+
+    // Logout
+    document.getElementById('admin-logout').addEventListener('click', () => {
+      localStorage.removeItem('sonoplay_user');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
