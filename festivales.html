@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SONOPLAY — Festivales y conciertos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 55px; width: auto;">
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Bodas</a></li>
+        <li><a href="ferias.html">Ferias</a></li>
+        <li><a href="festivales.html" aria-current="page" style="color: var(--cyan);">Festivales</a></li>
+        <li><a href="corporativos.html">Corporativos</a></li>
+        <li><a href="#contact" class="btn-nav">Contactar</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Festivales · Conciertos · Andalucía</p>
+      <h1 class="hero-title hero-title-new">
+        Producción integral,<br><em class="hero-accent">escenario listo.</em>
+      </h1>
+      <p class="hero-subtitle">PA de línea, backline, escenarios, iluminación de espectáculo y gestión técnica. Montamos el festival entero o sumamos con tu producción.</p>
+      <div class="hero-ctas">
+        <a href="#servicios" class="btn-primary">Ver servicios →</a>
+        <a href="#contact" class="btn-ghost">Pedir presupuesto</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios" style="background: var(--dark2); border-top: 1px solid var(--border);">
+    <div class="section-inner" style="text-align: center;">
+      <p class="section-eyebrow">Producción técnica</p>
+      <h2 class="section-title" style="margin-bottom: 50px;">Servicios para festivales y conciertos</h2>
+      <div class="verticals-grid">
+        <div class="vertical-card" style="cursor: default;">
+          <div class="vertical-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V6l18 6z"/></svg>
+          </div>
+          <h3>PA de línea (Line Array)</h3>
+          <p>Sistemas L-Acoustics, d&b y RCF para aforos de 500 a 10.000 personas. Medición con Smaart.</p>
+        </div>
+        <div class="vertical-card" style="cursor: default;">
+          <div class="vertical-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="18" y1="10" x2="18" y2="14"/></svg>
+          </div>
+          <h3>Backline completo</h3>
+          <p>Baterías, amplis de guitarra/bajo, teclados, monitores. Riders técnicos cumplidos al detalle.</p>
+        </div>
+        <div class="vertical-card" style="cursor: default;">
+          <div class="vertical-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M5 20V8h14v12M9 20v-6h6v6"/></svg>
+          </div>
+          <h3>Escenarios modulares</h3>
+          <p>Tarimas desde 24 m² hasta 100 m², con techo, laterales, barrera de público y rampas.</p>
+        </div>
+        <div class="vertical-card" style="cursor: default;">
+          <div class="vertical-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>
+          </div>
+          <h3>Iluminación de espectáculo</h3>
+          <p>Cabezas móviles beam/spot/wash, pixel mapping, láseres y control con grandMA3.</p>
+        </div>
+        <div class="vertical-card" style="cursor: default;">
+          <div class="vertical-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
+          </div>
+          <h3>Pantallas LED exterior</h3>
+          <p>Video walls P3.9 y P2.6 outdoor, procesado y realización multicámara.</p>
+        </div>
+        <div class="vertical-card" style="cursor: default;">
+          <div class="vertical-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Equipo técnico</h3>
+          <p>FOH, monitores, técnicos de escenario, riggers y coordinación con promotor y grupos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="background: var(--dark3); border-top: 1px solid var(--border);">
+    <div class="section-inner" style="text-align: center;">
+      <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 300; color: #fff; margin-bottom: 15px;">¿Organizas un festival?</h2>
+      <p style="font-size: 1.1rem; color: var(--text); margin-bottom: 40px;">Envíanos el rider y las fechas. Te preparamos presupuesto técnico detallado.</p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="tel:+34657468685" class="btn-primary">Llamar 657 46 86 85</a>
+        <a href="https://wa.me/34657468685?text=Hola%2C%20me%20interesa%20el%20servicio%20para%20festivales" target="_blank" rel="noopener" class="btn-ghost">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer" style="background: var(--dark); border-top: 1px solid var(--border); padding: 40px 20px 20px; text-align: center;">
+    <div style="margin-bottom: 20px;">
+      <a href="index.html" style="text-decoration: none; display: inline-block;">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 60px; width: auto;">
+      </a>
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.8;">
+      <p>© 2025 SONOPLAY — Servicios Audiovisuales</p>
+      <p>Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla) · 41740</p>
+      <p>657 46 86 85 · <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none;">producciones@sonoplay.es</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
