@@ -122,6 +122,19 @@ document.addEventListener('DOMContentLoaded', () => {
     card.style.transitionDelay = `${i * 0.08}s`;
   });
 
+  // ---- SECTION-LEVEL CINEMATIC ENTRANCE ----
+  const entranceSections = document.querySelectorAll('section, footer#footer');
+  entranceSections.forEach(s => s.classList.add('section-enter'));
+  const entranceObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('section-in');
+        entranceObserver.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+  entranceSections.forEach(s => entranceObserver.observe(s));
+
   document.querySelectorAll('.dj-card').forEach((card, i) => {
     card.style.transitionDelay = `${i * 0.1}s`;
   });
