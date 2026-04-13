@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             "JR Jona Rivas": {
               desc: "La combinación perfecta entre elegancia y locura discotequera. Conecta directamente con tus invitados.",
-              media: '<img src="images/dj-jr.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center 15%; transform:scale(1.4); transform-origin:center 18%; position:absolute;"><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-jr-white.png" style="height:100px; position:absolute; bottom:20px; z-index:2;">'
+              media: '<img src="images/dj-jr.jpg" style="width:100%; height:100%; object-fit:cover; object-position:top; position:absolute;"><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-jr-white.png" style="height:100px; position:absolute; bottom:20px; z-index:2;">'
             },
             "Celu Martinez": {
               desc: "Sesiones vibrantes y adaptación total a tu estilo. Magia en los platos para un evento inolvidable.",
