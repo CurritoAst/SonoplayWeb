@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             "Manu Moreno": {
               desc: "Elegancia y oficio en cabina. Manu lee la pista y te lleva de la cena al after sin perder el hilo.",
-              media: '<img src="images/foto-manu.jpeg" style="width:100%; height:100%; object-fit:cover; object-position:center 25%; transform:scale(1.45); transform-origin:center 30%; position:absolute;"><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-manu.png" style="width:150px; position:absolute; bottom:20px; z-index:2;">'
+              media: '<img src="images/foto-manu.jpeg" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; transform:scale(1.9); transform-origin:center 22%; position:absolute;"><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-manu.png" style="width:150px; position:absolute; bottom:20px; z-index:2;">'
             },
             "Cristian White": {
               desc: "Pura adrenalina y un manejo exquisito del público. La garantía absoluta de un control maestro sobre la pista.",
