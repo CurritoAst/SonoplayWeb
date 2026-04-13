@@ -840,24 +840,54 @@
         const file = this.files[0];
         if (!file) return;
 
-        // Max 2MB check
-        if (file.size > 2 * 1024 * 1024) {
-          showToast('La imagen no puede superar 2MB');
+        // Input cap (raw file before optimization)
+        if (file.size > 20 * 1024 * 1024) {
+          showToast('La imagen no puede superar 20MB');
           return;
         }
 
         const key = this.dataset.imgKey;
+        const isLogo = key.startsWith('logo') || key === 'logo';
+        const MAX_DIM = isLogo ? 900 : 2000;
+        const keepPng = isLogo && file.type === 'image/png';
+
+        showToast('Optimizando imagen…');
+
         const reader = new FileReader();
         reader.onload = function(e) {
-          const base64 = e.target.result;
-          // Update preview
-          const preview = document.getElementById('img-preview-' + key);
-          if (preview) preview.src = base64;
-          // Save to localStorage
-          const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-          images[key] = base64;
-          localStorage.setItem('sonoplay_images', JSON.stringify(images));
-          showToast('Imagen actualizada');
+          const rawDataUrl = e.target.result;
+          const img = new Image();
+          img.onload = function() {
+            let { width, height } = img;
+            const scale = Math.min(1, MAX_DIM / Math.max(width, height));
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, width, height);
+            const mime = keepPng ? 'image/png' : 'image/jpeg';
+            const quality = keepPng ? undefined : 0.9;
+            const base64 = canvas.toDataURL(mime, quality);
+
+            const preview = document.getElementById('img-preview-' + key);
+            if (preview) { preview.src = base64; preview.style.display = ''; }
+
+            try {
+              const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+              images[key] = base64;
+              localStorage.setItem('sonoplay_images', JSON.stringify(images));
+              const kb = Math.round(base64.length * 0.75 / 1024);
+              showToast('Imagen actualizada (' + kb + ' KB)');
+            } catch (err) {
+              showToast('Sin espacio. Borra imágenes viejas (Restaurar) y vuelve a intentar.');
+            }
+          };
+          img.onerror = function() { showToast('No se pudo leer la imagen'); };
+          img.src = rawDataUrl;
         };
         reader.readAsDataURL(file);
       });
