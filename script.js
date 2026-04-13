@@ -1201,18 +1201,22 @@ document.addEventListener('DOMContentLoaded', () => {
       'dj-juanfran': 'images/dj-juanfran.jpg',
       'dj-rafa': 'images/dj-rafa-new.png',
       'dj-jr': 'images/dj-jr.jpg',
+      'dj-celu': 'images/dj-celu.jpg',
       'dj-cristian': 'images/dj-cristian-white.png',
+      'dj-manu': 'images/foto-manu.jpeg',
       'logo-juanfran': 'images/logo-juanfran.png',
       'logo-rafa': 'images/logo-rafa.png',
       'logo-jr': 'images/logo-jr-white.png',
       'logo-celu': 'images/logo-celu.png',
       'logo-cristian': 'images/logo-cristian-v3.png',
+      'logo-manu': 'images/logo-manu.png',
       'foto-hexa': 'images/foto-hexa.jpeg',
       'foto-basic': 'images/foto-basic.jpeg',
       'foto-totems': 'images/foto-totems.jpeg',
       'foto-duo': 'images/foto-duo.jpeg',
       'foto-cubo': 'images/foto-cubo.jpeg',
-      'foto-equis': 'images/foto-equis.jpeg'
+      'foto-equis': 'images/foto-equis.jpeg',
+      'foto-ceremonia': 'images/foto-ceremonia.jpeg'
     };
     Object.keys(images).forEach(key => {
       const defaultSrc = imageMap[key];

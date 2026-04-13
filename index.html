@@ -185,11 +185,11 @@
           <button class="cart-add-btn btn-cyan-glow" data-name="Ceremonia Civil" data-price="242" data-price-key="ceremonia">+ Añadir al presupuesto</button>
         </div>
         <div class="about-visual">
-          <div class="about-img-frame" style="border-radius: 20px; border: none; background: transparent; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-            <!-- Placeholder for ceremony image -->
+          <div class="about-img-frame" style="border-radius: 20px; border: none; background: transparent; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; position: relative;">
             <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--dark3), var(--dark2)); display: flex; align-items: center; justify-content: center; border-radius: 20px; box-shadow: inset 0 0 30px rgba(0,0,0,0.4);">
                 <span class="cyan-gradient-text" style="font-weight: 700;">[Foto Ceremonia]</span>
             </div>
+            <img loading="lazy" src="images/foto-ceremonia.jpeg" alt="Ceremonia Civil" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.style.display='none'">
           </div>
         </div>
       </div>
@@ -492,8 +492,9 @@
 
           <!-- DJ 4: Celu Martinez -->
           <div class="dj-slide" data-dj="Celu Martinez" style="position: absolute; width: 260px; top: 20px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
-            <div style="background: #111; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div style="background: #111; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
               <span style="font-family: 'Montserrat', sans-serif; font-size: 4rem; font-weight: 700; color: #333;">CM</span>
+              <img loading="lazy" src="images/dj-celu.jpg" alt="DJ Celu Martinez" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%;" onerror="this.style.display='none'">
             </div>
             <div style="text-align: center; margin-top: -5px;">
               <img loading="lazy" src="images/logo-celu.png" alt="Celu Martinez" style="width: 180px; height: auto; display: block; margin: 0 auto;">
