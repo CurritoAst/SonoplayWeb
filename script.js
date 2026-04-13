@@ -428,6 +428,10 @@ document.addEventListener('DOMContentLoaded', () => {
               desc: "Sesiones vibrantes y adaptación total a tu estilo. Magia en los platos para un evento inolvidable.",
               media: '<div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; position:absolute;"><span style="font-family:\'Montserrat\', sans-serif; font-size:4rem; font-weight:700; color:#333;">CM</span></div><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-celu.png" style="width:150px; position:absolute; bottom:20px; z-index:2;">'
             },
+            "Manu Moreno": {
+              desc: "Elegancia y oficio en cabina. Manu lee la pista y te lleva de la cena al after sin perder el hilo.",
+              media: '<img src="images/foto-manu.jpeg" style="width:100%; height:100%; object-fit:cover; object-position:center 30%; position:absolute;"><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-manu.png" style="width:150px; position:absolute; bottom:20px; z-index:2;">'
+            },
             "Cristian White": {
               desc: "Pura adrenalina y un manejo exquisito del público. La garantía absoluta de un control maestro sobre la pista.",
               media: '<img src="images/dj-cristian-white.png" style="width:100%; height:100%; object-fit:cover; object-position:center 40%; transform:scale(1.4); position:absolute;"><div style="position:absolute; inset:0; background:linear-gradient(transparent, rgba(0,0,0,0.8));"></div><img src="images/logo-cristian-v3.png" style="width:180px; position:absolute; bottom:20px; z-index:2;">'
