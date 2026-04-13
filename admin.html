@@ -880,6 +880,7 @@
               const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
               images[key] = base64;
               localStorage.setItem('sonoplay_images', JSON.stringify(images));
+              window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
               const kb = Math.round(base64.length * 0.75 / 1024);
               showToast('Imagen actualizada (' + kb + ' KB)');
             } catch (err) {
@@ -908,6 +909,7 @@
         const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
         delete images[key];
         localStorage.setItem('sonoplay_images', JSON.stringify(images));
+        window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
         showToast('Imagen restaurada');
       });
     });

@@ -1195,7 +1195,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- LOAD ADMIN IMAGES ----
   (function loadAdminImages() {
-    const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
     const imageMap = {
       'logo': 'images/logosonoplay-largo.png',
       'dj-juanfran': 'images/dj-juanfran.jpg',
@@ -1218,17 +1217,49 @@ document.addEventListener('DOMContentLoaded', () => {
       'foto-equis': 'images/foto-equis.jpeg',
       'foto-ceremonia': 'images/foto-ceremonia.jpeg'
     };
-    Object.keys(images).forEach(key => {
+
+    // Tag all matching imgs with their key so future updates can find them
+    // even after src has been replaced with a data URL.
+    Object.keys(imageMap).forEach(key => {
       const defaultSrc = imageMap[key];
-      if (!defaultSrc) return;
       document.querySelectorAll(`img[src="${defaultSrc}"]`).forEach(img => {
-        img.src = images[key];
-        img.style.display = ''; 
-        if (img.parentElement && img.parentElement.classList.contains('wedding-package-media')) {
-          img.parentElement.style.display = '';
+        if (!img.dataset.imgKey) {
+          img.dataset.imgKey = key;
+          img.dataset.imgDefault = defaultSrc;
         }
       });
     });
+
+    function applyImages(images) {
+      document.querySelectorAll('img[data-img-key]').forEach(img => {
+        const key = img.dataset.imgKey;
+        const desired = images[key] || img.dataset.imgDefault;
+        if (img.src !== desired && !(desired.startsWith('images/') && img.src.endsWith(desired))) {
+          img.src = desired;
+        }
+        if (images[key]) {
+          img.style.display = '';
+          if (img.parentElement && img.parentElement.classList.contains('wedding-package-media')) {
+            img.parentElement.style.display = '';
+          }
+        }
+      });
+    }
+
+    function readImages() {
+      try { return JSON.parse(localStorage.getItem('sonoplay_images') || '{}'); }
+      catch (e) { return {}; }
+    }
+
+    applyImages(readImages());
+
+    // Live updates from other tabs (admin saves -> storage event fires here)
+    window.addEventListener('storage', e => {
+      if (e.key === 'sonoplay_images') applyImages(readImages());
+    });
+
+    // Live updates within the same tab (admin may dispatch this)
+    window.addEventListener('sonoplay:images-updated', () => applyImages(readImages()));
   })();
 
 });
