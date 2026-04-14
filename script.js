@@ -153,8 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       particlesContainer.appendChild(p);
     }
-
-    // Inject keyframes
     if (!document.getElementById('particle-kf')) {
       const style = document.createElement('style');
       style.id = 'particle-kf';
@@ -169,6 +167,69 @@ document.addEventListener('DOMContentLoaded', () => {
       document.head.appendChild(style);
     }
   }
+
+  // ---- EQ BARS (HERO) ----
+  const heroBg = document.querySelector('#hero .hero-bg');
+  if (heroBg) {
+    const eq = document.createElement('div');
+    eq.className = 'eq-bars';
+    const barCount = 48;
+    for (let i = 0; i < barCount; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'eq-bar';
+      const h = Math.random() * 55 + 10;
+      const d = (Math.random() * 0.8 + 0.5).toFixed(2);
+      const delay = (Math.random() * 1.2).toFixed(2);
+      bar.style.cssText = `--h:${h}px; --d:${d}s; animation-delay:-${delay}s;`;
+      eq.appendChild(bar);
+    }
+    heroBg.appendChild(eq);
+  }
+
+  // ---- CUSTOM CURSOR ----
+  if (window.matchMedia('(pointer: fine)').matches) {
+    const dot  = document.createElement('div'); dot.className  = 'cursor-dot';
+    const ring = document.createElement('div'); ring.className = 'cursor-ring';
+    document.body.append(dot, ring);
+    let rx = 0, ry = 0, mx = 0, my = 0;
+    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    dot.style.cssText += 'left:0;top:0;';
+    ring.style.cssText += 'left:0;top:0;';
+    (function loop() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      dot.style.transform  = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a,button,label,.dj-slide,.vertical-card,.tilt-card').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+    });
+  }
+
+  // ---- 3D TILT CARDS ----
+  document.querySelectorAll('.dj-slide, .vertical-card, .extra-card').forEach(card => {
+    card.classList.add('tilt-card');
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+
+  // ---- MAGNETIC BUTTONS ----
+  document.querySelectorAll('.btn-primary, .btn-ghost').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = ((e.clientX - r.left) - r.width  / 2) * 0.28;
+      const y = ((e.clientY - r.top)  - r.height / 2) * 0.28;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
 
   // ---- REVIEWS SLIDER ----
   const track = document.getElementById('reviews-track');
