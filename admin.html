@@ -835,30 +835,31 @@
     loadSavedImages();
 
     // File upload handlers
+    const CLOUDINARY_CLOUD = 'dkv2aireq';
+    const CLOUDINARY_PRESET = 'ml_default';
+
     document.querySelectorAll('.img-card input[type="file"]').forEach(input => {
       input.addEventListener('change', function() {
         const file = this.files[0];
         if (!file) return;
 
-        // Input cap (raw file before optimization)
-        if (file.size > 20 * 1024 * 1024) {
-          showToast('La imagen no puede superar 20MB');
+        if (file.size > 50 * 1024 * 1024) {
+          showToast('La imagen no puede superar 50MB');
           return;
         }
 
         const key = this.dataset.imgKey;
         const isLogo = key.startsWith('logo') || key === 'logo';
-        const MAX_DIM = isLogo ? 900 : 2000;
+        const MAX_DIM = isLogo ? 1200 : 3000;
         const keepPng = isLogo && file.type === 'image/png';
 
-        showToast('Optimizando imagen…');
+        showToast('Subiendo imagen…');
 
         const reader = new FileReader();
         reader.onload = function(e) {
-          const rawDataUrl = e.target.result;
-          const img = new Image();
-          img.onload = function() {
-            let { width, height } = img;
+          const rawImg = new Image();
+          rawImg.onload = function() {
+            let { width, height } = rawImg;
             const scale = Math.min(1, MAX_DIM / Math.max(width, height));
             width = Math.round(width * scale);
             height = Math.round(height * scale);
@@ -868,27 +869,41 @@
             const ctx = canvas.getContext('2d');
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
-            ctx.drawImage(img, 0, 0, width, height);
+            ctx.drawImage(rawImg, 0, 0, width, height);
             const mime = keepPng ? 'image/png' : 'image/jpeg';
-            const quality = keepPng ? undefined : 0.9;
-            const base64 = canvas.toDataURL(mime, quality);
+            const quality = keepPng ? undefined : 0.92;
 
-            const preview = document.getElementById('img-preview-' + key);
-            if (preview) { preview.src = base64; preview.style.display = ''; }
+            canvas.toBlob(function(blob) {
+              const fd = new FormData();
+              fd.append('file', blob, key + (keepPng ? '.png' : '.jpg'));
+              fd.append('upload_preset', CLOUDINARY_PRESET);
+              fd.append('public_id', 'sonoplay_' + key);
+              fd.append('overwrite', 'true');
 
-            try {
-              const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-              images[key] = base64;
-              localStorage.setItem('sonoplay_images', JSON.stringify(images));
-              window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
-              const kb = Math.round(base64.length * 0.75 / 1024);
-              showToast('Imagen actualizada (' + kb + ' KB)');
-            } catch (err) {
-              showToast('Sin espacio. Borra imágenes viejas (Restaurar) y vuelve a intentar.');
-            }
+              fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
+                method: 'POST',
+                body: fd
+              })
+              .then(r => r.json())
+              .then(data => {
+                if (data.secure_url) {
+                  const url = data.secure_url;
+                  const preview = document.getElementById('img-preview-' + key);
+                  if (preview) { preview.src = url; preview.style.display = ''; }
+                  const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+                  images[key] = url;
+                  localStorage.setItem('sonoplay_images', JSON.stringify(images));
+                  window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
+                  showToast('Imagen subida correctamente ✓');
+                } else {
+                  showToast('Error: ' + (data.error?.message || 'inténtalo de nuevo'));
+                }
+              })
+              .catch(() => showToast('Error de red. Comprueba tu conexión.'));
+            }, mime, quality);
           };
-          img.onerror = function() { showToast('No se pudo leer la imagen'); };
-          img.src = rawDataUrl;
+          rawImg.onerror = function() { showToast('No se pudo leer la imagen'); };
+          rawImg.src = e.target.result;
         };
         reader.readAsDataURL(file);
       });
