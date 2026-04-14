@@ -202,43 +202,120 @@
   </section>
 
   <!-- ======== VERTICALES ======== -->
-  <section id="verticals" style="background: var(--dark2); border-top: 1px solid var(--border);">
-    <div class="section-inner" style="text-align: center;">
-      <p class="section-eyebrow">Nuestros servicios</p>
-      <h2 class="section-title" style="margin-bottom: 50px;">Sonorizamos cada tipo de evento</h2>
-      <div class="verticals-grid">
-        <a href="#weddings" class="vertical-card vertical-card--active">
-          <div class="vertical-icon" aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 7.36H22l-6.3 4.58L18.09 22 12 17.77 5.91 22l2.39-8.06L2 9.36h7.61z"/></svg>
+  <section id="verticals" style="background: var(--dark2); border-top: 1px solid var(--border); padding: 100px 0;">
+    <div class="section-inner">
+
+      <!-- Cabecera -->
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 70px; flex-wrap: wrap; gap: 24px;">
+        <div>
+          <p class="section-eyebrow" style="margin-bottom: 14px;">Nuestros servicios</p>
+          <h2 class="section-title" style="margin: 0; text-align: left;">Sonorizamos<br><em>cada tipo de evento</em></h2>
+        </div>
+        <p style="max-width: 340px; font-size: 0.95rem; line-height: 1.7; color: var(--text-muted); text-align: right;">Desde una íntima ceremonia civil hasta un festival multitudinario — la técnica y el talento de Sonoplay, siempre a tu lado.</p>
+      </div>
+
+      <!-- Grid de servicios -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); border-radius: 20px; overflow: hidden;">
+
+        <!-- Bodas -->
+        <a href="#weddings" style="
+          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
+          background: var(--dark); padding: 40px 32px 36px;
+          position: relative; overflow: hidden; transition: background 0.35s;
+          min-height: 380px;
+        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
+           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
+
+          <!-- Número -->
+          <div>
+            <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">01</p>
+            <!-- Icono -->
+            <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Bodas</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">DJs de confianza, ceremonia civil, iluminación espectacular y montajes premium para el día más importante de tu vida.</p>
           </div>
-          <h3>Bodas</h3>
-          <p>DJs, ceremonia, iluminación y montajes premium para el día más importante.</p>
-          <span class="vertical-link">Ver propuesta →</span>
-        </a>
-        <a href="ferias.html" class="vertical-card">
-          <div class="vertical-icon" aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/><path d="M3 9h18"/></svg>
+
+          <!-- Footer la card -->
+          <div style="margin-top: 36px;">
+            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver propuesta →</span>
           </div>
-          <h3>Ferias</h3>
-          <p>Sonido profesional y DJ para casetas y ferias de pueblos.</p>
-          <span class="vertical-link">Ver servicios →</span>
         </a>
-        <a href="festivales.html" class="vertical-card">
-          <div class="vertical-icon" aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+
+        <!-- Ferias -->
+        <a href="ferias.html" style="
+          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
+          background: var(--dark); padding: 40px 32px 36px;
+          position: relative; overflow: hidden; transition: background 0.35s;
+          min-height: 380px;
+        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
+           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
+
+          <div>
+            <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">02</p>
+            <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/><path d="M3 9h18"/></svg>
+            </div>
+            <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Ferias</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">Sonido calibrado, DJ especializado y técnico en sitio para casetas y ferias de pueblo en toda Andalucía.</p>
           </div>
-          <h3>Festivales</h3>
-          <p>PA de línea, backline, escenarios y producción integral.</p>
-          <span class="vertical-link">Ver servicios →</span>
-        </a>
-        <a href="corporativos.html" class="vertical-card">
-          <div class="vertical-icon" aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h.01M9 13h.01M9 17h.01"/></svg>
+
+          <div style="margin-top: 36px;">
+            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver servicios →</span>
           </div>
-          <h3>Eventos corporativos</h3>
-          <p>Galas, presentaciones, inauguraciones y streaming profesional.</p>
-          <span class="vertical-link">Ver servicios →</span>
         </a>
+
+        <!-- Festivales -->
+        <a href="festivales.html" style="
+          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
+          background: var(--dark); padding: 40px 32px 36px;
+          position: relative; overflow: hidden; transition: background 0.35s;
+          min-height: 380px;
+        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
+           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
+
+          <div>
+            <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">03</p>
+            <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </div>
+            <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Festivales</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">PA de línea, escenarios modulares, backline e iluminación de espectáculo para festivales de cualquier escala.</p>
+          </div>
+
+          <div style="margin-top: 36px;">
+            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver servicios →</span>
+          </div>
+        </a>
+
+        <!-- Corporativos -->
+        <a href="corporativos.html" style="
+          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
+          background: var(--dark); padding: 40px 32px 36px;
+          position: relative; overflow: hidden; transition: background 0.35s;
+          min-height: 380px;
+        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
+           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
+
+          <div>
+            <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">04</p>
+            <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            </div>
+            <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Corporativos</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">Galas, presentaciones de producto, convenciones e inauguraciones con producción técnica a la altura de tu marca.</p>
+          </div>
+
+          <div style="margin-top: 36px;">
+            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver servicios →</span>
+          </div>
+        </a>
+
       </div>
     </div>
   </section>
