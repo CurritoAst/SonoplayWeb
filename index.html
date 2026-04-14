@@ -403,10 +403,39 @@
         </p>
       </div>
 
-      <!-- Grid principal: servicios + stats -->
+      <!-- Grid principal: stats + servicios -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;">
 
-        <!-- Columna izquierda: áreas de servicio -->
+        <!-- Columna izquierda: stats + claim -->
+        <div style="display: flex; flex-direction: column; gap: 32px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden;">
+            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+              <p style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">2013</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Año de fundación</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-bottom: 1px solid var(--border);">
+              <p style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">1.200<span style="font-size: 1.4rem;">+</span></p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Eventos realizados</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-right: 1px solid var(--border);">
+              <p style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">4.9<span style="font-size: 1.4rem;">★</span></p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Valoración media</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px;">
+              <p style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">424<span style="font-size: 1.4rem;">+</span></p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Reseñas en Google</p>
+            </div>
+          </div>
+
+          <blockquote style="border-left: 3px solid var(--cyan); padding: 20px 24px; background: rgba(0,245,255,0.04); border-radius: 0 12px 12px 0; margin: 0;">
+            <p style="font-size: 1rem; line-height: 1.75; color: var(--text); font-style: italic; margin: 0;">"No instalamos equipos, construimos atmósferas. Cada evento es una oportunidad para que el sonido y la luz cuenten una historia diferente."</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; font-weight: 600; letter-spacing: 0.05em;">— Equipo Sonoplay</p>
+          </blockquote>
+
+          <a href="#contact" class="btn-primary" style="text-align: center;">Cuéntanos tu proyecto →</a>
+        </div>
+
+        <!-- Columna derecha: áreas de servicio -->
         <div>
           <p style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 28px;">Áreas de actividad</p>
           <div style="display: flex; flex-direction: column; gap: 0;">
@@ -439,35 +468,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Columna derecha: stats + claim -->
-        <div style="display: flex; flex-direction: column; gap: 32px;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden;">
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-              <p style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">2013</p>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Año de fundación</p>
-            </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-bottom: 1px solid var(--border);">
-              <p style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">1.200<span style="font-size: 1.4rem;">+</span></p>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Eventos realizados</p>
-            </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-right: 1px solid var(--border);">
-              <p style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">4.9<span style="font-size: 1.4rem;">★</span></p>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Valoración media</p>
-            </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px;">
-              <p style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">424<span style="font-size: 1.4rem;">+</span></p>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Reseñas en Google</p>
-            </div>
-          </div>
-
-          <blockquote style="border-left: 3px solid var(--cyan); padding: 20px 24px; background: rgba(0,245,255,0.04); border-radius: 0 12px 12px 0; margin: 0;">
-            <p style="font-size: 1rem; line-height: 1.75; color: var(--text); font-style: italic; margin: 0;">"No instalamos equipos, construimos atmósferas. Cada evento es una oportunidad para que el sonido y la luz cuenten una historia diferente."</p>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; font-weight: 600; letter-spacing: 0.05em;">— Equipo Sonoplay</p>
-          </blockquote>
-
-          <a href="#contact" class="btn-primary" style="text-align: center;">Cuéntanos tu proyecto →</a>
         </div>
 
       </div>
@@ -911,10 +911,13 @@
     <div class="glass-card" style="border: 1px solid var(--border); border-radius: 20px; padding: 0; max-width: 440px; width: 90%; text-align: center; position: relative; animation: cartSlideIn 0.3s; overflow: hidden; background: var(--dark2);">
       <button onclick="document.getElementById('dj-info-modal-overlay').style.display='none'" style="position: absolute; top: 18px; right: 20px; background: none; border: none; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); font-size: 1.8rem; cursor: pointer; line-height: 1; z-index: 10;">&times;</button>
       
-      <div id="dj-info-media" style="width: 100%; height: 260px; background: var(--dark3); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; position: relative;">
-        <!-- Inner HTML injected via JS -->
+      <div id="dj-info-media" style="width: 100%; height: 280px; background: var(--dark3); overflow: hidden; position: relative;">
+        <!-- photo injected via JS -->
       </div>
-      
+      <div id="dj-info-logo" style="width: 100%; background: var(--dark3); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; padding: 14px 20px; min-height: 60px;">
+        <!-- logo injected via JS -->
+      </div>
+
       <div style="padding: 30px; text-align: left;">
         <h3 id="dj-info-name" style="color: #fff; font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">Nombre</h3>
         <p id="dj-info-desc" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">Descripción provisional.</p>
