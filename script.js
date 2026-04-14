@@ -186,30 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
     heroBg.appendChild(eq);
   }
 
-  // ---- CUSTOM CURSOR ----
-  if (window.matchMedia('(pointer: fine)').matches) {
-    const dot  = document.createElement('div'); dot.className  = 'cursor-dot';
-    const ring = document.createElement('div'); ring.className = 'cursor-ring';
-    document.body.append(dot, ring);
-    let rx = 0, ry = 0, mx = 0, my = 0;
-    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    dot.style.cssText += 'left:0;top:0;';
-    ring.style.cssText += 'left:0;top:0;';
-    (function loop() {
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      dot.style.transform  = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-      requestAnimationFrame(loop);
-    })();
-    document.querySelectorAll('a,button,label,.dj-slide,.vertical-card,.tilt-card').forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
-    });
-  }
-
-  // ---- 3D TILT CARDS ----
-  document.querySelectorAll('.dj-slide, .vertical-card, .extra-card').forEach(card => {
+  // ---- 3D TILT CARDS (solo tarjetas estáticas, no el carrusel DJ) ----
+  document.querySelectorAll('.vertical-card, .extra-card').forEach(card => {
     card.classList.add('tilt-card');
     card.addEventListener('mousemove', e => {
       const r = card.getBoundingClientRect();
