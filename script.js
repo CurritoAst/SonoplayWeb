@@ -961,6 +961,7 @@ document.addEventListener('DOMContentLoaded', () => {
         authModal.style.display = 'none';
         updateAuthUI();
         applyPriceVisibility();
+        applyExtrasVisibility();
         checkPendingBudgetFlow();
         return;
       }
@@ -973,6 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
     authModal.style.display = 'none';
     updateAuthUI();
     applyPriceVisibility();
+    applyExtrasVisibility();
     checkPendingBudgetFlow();
   });
 
@@ -987,6 +989,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('sonoplay_user');
         updateAuthUI();
         applyPriceVisibility();
+        applyExtrasVisibility();
       }
     } else {
       openAuthModal();
@@ -1122,9 +1125,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ---- EXTRAS VISIBILITY ----
+  function applyExtrasVisibility() {
+    const extrasSection = document.getElementById('extras');
+    if (!extrasSection) return;
+    if (isLoggedIn()) {
+      extrasSection.style.display = '';
+    } else {
+      extrasSection.style.display = 'none';
+    }
+  }
+
   // Init auth state
   updateAuthUI();
   applyPriceVisibility();
+  applyExtrasVisibility();
 
   // ---- APPLY ADMIN PRICES ----
   (function applyAdminPrices() {
