@@ -1017,6 +1017,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function handleBudgetBtnClick(e) {
+    e.preventDefault();
+    if (!isLoggedIn()) {
+      window.pendingBudgetFlow = true;
+      if (!isRegisterMode) toggleAuthMode();
+      openAuthModal();
+    } else {
+      const target = document.getElementById('ceremonia-civil');
+      if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
+  }
+
+  document.querySelectorAll('[id^="btn-create-budget"]').forEach(btn => {
+    btn.addEventListener('click', handleBudgetBtnClick);
+  });
+
   const createBudgetBtn = document.getElementById('btn-create-budget');
   if (createBudgetBtn) {
     createBudgetBtn.addEventListener('click', (e) => {
