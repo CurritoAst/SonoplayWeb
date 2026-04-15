@@ -878,7 +878,6 @@
               fd.append('file', blob, key + (keepPng ? '.png' : '.jpg'));
               fd.append('upload_preset', CLOUDINARY_PRESET);
               fd.append('public_id', 'sonoplay_' + key);
-              fd.append('overwrite', 'true');
 
               fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
                 method: 'POST',
