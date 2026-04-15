@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="preload" href="images/logosonoplay-largo.png" as="image" />
+  <link rel="preload" href="images/Video-sonoplay.mp4" as="video" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="script.js"></script>
 </head>
@@ -19,7 +19,7 @@
   <nav id="navbar">
     <div class="nav-inner">
       <a href="#hero" class="logo">
-        <img src="images/logosonoplay-largo.png" alt="SONOPLAY — Servicios Audiovisuales" style="height: 55px; width: auto; ">
+        <video autoplay loop muted playsinline src="images/Video-sonoplay.mp4" style="height: 55px; width: auto; object-fit: contain; pointer-events: none; mix-blend-mode: screen;"></video>
       </a>
       <button class="hamburger" id="hamburger" aria-label="Abrir menú">
         <span></span><span></span><span></span>
@@ -909,7 +909,7 @@
       <button onclick="document.getElementById('auth-modal').style.display='none'" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer;">&times;</button>
 
       <div style="text-align: center; margin-bottom: 25px;">
-        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 40px; margin-bottom: 15px;">
+        <video autoplay loop muted playsinline src="images/Video-sonoplay.mp4" style="height: 40px; margin-bottom: 15px; width: auto; object-fit: contain; pointer-events: none; mix-blend-mode: screen;"></video>
         <h3 id="auth-title" style="color: #fff; font-size: 1.4rem; margin-bottom: 5px;">Iniciar sesión</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem;">Accede para ver precios y presupuestos</p>
       </div>
@@ -1029,7 +1029,7 @@
   <footer id="footer" style="background: var(--dark); border-top: 1px solid var(--border); padding: 40px 20px 20px; text-align: center;">
     <div style="margin-bottom: 20px;">
       <a href="#hero" style="text-decoration: none; display: inline-block;">
-        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 60px; width: auto; ">
+        <video autoplay loop muted playsinline src="images/Video-sonoplay.mp4" style="height: 60px; width: auto; object-fit: contain; pointer-events: none; mix-blend-mode: screen;"></video>
       </a>
     </div>
     <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.8;">
