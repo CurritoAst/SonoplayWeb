@@ -827,9 +827,24 @@
     // === IMAGES MANAGEMENT ===
     function loadSavedImages() {
       const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-      Object.keys(images).forEach(key => {
-        const preview = document.getElementById('img-preview-' + key);
-        if (preview) preview.src = images[key];
+      const CLOUDINARY_CLOUD = 'dkv2aireq';
+      document.querySelectorAll('.img-preview img').forEach(img => {
+        const id = img.id;
+        if (!id.startsWith('img-preview-')) return;
+        const key = id.replace('img-preview-', '');
+        
+        const isLogo = key.startsWith('logo') || key === 'logo';
+        const ext = isLogo ? 'png' : 'jpg';
+        const cloudUrl = 'https://res.cloudinary.com/' + CLOUDINARY_CLOUD + '/image/upload/f_auto,q_auto/sonoplay_' + key + '.' + ext;
+        const desired = images[key] ? images[key] : cloudUrl;
+        
+        // Grab the default source before overwriting in case it fails to load from the cloud
+        const defaultSrc = img.src; 
+
+        if (img.src !== desired && !(desired.startsWith('images/') && img.src.endsWith(desired))) {
+          img.src = desired;
+          img.onerror = function() { img.src = defaultSrc; img.onerror = null; };
+        }
       });
     }
     loadSavedImages();

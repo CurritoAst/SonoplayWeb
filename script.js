@@ -1286,14 +1286,26 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    function applyImages(images) {
+    const CLOUDINARY_CLOUD = 'dkv2aireq';
+
+    function applyImages(localCache) {
       document.querySelectorAll('img[data-img-key]').forEach(img => {
         const key = img.dataset.imgKey;
-        const desired = images[key] || img.dataset.imgDefault;
+        const defaultSrc = img.dataset.imgDefault;
+        // Prioridad: caché local (este dispositivo, instantáneo)
+        // → URL Cloudinary determinista (cualquier dispositivo, pública)
+        // → imagen por defecto local
+        const isLogo = key.startsWith('logo') || key === 'logo';
+        const ext = isLogo ? 'png' : 'jpg';
+        const cloudUrl = 'https://res.cloudinary.com/' + CLOUDINARY_CLOUD + '/image/upload/f_auto,q_auto/sonoplay_' + key + '.' + ext;
+        const desired = (localCache && localCache[key]) ? localCache[key] : cloudUrl;
+
         if (img.src !== desired && !(desired.startsWith('images/') && img.src.endsWith(desired))) {
           img.src = desired;
+          // Si la imagen de Cloudinary no existe aún, volver al default local
+          img.onerror = function() { img.src = defaultSrc; img.onerror = null; };
         }
-        if (images[key]) {
+        if (localCache && localCache[key]) {
           img.style.display = '';
           if (img.parentElement && img.parentElement.classList.contains('wedding-package-media')) {
             img.parentElement.style.display = '';
