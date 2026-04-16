@@ -94,25 +94,25 @@
         <!-- Columna izquierda: stats + claim -->
         <div style="display: flex; flex-direction: column; gap: 32px;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden;">
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-              <p style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">2013</p>
+            <div class="about-stat-cell" style="border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+              <p class="about-stat-num" style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">2013</p>
               <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Año de fundación</p>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-bottom: 1px solid var(--border);">
-              <p style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">1.200<span style="font-size: 1.4rem;">+</span></p>
+            <div class="about-stat-cell" style="border-bottom: 1px solid var(--border);">
+              <p class="about-stat-num" style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">1.200<span style="font-size: 1.4rem;">+</span></p>
               <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Eventos realizados</p>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px; border-right: 1px solid var(--border);">
-              <p style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">4.9<span style="font-size: 1.4rem;">★</span></p>
+            <div class="about-stat-cell" style="border-right: 1px solid var(--border);">
+              <p class="about-stat-num" style="font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1;">4.9<span style="font-size: 1.4rem;">★</span></p>
               <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Valoración media</p>
             </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 28px 24px;">
-              <p style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">424<span style="font-size: 1.4rem;">+</span></p>
+            <div class="about-stat-cell">
+              <p class="about-stat-num" style="font-size: 2.4rem; font-weight: 900; color: var(--cyan); line-height: 1;">424<span style="font-size: 1.4rem;">+</span></p>
               <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Reseñas en Google</p>
             </div>
           </div>
 
-          <blockquote style="border-left: 3px solid var(--cyan); padding: 20px 24px; background: rgba(0,245,255,0.04); border-radius: 0 12px 12px 0; margin: 0;">
+          <blockquote class="about-blockquote">
             <p style="font-size: 1rem; line-height: 1.75; color: var(--text); font-style: italic; margin: 0;">"No instalamos equipos, construimos atmósferas. Cada evento es una oportunidad para que el sonido y la luz cuenten una historia diferente."</p>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; font-weight: 600; letter-spacing: 0.05em;">— Equipo Sonoplay</p>
           </blockquote>
@@ -855,8 +855,8 @@
           
           <div class="contact-glass">
             <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;">Instagram <span data-content-key="content-instagram">@sonoplay.es</span></p>
-            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;"><a data-content-key="content-email" href="mailto:producciones@sonoplay.es" style="color: inherit; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='inherit'">producciones@sonoplay.es</a></p>
-            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;"><a href="http://www.sonoplay.es" target="_blank" style="color: inherit; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='inherit'">www.sonoplay.es</a></p>
+            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;"><a data-content-key="content-email" href="mailto:producciones@sonoplay.es" style="color: inherit; text-decoration: none;">producciones@sonoplay.es</a></p>
+            <p style="font-size: 1rem; font-weight: 600; margin-bottom: 5px;"><a href="http://www.sonoplay.es" target="_blank" style="color: inherit; text-decoration: none;">www.sonoplay.es</a></p>
             <p data-content-key="content-phone" style="font-size: 1rem; font-weight: 900; color: var(--cyan); margin-top: 10px;">657 46 86 85</p>
           </div>
 
@@ -992,17 +992,40 @@
   </div>
 
   <!-- ======== FOOTER ======== -->
-  <footer id="footer" style="background: var(--dark); border-top: 1px solid var(--border); padding: 40px 20px 20px; text-align: center;">
-    <div style="margin-bottom: 20px;">
-      <a href="#hero" style="text-decoration: none; display: inline-block;">
-        <video autoplay loop muted playsinline src="images/Video-sonoplay.webm" style="height: 60px; width: auto; object-fit: contain; pointer-events: none;"></video>
-      </a>
-    </div>
-    <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.8;">
-      <p>© 2025 SONOPLAY — Servicios Audiovisuales</p>
-      <p>Dossier Bodas 2025/26</p>
-      <p style="margin-top: 8px;">Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla) · 41740</p>
-      <p>657 46 86 85 · <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none;">producciones@sonoplay.es</a></p>
+  <footer id="footer" style="background: var(--dark); border-top: 1px solid var(--border); padding: 56px 40px 32px; text-align: center;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <!-- Logo -->
+      <div style="margin-bottom: 32px;">
+        <a href="#hero" style="text-decoration: none; display: inline-block;">
+          <video autoplay loop muted playsinline src="images/Video-sonoplay.webm" style="height: 65px; width: auto; object-fit: contain; pointer-events: none;"></video>
+        </a>
+      </div>
+
+      <!-- Nav links -->
+      <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: center; margin-bottom: 32px;">
+        <a href="#weddings" style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-weight: 600;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Bodas</a>
+        <a href="ferias.html" style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-weight: 600;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Ferias</a>
+        <a href="festivales.html" style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-weight: 600;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Festivales</a>
+        <a href="corporativos.html" style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-weight: 600;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Corporativos</a>
+        <a href="#djs" style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-weight: 600;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">DJs</a>
+        <a href="#contact" style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-weight: 600;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Contacto</a>
+      </div>
+
+      <!-- Divider -->
+      <div style="height: 1px; background: var(--border); margin-bottom: 28px;"></div>
+
+      <!-- Bottom row -->
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+        <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.8; text-align: left;">
+          <p>Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla) · CP 41740</p>
+          <p>
+            <a href="tel:+34657468685" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--text-muted)'">657 46 86 85</a>
+            &nbsp;·&nbsp;
+            <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--text-muted)'">producciones@sonoplay.es</a>
+          </p>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-muted);">© 2025 SONOPLAY — Servicios Audiovisuales · Dossier Bodas 2025/26</p>
+      </div>
     </div>
   </footer>
 

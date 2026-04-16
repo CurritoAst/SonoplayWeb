@@ -1596,10 +1596,94 @@ img { max-width: 100%; display: block; }
   opacity: 0.85;
 }
 
-/* ---- FOOTER ---- */
+/* ---- ABOUT STATS GRID ---- */
+.about-stat-cell {
+  background: rgba(255,255,255,0.03);
+  padding: 28px 24px;
+  transition: background 0.3s, border-color 0.3s;
+  cursor: default;
+}
+.about-stat-cell:hover {
+  background: rgba(6,182,212,0.05);
+}
+.about-stat-cell:hover .about-stat-num {
+  color: var(--cyan) !important;
+}
+.about-stat-num {
+  transition: color 0.3s;
+}
+
+/* ---- ABOUT BLOCKQUOTE ---- */
+.about-blockquote {
+  border-left: 3px solid var(--cyan);
+  padding: 20px 24px;
+  background: rgba(6,182,212,0.04);
+  border-radius: 0 12px 12px 0;
+  margin: 0;
+  position: relative;
+  transition: border-color 0.3s, background 0.3s;
+}
+.about-blockquote:hover {
+  background: rgba(6,182,212,0.07);
+  border-color: var(--gold);
+}
+.about-blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -16px;
+  left: 16px;
+  font-size: 4rem;
+  font-family: 'Playfair Display', serif;
+  color: rgba(6,182,212,0.15);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ---- CONTACT GLASS IMPROVED ---- */
+.contact-glass {
+  position: relative;
+  overflow: hidden;
+}
+.contact-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(6,182,212,0.05), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.contact-glass:hover::before { opacity: 1; }
+.contact-glass a {
+  transition: color 0.3s;
+}
+.contact-glass a:hover { color: var(--cyan) !important; }
+
+/* ---- FOOTER IMPROVED ---- */
 #footer {
   background: var(--dark);
   border-top: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+#footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--cyan), var(--gold), transparent);
+  opacity: 0.35;
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  #footer > div > div:last-child {
+    flex-direction: column;
+    text-align: center;
+  }
+  #footer > div > div:last-child > :first-child {
+    text-align: center;
+  }
 }
 
 .footer-inner {
