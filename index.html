@@ -38,15 +38,16 @@
 
   <!-- ======== HERO ======== -->
   <section id="hero">
+    <div class="hero-grid"></div>
     <div class="hero-bg">
       <div class="hero-orb orb1"></div>
       <div class="hero-orb orb2"></div>
       <div class="hero-orb orb3"></div>
-      <!-- Orbs de fondo -->
       <div class="particles" id="particles"></div>
     </div>
     <div class="hero-content">
-      <p class="hero-eyebrow">Bodas · Ferias · Festivales · Corporativos · Andalucía</p>
+      <div class="hero-live-badge"><span class="live-dot"></span>Disponible en Andalucía</div>
+      <p class="hero-eyebrow">Bodas · Ferias · Festivales · Corporativos</p>
       <h1 class="hero-title hero-title-new">
         Tu evento,<br><em class="hero-accent">sonando perfecto.</em>
       </h1>
@@ -219,41 +220,23 @@
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); border-radius: 20px; overflow: hidden;">
 
         <!-- Bodas -->
-        <a href="#weddings" style="
-          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
-          background: var(--dark); padding: 40px 32px 36px;
-          position: relative; overflow: hidden; transition: background 0.35s;
-          min-height: 380px;
-        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
-           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
-
-          <!-- Número -->
+        <a href="#weddings" class="vc-card">
           <div>
             <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">01</p>
-            <!-- Icono -->
             <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </div>
             <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Bodas</h3>
             <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">DJs de confianza, ceremonia civil, iluminación espectacular y montajes premium para el día más importante de tu vida.</p>
           </div>
-
-          <!-- Footer la card -->
           <div style="margin-top: 36px;">
-            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <div class="vc-line"></div>
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver propuesta →</span>
           </div>
         </a>
 
         <!-- Ferias -->
-        <a href="ferias.html" style="
-          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
-          background: var(--dark); padding: 40px 32px 36px;
-          position: relative; overflow: hidden; transition: background 0.35s;
-          min-height: 380px;
-        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
-           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
-
+        <a href="ferias.html" class="vc-card">
           <div>
             <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">02</p>
             <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
@@ -262,22 +245,14 @@
             <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Ferias</h3>
             <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">Sonido calibrado, DJ especializado y técnico en sitio para casetas y ferias de pueblo en toda Andalucía.</p>
           </div>
-
           <div style="margin-top: 36px;">
-            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <div class="vc-line"></div>
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver servicios →</span>
           </div>
         </a>
 
         <!-- Festivales -->
-        <a href="festivales.html" style="
-          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
-          background: var(--dark); padding: 40px 32px 36px;
-          position: relative; overflow: hidden; transition: background 0.35s;
-          min-height: 380px;
-        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
-           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
-
+        <a href="festivales.html" class="vc-card">
           <div>
             <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">03</p>
             <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
@@ -286,22 +261,14 @@
             <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Festivales</h3>
             <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">PA de línea, escenarios modulares, backline e iluminación de espectáculo para festivales de cualquier escala.</p>
           </div>
-
           <div style="margin-top: 36px;">
-            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <div class="vc-line"></div>
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver servicios →</span>
           </div>
         </a>
 
         <!-- Corporativos -->
-        <a href="corporativos.html" style="
-          text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;
-          background: var(--dark); padding: 40px 32px 36px;
-          position: relative; overflow: hidden; transition: background 0.35s;
-          min-height: 380px;
-        " onmouseover="this.style.background='rgba(6,182,212,0.06)'; this.querySelector('.vc-line').style.width='100%';"
-           onmouseout="this.style.background='var(--dark)'; this.querySelector('.vc-line').style.width='0%';">
-
+        <a href="corporativos.html" class="vc-card">
           <div>
             <p style="font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; margin-bottom: 40px;">04</p>
             <div style="width: 52px; height: 52px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
@@ -310,9 +277,8 @@
             <h3 style="font-size: 1.55rem; font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.15;">Corporativos</h3>
             <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0;">Galas, presentaciones de producto, convenciones e inauguraciones con producción técnica a la altura de tu marca.</p>
           </div>
-
           <div style="margin-top: 36px;">
-            <div class="vc-line" style="height: 2px; background: var(--cyan); width: 0%; transition: width 0.4s ease; margin-bottom: 18px; border-radius: 2px;"></div>
+            <div class="vc-line"></div>
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.05em;">Ver servicios →</span>
           </div>
         </a>
