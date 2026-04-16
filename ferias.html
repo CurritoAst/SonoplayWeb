@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script defer src="auth-shared.js"></script>
 </head>
 <body>
 
@@ -27,6 +28,7 @@
         <li><a href="festivales.html">Festivales</a></li>
         <li><a href="corporativos.html">Corporativos</a></li>
         <li><a href="#contact" class="btn-nav">Contactar</a></li>
+        <li id="nav-auth-item"><a href="#" id="nav-login-btn" style="color: var(--cyan) !important; font-weight: 700;">Iniciar sesión</a></li>
       </ul>
     </div>
   </nav>
@@ -128,6 +130,42 @@
       <p>657 46 86 85 · <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none;">producciones@sonoplay.es</a></p>
     </div>
   </footer>
+
+  <!-- ======== LOGIN/REGISTER MODAL ======== -->
+  <div id="auth-modal" style="display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div style="background: var(--dark2); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 420px; width: 90%; position: relative;">
+      <button onclick="document.getElementById('auth-modal').style.display='none'" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer;">&times;</button>
+      <div style="text-align: center; margin-bottom: 25px;">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 40px; margin-bottom: 15px; width: auto;">
+        <h3 id="auth-title" style="color: #fff; font-size: 1.4rem; margin-bottom: 5px;">Iniciar sesión</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Accede para ver precios y presupuestos</p>
+      </div>
+      <form id="auth-form" style="display: flex; flex-direction: column; gap: 15px;">
+        <div id="auth-name-field" style="display: none;">
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Nombre</label>
+          <input type="text" id="auth-name" placeholder="Tu nombre" style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <div>
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Email</label>
+          <input type="email" id="auth-email" placeholder="tu@email.com" required style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <div id="auth-phone-field" style="display: none;">
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Teléfono</label>
+          <input type="tel" id="auth-phone" placeholder="600 000 000" style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <div>
+          <label style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; display: block;">Contraseña</label>
+          <input type="password" id="auth-pass" placeholder="••••••••" required style="width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--dark3); color: #fff; font-size: 1rem; outline: none;">
+        </div>
+        <p id="auth-error" style="color: #ef4444; font-size: 0.85rem; display: none; text-align: center;"></p>
+        <button type="submit" id="auth-submit" style="background: var(--cyan); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: opacity 0.3s;">Entrar</button>
+      </form>
+      <p style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
+        <span id="auth-toggle-text">¿No tienes cuenta?</span>
+        <a href="#" id="auth-toggle" style="color: var(--cyan); text-decoration: none; font-weight: 600;"> Regístrate</a>
+      </p>
+    </div>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
