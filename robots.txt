@@ -1,0 +1,18 @@
+# robots.txt — SONOPLAY
+# https://sonoplay.es
+
+User-agent: *
+Allow: /
+
+# No indexar zonas privadas
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /auth-shared.js
+
+# Permitir crawl de assets para que Google renderice bien la página
+Allow: /styles.css
+Allow: /script.js
+Allow: /images/
+
+# Sitemap
+Sitemap: https://sonoplay.es/sitemap.xml

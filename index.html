@@ -3,17 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SONOPLAY — Tu DJ para cada momento</title>
+
+  <!-- ===== SEO BÁSICO ===== -->
+  <title>SONOPLAY — DJ y Sonido para Bodas, Ferias y Eventos en Andalucía</title>
+  <meta name="description" content="DJ profesional y producción audiovisual en Andalucía desde 2013. Bodas, ferias, festivales y eventos corporativos. Sonido, luces y espectáculo a medida. Pide presupuesto." />
+  <meta name="keywords" content="DJ bodas Andalucía, DJ Sevilla, DJ Cádiz, DJ Málaga, sonido bodas, DJ ferias, DJ festivales, DJ eventos corporativos, productora audiovisual Andalucía, sonoplay" />
+  <meta name="author" content="SONOPLAY" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://sonoplay.es/" />
+
+  <!-- ===== OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ===== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SONOPLAY" />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:url" content="https://sonoplay.es/" />
+  <meta property="og:title" content="SONOPLAY — DJ y Sonido para Bodas, Ferias y Eventos en Andalucía" />
+  <meta property="og:description" content="DJ profesional y producción audiovisual en Andalucía desde 2013. Bodas, ferias, festivales y eventos corporativos." />
+  <meta property="og:image" content="https://sonoplay.es/images/logo-sonoplay.png" />
+  <meta property="og:image:alt" content="Logo de SONOPLAY" />
+
+  <!-- ===== TWITTER / X CARD ===== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SONOPLAY — DJ y Sonido para Bodas, Ferias y Eventos" />
+  <meta name="twitter:description" content="DJ profesional y producción audiovisual en Andalucía desde 2013." />
+  <meta name="twitter:image" content="https://sonoplay.es/images/logo-sonoplay.png" />
+
+  <!-- ===== ICONOS ===== -->
   <link rel="icon" type="image/jpeg" href="images/logo-sonoplay-dark.jpg" />
+  <link rel="apple-touch-icon" href="images/logo-sonoplay.png" />
+
+  <!-- ===== TEMA / MÓVIL ===== -->
+  <meta name="theme-color" content="#000000" />
+  <meta name="format-detection" content="telephone=yes" />
+
+  <!-- ===== FUENTES ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- ===== ESTILOS Y RECURSOS ===== -->
   <link rel="stylesheet" href="styles.css?v=2" />
   <link rel="preload" href="images/Video-sonoplay.webm" as="video" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="script.js"></script>
+
+  <!-- ===== SCHEMA.ORG — LOCAL BUSINESS ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "MusicGroup"],
+    "name": "SONOPLAY",
+    "alternateName": "Sonoplay Producciones",
+    "url": "https://sonoplay.es/",
+    "logo": "https://sonoplay.es/images/logo-sonoplay.png",
+    "image": "https://sonoplay.es/images/logo-sonoplay.png",
+    "description": "DJ profesional y producción audiovisual en Andalucía desde 2013. Sonido, luces y espectáculo para bodas, ferias, festivales y eventos corporativos.",
+    "foundingDate": "2013",
+    "telephone": "+34657468685",
+    "email": "producciones@sonoplay.es",
+    "priceRange": "€€",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "Andalucía",
+      "addressCountry": "ES"
+    },
+    "areaServed": [
+      { "@type": "AdministrativeArea", "name": "Andalucía" },
+      { "@type": "City", "name": "Sevilla" },
+      { "@type": "City", "name": "Cádiz" },
+      { "@type": "City", "name": "Málaga" },
+      { "@type": "City", "name": "Córdoba" },
+      { "@type": "City", "name": "Huelva" },
+      { "@type": "City", "name": "Granada" },
+      { "@type": "City", "name": "Almería" },
+      { "@type": "City", "name": "Jaén" }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/sonoplay.es"
+    ],
+    "makesOffer": [
+      { "@type": "Offer", "name": "DJ para bodas", "url": "https://sonoplay.es/" },
+      { "@type": "Offer", "name": "DJ para ferias y casetas", "url": "https://sonoplay.es/ferias" },
+      { "@type": "Offer", "name": "DJ para festivales y conciertos", "url": "https://sonoplay.es/festivales" },
+      { "@type": "Offer", "name": "Eventos corporativos", "url": "https://sonoplay.es/corporativos" }
+    ]
+  }
+  </script>
+
+  <!-- ===== GOOGLE ANALYTICS 4 ===== -->
+  <!-- TODO: reemplaza G-XXXXXXXXXX por tu Measurement ID real de GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', { 'anonymize_ip': true });
+  </script>
+
+  <!-- ===== GOOGLE TAG MANAGER (head) ===== -->
+  <!-- TODO: reemplaza GTM-XXXXXXX por tu container ID real -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+
+  <!-- ===== META PIXEL (Facebook / Instagram Ads) ===== -->
+  <!-- TODO: reemplaza 0000000000000000 por tu Pixel ID real -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '0000000000000000');
+    fbq('track', 'PageView');
+  </script>
 </head>
 <body>
+  <!-- ===== GTM noscript fallback ===== -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- ======== NAV ======== -->
   <nav id="navbar">
