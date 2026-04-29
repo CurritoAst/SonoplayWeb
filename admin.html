@@ -140,42 +140,187 @@
     }
     .toast.show { top: 20px; }
 
+    /* ============== TOOLBAR DE IMÁGENES ============== */
+    .imgs-toolbar {
+      background: var(--dark2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px; margin-bottom: 24px;
+      display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center;
+    }
+    .imgs-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+    .imgs-stat { display: flex; flex-direction: column; gap: 2px; }
+    .imgs-stat-num {
+      font-size: 1.4rem; font-weight: 800; color: #fff; line-height: 1;
+    }
+    .imgs-stat-num.cyan { color: var(--cyan); }
+    .imgs-stat-label {
+      font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.6px; font-weight: 600;
+    }
+    .imgs-search {
+      position: relative; flex: 1; min-width: 220px; justify-self: end; max-width: 380px; width: 100%;
+    }
+    .imgs-search input {
+      width: 100%; padding: 10px 14px 10px 38px; border-radius: 10px;
+      background: var(--dark3); border: 1px solid var(--border); color: var(--text);
+      font-size: 0.9rem; transition: border-color 0.2s;
+    }
+    .imgs-search input:focus { outline: none; border-color: var(--cyan); }
+    .imgs-search::before {
+      content: ""; position: absolute; left: 14px; top: 50%; width: 14px; height: 14px;
+      transform: translateY(-50%);
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a9ac0' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") no-repeat center / contain;
+    }
+
+    .imgs-filters {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .imgs-filter {
+      padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+      background: var(--dark2); color: var(--text-muted); font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; user-select: none;
+    }
+    .imgs-filter:hover { color: #fff; border-color: rgba(255,255,255,0.25); }
+    .imgs-filter.active {
+      background: var(--cyan); color: #000; border-color: var(--cyan);
+    }
+    .imgs-filter .imgs-filter-count {
+      display: inline-block; margin-left: 6px; padding: 1px 7px;
+      background: rgba(0,0,0,0.18); border-radius: 999px; font-size: 0.7rem;
+    }
+    .imgs-filter:not(.active) .imgs-filter-count { background: rgba(255,255,255,0.08); }
+
+    /* ============== GRID Y CARDS ============== */
     .img-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
     }
     .img-card {
-      background: var(--dark3); border: 1px solid var(--border); border-radius: 14px;
-      padding: 16px; display: flex; flex-direction: column; gap: 12px;
-      transition: border-color 0.3s;
+      position: relative; background: var(--dark2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 14px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
-    .img-card:hover { border-color: var(--cyan); }
-    .img-card .img-label { font-size: 0.9rem; font-weight: 600; color: #fff; }
+    .img-card:hover {
+      border-color: rgba(6,182,212,0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .img-card.is-hidden { display: none; }
+
+    .img-card .img-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 3;
+      padding: 4px 10px; border-radius: 999px; font-size: 0.65rem;
+      text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+    .img-card.is-custom .img-badge {
+      background: rgba(6,182,212,0.95); color: #000;
+    }
+    .img-card.is-default .img-badge {
+      background: rgba(0,0,0,0.55); color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .img-card .img-cat {
+      position: absolute; top: 12px; left: 12px; z-index: 3;
+      padding: 4px 9px; border-radius: 8px; font-size: 0.65rem;
+      font-weight: 700; letter-spacing: 0.4px;
+      background: rgba(0,0,0,0.55); color: #fff;
+      backdrop-filter: blur(6px); border: 1px solid var(--border);
+    }
+
     .img-card .img-preview {
-      width: 100%; height: 180px; border-radius: 10px; overflow: hidden;
-      background: var(--dark2); display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 200px; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(135deg, var(--dark3), var(--dark2));
+      display: flex; align-items: center; justify-content: center;
       border: 2px dashed var(--border); position: relative;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .img-card .img-preview:hover { border-color: rgba(6,182,212,0.5); }
+    .img-card.is-dragover .img-preview {
+      border-color: var(--cyan); background: rgba(6,182,212,0.1);
+      box-shadow: inset 0 0 30px rgba(6,182,212,0.15);
     }
     .img-card .img-preview img {
       width: 100%; height: 100%; object-fit: contain;
+      transition: transform 0.3s;
     }
-    .img-card .img-preview.logo-preview { height: 100px; }
-    .img-card .img-preview .img-placeholder {
-      color: var(--text-muted); font-size: 0.8rem; text-align: center;
+    .img-card:hover .img-preview img { transform: scale(1.03); }
+    .img-card .img-preview.logo-preview { height: 130px; background: #fafafa; }
+
+    .img-card .img-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.85) 100%);
+      opacity: 0; transition: opacity 0.25s;
+      display: flex; align-items: flex-end; justify-content: center; gap: 10px;
+      padding: 16px;
     }
-    .img-card .img-actions { display: flex; gap: 8px; }
-    .img-card .btn-upload {
-      flex: 1; padding: 10px; border-radius: 10px; border: none;
-      background: var(--cyan); color: #000; font-weight: 700; font-size: 0.85rem;
-      cursor: pointer; transition: opacity 0.3s; text-align: center;
+    .img-card:hover .img-overlay { opacity: 1; }
+    .img-card .ovl-btn {
+      flex: 1; max-width: 130px;
+      padding: 8px 12px; border-radius: 10px; border: none;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: transform 0.15s, opacity 0.2s;
     }
-    .img-card .btn-upload:hover { opacity: 0.85; }
-    .img-card .btn-reset {
-      padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
-      background: transparent; color: var(--text-muted); font-size: 0.85rem;
-      cursor: pointer; transition: all 0.3s;
+    .img-card .ovl-btn:active { transform: scale(0.96); }
+    .img-card .ovl-btn-upload {
+      background: var(--cyan); color: #000;
     }
-    .img-card .btn-reset:hover { border-color: #ef4444; color: #ef4444; }
+    .img-card .ovl-btn-upload:hover { opacity: 0.88; }
+    .img-card .ovl-btn-reset {
+      background: rgba(255,255,255,0.1); color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .img-card .ovl-btn-reset:hover { background: rgba(239,68,68,0.85); border-color: transparent; }
+    .img-card.is-default .ovl-btn-reset { display: none; }
+
+    .img-card .img-loading {
+      position: absolute; inset: 0; z-index: 4;
+      background: rgba(0,0,0,0.7); border-radius: 12px;
+      display: none; align-items: center; justify-content: center; flex-direction: column; gap: 10px;
+      backdrop-filter: blur(2px);
+    }
+    .img-card.is-loading .img-loading { display: flex; }
+    .img-card .img-loading-text {
+      color: #fff; font-size: 0.8rem; font-weight: 600;
+    }
+    .img-spinner {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: var(--cyan);
+      animation: img-spin 0.8s linear infinite;
+    }
+    @keyframes img-spin { to { transform: rotate(360deg); } }
+
+    .img-card .img-meta { display: flex; flex-direction: column; gap: 3px; }
+    .img-card .img-label {
+      font-size: 0.92rem; font-weight: 700; color: #fff; line-height: 1.3;
+    }
+    .img-card .img-hint {
+      font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+    }
+    .img-card .img-hint::before {
+      content: ""; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--text-muted); flex-shrink: 0;
+    }
+
     .img-card input[type="file"] { display: none; }
+    .img-card .legacy-actions { display: none; }
+
+    .imgs-empty {
+      grid-column: 1 / -1; padding: 60px 20px; text-align: center;
+      color: var(--text-muted);
+    }
+    .imgs-empty-title {
+      font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 6px;
+    }
+
+    @media (max-width: 720px) {
+      .imgs-toolbar { grid-template-columns: 1fr; }
+      .imgs-search { justify-self: stretch; max-width: 100%; }
+      .img-card .img-overlay { opacity: 1; }
+    }
 
     @media (max-width: 768px) {
       .admin-layout { grid-template-columns: 1fr; }
@@ -458,236 +603,392 @@
       <!-- IMÁGENES -->
       <div class="admin-panel" id="panel-imagenes">
         <h2>Gestión de Imágenes</h2>
-        <p class="subtitle">Cambia las fotos y logos que se muestran en la web</p>
+        <p class="subtitle">Sube fotos y logos. Arrastra una imagen sobre cada tarjeta o haz click para seleccionar.</p>
 
-        <div class="admin-card">
-          <h3>Logo Principal</h3>
-          <div class="img-grid">
-            <div class="img-card">
-              <span class="img-label">Logo SONOPLAY (cabecera y footer)</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo" src="images/logosonoplay-largo.png" alt="Logo">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo" data-img-default="images/logosonoplay-largo.png"></label>
-                <button class="btn-reset" data-img-key="logo" data-img-default="images/logosonoplay-largo.png">Restaurar</button>
-              </div>
+        <!-- Toolbar: stats + buscador -->
+        <div class="imgs-toolbar">
+          <div class="imgs-stats">
+            <div class="imgs-stat">
+              <span class="imgs-stat-num" id="imgs-total">0</span>
+              <span class="imgs-stat-label">Total imágenes</span>
             </div>
+            <div class="imgs-stat">
+              <span class="imgs-stat-num cyan" id="imgs-custom">0</span>
+              <span class="imgs-stat-label">Personalizadas</span>
+            </div>
+            <div class="imgs-stat">
+              <span class="imgs-stat-num" id="imgs-default">0</span>
+              <span class="imgs-stat-label">Por defecto</span>
+            </div>
+          </div>
+          <div class="imgs-search">
+            <input type="text" id="imgs-search-input" placeholder="Buscar imagen por nombre…" autocomplete="off">
           </div>
         </div>
 
-        <div class="admin-card">
-          <h3>Fotos de DJs</h3>
-          <div class="img-grid">
-            <div class="img-card">
+        <!-- Filtros por categoría -->
+        <div class="imgs-filters" id="imgs-filters">
+          <button class="imgs-filter active" data-filter="all">Todas <span class="imgs-filter-count" data-count="all">0</span></button>
+          <button class="imgs-filter" data-filter="logos">Logos <span class="imgs-filter-count" data-count="logos">0</span></button>
+          <button class="imgs-filter" data-filter="djs">Fotos DJs <span class="imgs-filter-count" data-count="djs">0</span></button>
+          <button class="imgs-filter" data-filter="ceremonia">Ceremonia <span class="imgs-filter-count" data-count="ceremonia">0</span></button>
+          <button class="imgs-filter" data-filter="montajes">Montajes <span class="imgs-filter-count" data-count="montajes">0</span></button>
+        </div>
+
+        <!-- Grid unificado -->
+        <div class="img-grid" id="imgs-grid">
+
+          <!-- LOGO PRINCIPAL -->
+          <div class="img-card" data-img-category="logos" data-img-name="logo sonoplay principal cabecera footer">
+            <span class="img-cat">Logo principal</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo" src="images/logosonoplay-largo.png" alt="Logo">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo" data-img-default="images/logosonoplay-largo.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo" data-img-default="images/logosonoplay-largo.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Logo SONOPLAY</span>
+              <span class="img-hint">Formato horizontal · PNG con fondo transparente</span>
+            </div>
+          </div>
+
+          <!-- FOTOS DE DJs -->
+          <div class="img-card" data-img-category="djs" data-img-name="dj juanfran montes">
+            <span class="img-cat">DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-dj-juanfran" src="images/dj-juanfran.jpg" alt="DJ Juanfran">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">DJ Juanfran Montes</span>
-              <div class="img-preview">
-                <img id="img-preview-dj-juanfran" src="images/dj-juanfran.jpg" alt="DJ Juanfran">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg"></label>
-                <button class="btn-reset" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg">Restaurar</button>
-              </div>
+              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="djs" data-img-name="dj rafa">
+            <span class="img-cat">DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-dj-rafa" src="images/dj-rafa-new.png" alt="DJ Rafa">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">DJ Rafa</span>
-              <div class="img-preview">
-                <img id="img-preview-dj-rafa" src="images/dj-rafa-new.png" alt="DJ Rafa">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png"></label>
-                <button class="btn-reset" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png">Restaurar</button>
-              </div>
+              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
             </div>
-            <div class="img-card">
-              <span class="img-label">JR - Jona Rivas DJ</span>
-              <div class="img-preview">
-                <img id="img-preview-dj-jr" src="images/dj-jr.jpg" alt="DJ JR">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg"></label>
-                <button class="btn-reset" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg">Restaurar</button>
-              </div>
+          </div>
+
+          <div class="img-card" data-img-category="djs" data-img-name="jr jona rivas">
+            <span class="img-cat">DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-dj-jr" src="images/dj-jr.jpg" alt="DJ JR">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
             </div>
-            <div class="img-card">
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">JR — Jona Rivas</span>
+              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
+            </div>
+          </div>
+
+          <div class="img-card" data-img-category="djs" data-img-name="dj celu martinez">
+            <span class="img-cat">DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-dj-celu" src="images/dj-celu.jpg" alt="DJ Celu" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-celu" data-img-default="images/dj-celu.jpg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-celu" data-img-default="images/dj-celu.jpg">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">DJ Celu Martinez</span>
-              <div class="img-preview">
-                <img id="img-preview-dj-celu" src="images/dj-celu.jpg" alt="DJ Celu" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-celu" data-img-default="images/dj-celu.jpg"></label>
-                <button class="btn-reset" data-img-key="dj-celu" data-img-default="images/dj-celu.jpg">Restaurar</button>
-              </div>
+              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="djs" data-img-name="cristian white">
+            <span class="img-cat">DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-dj-cristian" src="images/dj-cristian-white.png" alt="DJ Cristian">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Cristian White</span>
-              <div class="img-preview">
-                <img id="img-preview-dj-cristian" src="images/dj-cristian-white.png" alt="DJ Cristian">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png"></label>
-                <button class="btn-reset" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png">Restaurar</button>
-              </div>
+              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="djs" data-img-name="dj manu moreno">
+            <span class="img-cat">DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-dj-manu" src="images/foto-manu.jpeg" alt="DJ Manu" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-manu" data-img-default="images/foto-manu.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-manu" data-img-default="images/foto-manu.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">DJ Manu Moreno</span>
-              <div class="img-preview">
-                <img id="img-preview-dj-manu" src="images/foto-manu.jpeg" alt="DJ Manu" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="dj-manu" data-img-default="images/foto-manu.jpeg"></label>
-                <button class="btn-reset" data-img-key="dj-manu" data-img-default="images/foto-manu.jpeg">Restaurar</button>
-              </div>
+              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
             </div>
           </div>
-        </div>
 
-        <div class="admin-card">
-          <h3>Logos de DJs</h3>
-          <div class="img-grid">
-            <div class="img-card">
+          <!-- LOGOS DE DJs -->
+          <div class="img-card" data-img-category="logos" data-img-name="logo juanfran montes">
+            <span class="img-cat">Logo DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo-juanfran" src="images/logo-juanfran.png" alt="Logo Juanfran">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Logo Juanfran Montes</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo-juanfran" src="images/logo-juanfran.png" alt="Logo Juanfran">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png"></label>
-                <button class="btn-reset" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png">Restaurar</button>
-              </div>
+              <span class="img-hint">PNG con fondo transparente</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="logos" data-img-name="logo rafa">
+            <span class="img-cat">Logo DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo-rafa" src="images/logo-rafa.png" alt="Logo Rafa">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Logo Rafa</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo-rafa" src="images/logo-rafa.png" alt="Logo Rafa">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png"></label>
-                <button class="btn-reset" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png">Restaurar</button>
-              </div>
+              <span class="img-hint">PNG con fondo transparente</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="logos" data-img-name="logo jr jona rivas">
+            <span class="img-cat">Logo DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo-jr" src="images/logo-jr-white.png" alt="Logo JR">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Logo JR Jona Rivas</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo-jr" src="images/logo-jr-white.png" alt="Logo JR">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png"></label>
-                <button class="btn-reset" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png">Restaurar</button>
-              </div>
+              <span class="img-hint">PNG con fondo transparente</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="logos" data-img-name="logo celu martinez">
+            <span class="img-cat">Logo DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo-celu" src="images/logo-celu.png" alt="Logo Celu">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-celu" data-img-default="images/logo-celu.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-celu" data-img-default="images/logo-celu.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Logo Celu Martinez</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo-celu" src="images/logo-celu.png" alt="Logo Celu">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-celu" data-img-default="images/logo-celu.png"></label>
-                <button class="btn-reset" data-img-key="logo-celu" data-img-default="images/logo-celu.png">Restaurar</button>
-              </div>
+              <span class="img-hint">PNG con fondo transparente</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="logos" data-img-name="logo cristian white">
+            <span class="img-cat">Logo DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo-cristian" src="images/logo-cristian-v3.png" alt="Logo Cristian">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Logo Cristian White</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo-cristian" src="images/logo-cristian-v3.png" alt="Logo Cristian">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png"></label>
-                <button class="btn-reset" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png">Restaurar</button>
-              </div>
+              <span class="img-hint">PNG con fondo transparente</span>
             </div>
-            <div class="img-card">
+          </div>
+
+          <div class="img-card" data-img-category="logos" data-img-name="logo manu moreno">
+            <span class="img-cat">Logo DJ</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview logo-preview">
+              <img id="img-preview-logo-manu" src="images/logo-manu.png" alt="Logo Manu" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-manu" data-img-default="images/logo-manu.png"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-manu" data-img-default="images/logo-manu.png">Restaurar</button>
+            </div>
+            <div class="img-meta">
               <span class="img-label">Logo Manu Moreno</span>
-              <div class="img-preview logo-preview">
-                <img id="img-preview-logo-manu" src="images/logo-manu.png" alt="Logo Manu" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="logo-manu" data-img-default="images/logo-manu.png"></label>
-                <button class="btn-reset" data-img-key="logo-manu" data-img-default="images/logo-manu.png">Restaurar</button>
-              </div>
+              <span class="img-hint">PNG con fondo transparente</span>
             </div>
           </div>
-        </div>
 
-        <div class="admin-card">
-          <h3>Ceremonia Civil</h3>
-          <div class="img-grid">
-            <div class="img-card">
-              <span class="img-label">Foto Ceremonia Civil</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-ceremonia" src="images/foto-ceremonia.jpeg" alt="Foto Ceremonia" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-ceremonia" data-img-default="images/foto-ceremonia.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-ceremonia" data-img-default="images/foto-ceremonia.jpeg">Restaurar</button>
-              </div>
+          <!-- CEREMONIA CIVIL -->
+          <div class="img-card" data-img-category="ceremonia" data-img-name="foto ceremonia civil">
+            <span class="img-cat">Ceremonia</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-ceremonia" src="images/foto-ceremonia.jpeg" alt="Foto Ceremonia" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-ceremonia" data-img-default="images/foto-ceremonia.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-ceremonia" data-img-default="images/foto-ceremonia.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Ceremonia Civil</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
             </div>
           </div>
-        </div>
 
-        <div class="admin-card">
-          <h3>Montajes</h3>
-          <div class="img-grid">
-            <div class="img-card">
-              <span class="img-label">Foto Montaje BASIC</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-basic" src="images/foto-basic.jpeg" alt="Foto Basic" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg">Restaurar</button>
-              </div>
+          <!-- MONTAJES -->
+          <div class="img-card" data-img-category="montajes" data-img-name="montaje basic">
+            <span class="img-cat">Montaje</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-basic" src="images/foto-basic.jpeg" alt="Foto Basic" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
             </div>
-            <div class="img-card">
-              <span class="img-label">Foto Montaje TOTEMS</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-totems" src="images/foto-totems.jpeg" alt="Foto Totems" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg">Restaurar</button>
-              </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg">Restaurar</button>
             </div>
-            <div class="img-card">
-              <span class="img-label">Foto Montaje DUO</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-duo" src="images/foto-duo.jpeg" alt="Foto Duo" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg">Restaurar</button>
-              </div>
-            </div>
-            <div class="img-card">
-              <span class="img-label">Foto Montaje CUBO</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-cubo" src="images/foto-cubo.jpeg" alt="Foto Cubo" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg">Restaurar</button>
-              </div>
-            </div>
-            <div class="img-card">
-              <span class="img-label">Foto Montaje EQUIS</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-equis" src="images/foto-equis.jpeg" alt="Foto Equis" onerror="this.style.display='none'">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg">Restaurar</button>
-              </div>
-            </div>
-            <div class="img-card">
-              <span class="img-label">Foto Montaje HEXA</span>
-              <div class="img-preview">
-                <img id="img-preview-foto-hexa" src="images/foto-hexa.jpeg" alt="Foto Hexa">
-              </div>
-              <div class="img-actions">
-                <label class="btn-upload">Cambiar imagen<input type="file" accept="image/*" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg"></label>
-                <button class="btn-reset" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg">Restaurar</button>
-              </div>
+            <div class="img-meta">
+              <span class="img-label">Montaje BASIC</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
             </div>
           </div>
+
+          <div class="img-card" data-img-category="montajes" data-img-name="montaje totems">
+            <span class="img-cat">Montaje</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-totems" src="images/foto-totems.jpeg" alt="Foto Totems" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Montaje TOTEMS</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
+            </div>
+          </div>
+
+          <div class="img-card" data-img-category="montajes" data-img-name="montaje duo">
+            <span class="img-cat">Montaje</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-duo" src="images/foto-duo.jpeg" alt="Foto Duo" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Montaje DUO</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
+            </div>
+          </div>
+
+          <div class="img-card" data-img-category="montajes" data-img-name="montaje cubo">
+            <span class="img-cat">Montaje</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-cubo" src="images/foto-cubo.jpeg" alt="Foto Cubo" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Montaje CUBO</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
+            </div>
+          </div>
+
+          <div class="img-card" data-img-category="montajes" data-img-name="montaje equis">
+            <span class="img-cat">Montaje</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-equis" src="images/foto-equis.jpeg" alt="Foto Equis" onerror="this.style.display='none'">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Montaje EQUIS</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
+            </div>
+          </div>
+
+          <div class="img-card" data-img-category="montajes" data-img-name="montaje hexa">
+            <span class="img-cat">Montaje</span>
+            <span class="img-badge">Por defecto</span>
+            <div class="img-preview">
+              <img id="img-preview-foto-hexa" src="images/foto-hexa.jpeg" alt="Foto Hexa">
+              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
+            </div>
+            <div class="img-overlay">
+              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg"></label>
+              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg">Restaurar</button>
+            </div>
+            <div class="img-meta">
+              <span class="img-label">Montaje HEXA</span>
+              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div class="imgs-empty" id="imgs-empty" style="display:none;">
+            <div class="imgs-empty-title">Sin resultados</div>
+            <div>Prueba con otra búsqueda o cambia el filtro.</div>
+          </div>
+
         </div>
       </div>
 
@@ -850,99 +1151,235 @@
     }
     loadSavedImages();
 
-    // File upload handlers
+    // ============== GESTIÓN DE IMÁGENES ==============
     const CLOUDINARY_CLOUD = 'dkv2aireq';
     const CLOUDINARY_PRESET = 'sonoplay';
 
+    // Helpers de estado de cada card
+    function getImgCard(key) {
+      const input = document.querySelector('.img-card input[type="file"][data-img-key="' + key + '"]');
+      return input ? input.closest('.img-card') : null;
+    }
+    function setCardCustom(key, isCustom) {
+      const card = getImgCard(key);
+      if (!card) return;
+      card.classList.toggle('is-custom', isCustom);
+      card.classList.toggle('is-default', !isCustom);
+      const badge = card.querySelector('.img-badge');
+      if (badge) badge.textContent = isCustom ? 'Personalizada' : 'Por defecto';
+      updateImgStats();
+    }
+    function setCardLoading(key, isLoading) {
+      const card = getImgCard(key);
+      if (!card) return;
+      card.classList.toggle('is-loading', isLoading);
+    }
+    function updateImgStats() {
+      const allCards = document.querySelectorAll('#imgs-grid .img-card');
+      const custom = document.querySelectorAll('#imgs-grid .img-card.is-custom').length;
+      document.getElementById('imgs-total').textContent = allCards.length;
+      document.getElementById('imgs-custom').textContent = custom;
+      document.getElementById('imgs-default').textContent = allCards.length - custom;
+      // Counts por filtro
+      document.querySelectorAll('.imgs-filter-count').forEach(el => {
+        const cat = el.dataset.count;
+        const n = cat === 'all'
+          ? allCards.length
+          : document.querySelectorAll('#imgs-grid .img-card[data-img-category="' + cat + '"]').length;
+        el.textContent = n;
+      });
+    }
+
+    // Inicializar el estado custom/default de cada card según localStorage
+    function initCardStates() {
+      const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+      document.querySelectorAll('#imgs-grid .img-card').forEach(card => {
+        const input = card.querySelector('input[type="file"]');
+        if (!input) return;
+        const key = input.dataset.imgKey;
+        const isCustom = !!images[key];
+        card.classList.add(isCustom ? 'is-custom' : 'is-default');
+        const badge = card.querySelector('.img-badge');
+        if (badge) badge.textContent = isCustom ? 'Personalizada' : 'Por defecto';
+      });
+      updateImgStats();
+    }
+    initCardStates();
+
+    // Sube un File a Cloudinary (extraído para reutilizar desde input + drag&drop)
+    function uploadImage(file, key) {
+      if (!file || !key) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast('El archivo debe ser una imagen');
+        return;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        showToast('La imagen no puede superar 50MB');
+        return;
+      }
+
+      const isLogo = key.startsWith('logo') || key === 'logo';
+      const MAX_DIM = isLogo ? 1200 : 3000;
+      const keepPng = isLogo && file.type === 'image/png';
+
+      setCardLoading(key, true);
+      showToast('Subiendo imagen…');
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const rawImg = new Image();
+        rawImg.onload = function() {
+          let { width, height } = rawImg;
+          const scale = Math.min(1, MAX_DIM / Math.max(width, height));
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(rawImg, 0, 0, width, height);
+          const mime = keepPng ? 'image/png' : 'image/jpeg';
+          const quality = keepPng ? undefined : 0.92;
+
+          canvas.toBlob(function(blob) {
+            const fd = new FormData();
+            fd.append('file', blob, key + (keepPng ? '.png' : '.jpg'));
+            fd.append('upload_preset', CLOUDINARY_PRESET);
+            fd.append('public_id', 'sonoplay_' + key);
+
+            fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
+              method: 'POST',
+              body: fd
+            })
+            .then(r => r.json())
+            .then(data => {
+              setCardLoading(key, false);
+              if (data.secure_url) {
+                const url = data.secure_url;
+                const preview = document.getElementById('img-preview-' + key);
+                if (preview) { preview.src = url; preview.style.display = ''; }
+                const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
+                images[key] = url;
+                localStorage.setItem('sonoplay_images', JSON.stringify(images));
+                setCardCustom(key, true);
+                window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
+                showToast('Imagen subida correctamente ✓');
+              } else {
+                showToast('Error: ' + (data.error?.message || 'inténtalo de nuevo'));
+              }
+            })
+            .catch(() => {
+              setCardLoading(key, false);
+              showToast('Error de red. Comprueba tu conexión.');
+            });
+          }, mime, quality);
+        };
+        rawImg.onerror = function() {
+          setCardLoading(key, false);
+          showToast('No se pudo leer la imagen');
+        };
+        rawImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Inputs file (click) — al cambiar disparan upload
     document.querySelectorAll('.img-card input[type="file"]').forEach(input => {
       input.addEventListener('change', function() {
         const file = this.files[0];
         if (!file) return;
-
-        if (file.size > 50 * 1024 * 1024) {
-          showToast('La imagen no puede superar 50MB');
-          return;
-        }
-
-        const key = this.dataset.imgKey;
-        const isLogo = key.startsWith('logo') || key === 'logo';
-        const MAX_DIM = isLogo ? 1200 : 3000;
-        const keepPng = isLogo && file.type === 'image/png';
-
-        showToast('Subiendo imagen…');
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const rawImg = new Image();
-          rawImg.onload = function() {
-            let { width, height } = rawImg;
-            const scale = Math.min(1, MAX_DIM / Math.max(width, height));
-            width = Math.round(width * scale);
-            height = Math.round(height * scale);
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            ctx.drawImage(rawImg, 0, 0, width, height);
-            const mime = keepPng ? 'image/png' : 'image/jpeg';
-            const quality = keepPng ? undefined : 0.92;
-
-            canvas.toBlob(function(blob) {
-              const fd = new FormData();
-              fd.append('file', blob, key + (keepPng ? '.png' : '.jpg'));
-              fd.append('upload_preset', CLOUDINARY_PRESET);
-              fd.append('public_id', 'sonoplay_' + key);
-
-              fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
-                method: 'POST',
-                body: fd
-              })
-              .then(r => r.json())
-              .then(data => {
-                if (data.secure_url) {
-                  const url = data.secure_url;
-                  const preview = document.getElementById('img-preview-' + key);
-                  if (preview) { preview.src = url; preview.style.display = ''; }
-                  const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-                  images[key] = url;
-                  localStorage.setItem('sonoplay_images', JSON.stringify(images));
-                  window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
-                  showToast('Imagen subida correctamente ✓');
-                } else {
-                  showToast('Error: ' + (data.error?.message || 'inténtalo de nuevo'));
-                }
-              })
-              .catch(() => showToast('Error de red. Comprueba tu conexión.'));
-            }, mime, quality);
-          };
-          rawImg.onerror = function() { showToast('No se pudo leer la imagen'); };
-          rawImg.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+        uploadImage(file, this.dataset.imgKey);
+        this.value = ''; // permite volver a subir el mismo archivo
       });
     });
 
-    // Reset buttons
-    document.querySelectorAll('button.btn-reset').forEach(btn => {
+    // Botones de restaurar
+    document.querySelectorAll('.ovl-btn-reset').forEach(btn => {
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         const key = this.getAttribute('data-img-key');
         const defaultSrc = this.getAttribute('data-img-default');
         if (!key || !defaultSrc) return;
-        // Restore preview
         const preview = document.getElementById('img-preview-' + key);
         if (preview) preview.src = defaultSrc;
-        // Remove from localStorage
         const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
         delete images[key];
         localStorage.setItem('sonoplay_images', JSON.stringify(images));
+        setCardCustom(key, false);
         window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
         showToast('Imagen restaurada');
       });
     });
+
+    // Drag & drop sobre cada card
+    document.querySelectorAll('#imgs-grid .img-card').forEach(card => {
+      const input = card.querySelector('input[type="file"]');
+      if (!input) return;
+      const key = input.dataset.imgKey;
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        card.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          card.classList.add('is-dragover');
+        });
+      });
+      ['dragleave', 'dragend', 'drop'].forEach(evt => {
+        card.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          card.classList.remove('is-dragover');
+        });
+      });
+      card.addEventListener('drop', e => {
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) uploadImage(file, key);
+      });
+
+      // Click en el preview también abre el selector
+      const preview = card.querySelector('.img-preview');
+      if (preview) {
+        preview.addEventListener('click', e => {
+          // Evita doble apertura si se clickea el botón overlay
+          if (e.target.closest('.ovl-btn')) return;
+          input.click();
+        });
+      }
+    });
+
+    // Filtros por categoría
+    document.querySelectorAll('.imgs-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.imgs-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyImgFilters();
+      });
+    });
+
+    // Buscador
+    const imgSearchInput = document.getElementById('imgs-search-input');
+    if (imgSearchInput) {
+      imgSearchInput.addEventListener('input', applyImgFilters);
+    }
+
+    function applyImgFilters() {
+      const activeFilter = document.querySelector('.imgs-filter.active')?.dataset.filter || 'all';
+      const q = (imgSearchInput?.value || '').trim().toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#imgs-grid .img-card').forEach(card => {
+        const matchesCat = activeFilter === 'all' || card.dataset.imgCategory === activeFilter;
+        const matchesText = !q || (card.dataset.imgName || '').includes(q) || (card.querySelector('.img-label')?.textContent.toLowerCase().includes(q));
+        const show = matchesCat && matchesText;
+        card.classList.toggle('is-hidden', !show);
+        if (show) visible++;
+      });
+      const empty = document.getElementById('imgs-empty');
+      if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
+    }
 
     // Logout
     document.getElementById('admin-logout').addEventListener('click', () => {
