@@ -11,3 +11,9 @@ dist/
 
 # Claude Code local tooling
 .claude/
+
+# Deploy artifacts (DirectAdmin)
+_deploy/
+sonoplay-deploy.zip
+landing-test.html
+promt.md
