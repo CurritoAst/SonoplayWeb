@@ -2972,3 +2972,120 @@ body.gallery-locked { overflow: hidden; }
   .gallery-thumbs { padding: 10px 16px 14px; }
   .gallery-thumb { width: 56px; height: 40px; }
 }
+
+/* ============================================
+   INICIO — Quiénes somos / Stats / Ubicación
+   ============================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 28px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s, background 0.3s;
+}
+.stat-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.4);
+  background: rgba(6, 182, 212, 0.04);
+}
+.stat-num {
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+  font-weight: 900;
+  color: var(--cyan);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Ubicación (mapa + info) */
+.ubicacion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 32px;
+  align-items: stretch;
+}
+.ubicacion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ubicacion-info-block {
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ubicacion-label {
+  font-size: 0.72rem;
+  color: var(--cyan);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.ubicacion-info-block p {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.ubicacion-info-block a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.ubicacion-info-block a:hover { color: var(--cyan); }
+.ubicacion-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.85rem !important;
+  font-weight: 700;
+  color: var(--cyan) !important;
+}
+.ubicacion-link:hover { opacity: 0.85; }
+
+.ubicacion-map {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  min-height: 420px;
+  background: var(--dark3);
+  position: relative;
+  box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.6);
+}
+.ubicacion-map iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  filter: invert(0.88) hue-rotate(180deg) saturate(0.6) brightness(1.1);
+  transition: filter 0.4s ease;
+}
+.ubicacion-map:hover iframe {
+  filter: invert(0.92) hue-rotate(180deg) saturate(0.8) brightness(1.15);
+}
+
+@media (max-width: 900px) {
+  .ubicacion-grid { grid-template-columns: 1fr; }
+  .ubicacion-map { min-height: 320px; }
+}
