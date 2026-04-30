@@ -2986,6 +2986,17 @@ body.gallery-locked { overflow: hidden; }
 }
 
 .quienes-text { padding-right: 20px; }
+.quienes-title {
+  margin-bottom: 24px;
+  text-align: left;
+}
+.quienes-p {
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+.quienes-p:last-child { margin-bottom: 0; }
 
 /* Collage decorativo con dos fotos solapadas */
 .quienes-collage {
@@ -3069,16 +3080,29 @@ body.gallery-locked { overflow: hidden; }
 
 /* Responsivo */
 @media (max-width: 900px) {
-  .quienes-grid { grid-template-columns: 1fr; gap: 50px; }
+  .quienes-grid { grid-template-columns: 1fr; gap: 44px; }
   .quienes-text { padding-right: 0; text-align: center; }
-  .quienes-text .section-title { text-align: center !important; }
-  .quienes-collage { min-height: 420px; max-width: 520px; margin: 0 auto; }
+  .quienes-title { text-align: center; }
+  .quienes-collage { min-height: 460px; max-width: 540px; margin: 0 auto; width: 100%; }
 }
-@media (max-width: 520px) {
-  .quienes-collage { min-height: 360px; }
-  .collage-img-1 { width: 65%; height: 70%; }
-  .collage-img-2 { width: 70%; height: 65%; }
-  .collage-badge { font-size: 0.65rem; padding: 8px 14px; right: 0; }
+@media (max-width: 600px) {
+  .quienes-grid { gap: 38px; }
+  .quienes-p { font-size: 1rem; line-height: 1.65; }
+  .quienes-collage { min-height: 380px; max-width: 100%; }
+  .collage-img-1 { width: 64%; height: 72%; transform: rotate(2deg); }
+  .collage-img-2 { width: 70%; height: 64%; transform: rotate(-2.5deg); }
+  .collage-badge {
+    font-size: 0.62rem;
+    padding: 7px 12px;
+    right: 4px;
+    bottom: 12px;
+    letter-spacing: 0.4px;
+  }
+}
+@media (max-width: 380px) {
+  .quienes-collage { min-height: 320px; }
+  .collage-img-1 { width: 66%; height: 68%; }
+  .collage-img-2 { width: 72%; height: 60%; }
 }
 
 .stats-grid {
