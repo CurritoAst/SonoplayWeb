@@ -3218,3 +3218,88 @@ body.gallery-locked { overflow: hidden; }
   .ubicacion-grid { grid-template-columns: 1fr; }
   .ubicacion-map { min-height: 320px; }
 }
+
+/* ============================================
+   MÓVIL — Compactar para reducir scroll
+   ============================================ */
+@media (max-width: 768px) {
+  /* Secciones más cortas */
+  .section-inner { padding: 50px 18px !important; }
+
+  /* Títulos con menos margen inferior */
+  .section-title { margin-bottom: 28px !important; }
+
+  /* Eyebrow más cerca del título */
+  .section-eyebrow { margin-bottom: 8px; }
+
+  /* Grids principales más apretados */
+  .verticals-grid,
+  .packages-grid,
+  .services-grid,
+  .wedding-features,
+  .about-grid,
+  .stats-grid,
+  .festivals-grid {
+    gap: 16px !important;
+  }
+
+  /* Cards principales — menos padding */
+  .vertical-card { padding: 22px 20px; }
+  .stat-item { padding: 20px 14px; }
+
+  /* Hero un pelín más compacto en móvil */
+  #hero { min-height: 92vh; }
+
+  /* Footer más compacto */
+  #footer { padding: 28px 20px 18px !important; }
+  #footer img { height: 48px !important; }
+  #footer p { margin-bottom: 4px; }
+
+  /* Quiénes somos: collage más bajo y gap menor */
+  .quienes-grid { gap: 32px !important; }
+
+  /* Festivales cards más compactas */
+  .festival-card-image { aspect-ratio: 16 / 11; }
+  .festival-card-body { padding: 16px 18px 18px !important; gap: 12px !important; }
+  .festival-card-overlay { padding: 14px 16px 12px !important; }
+  .festival-card-overlay h3 { font-size: 1.25rem !important; }
+
+  /* DJs carousel más compacto */
+  #dj-coverflow { height: 380px !important; }
+}
+
+@media (max-width: 480px) {
+  .section-inner { padding: 36px 16px !important; }
+  .section-title { margin-bottom: 22px !important; font-size: 1.6rem !important; }
+  .verticals-grid,
+  .packages-grid,
+  .services-grid,
+  .wedding-features,
+  .about-grid,
+  .stats-grid,
+  .festivals-grid {
+    gap: 12px !important;
+  }
+  .vertical-card { padding: 18px 16px; }
+  .stat-item { padding: 16px 10px; }
+
+  /* Hero ajustado para que ocupe solo lo necesario */
+  #hero { min-height: 85vh; }
+
+  /* Cards de festival aún más compactas */
+  .festival-card-body { padding: 14px 16px 16px !important; gap: 10px !important; }
+  .festival-card-features { gap: 6px !important; }
+  .festival-card-features span { padding: 4px 9px !important; font-size: 0.68rem !important; }
+
+  /* Subtitles + parrafos más compactos */
+  .hero-subtitle { font-size: 0.95rem !important; }
+  .quienes-p { font-size: 0.95rem !important; line-height: 1.55 !important; margin-bottom: 12px !important; }
+
+  /* Stats en 2x2 más comprimido */
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stat-num { font-size: 2rem !important; }
+  .stat-label { font-size: 0.72rem !important; }
+
+  /* DJ carousel más bajo */
+  #dj-coverflow { height: 320px !important; }
+}
