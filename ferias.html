@@ -36,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
   <script defer src="auth-shared.js"></script>
 
   <!-- ===== GOOGLE ANALYTICS 4 ===== -->
@@ -164,6 +164,53 @@
     </div>
   </section>
 
+  <!-- ======== FERIAS REALIZADAS (galería) ======== -->
+  <section id="ferias-realizadas" style="background: var(--dark); border-top: 1px solid var(--border);">
+    <div class="section-inner" style="text-align: center;">
+      <p class="section-eyebrow">Trabajos recientes</p>
+      <h2 class="section-title" style="margin-bottom: 14px;">Ferias y casetas que hemos <em>sonorizado</em></h2>
+      <p style="max-width: 640px; margin: 0 auto; color: var(--text-muted); font-size: 1rem;">Para presupuesto, contacta directamente por teléfono o WhatsApp.</p>
+
+      <div class="festivals-grid">
+        <!-- TODO: añadir cards cuando lleguen las fotos. Estructura ejemplo:
+        <article class="festival-card"
+                 data-gallery-title="Caseta Feria de Lebrija"
+                 data-gallery-meta="Lebrija (Sevilla) · Feria de mayo"
+                 data-gallery-items='[
+                   {"type":"image","src":"images/feria-lebrija-1.jpeg","alt":"Caseta de feria con sonido y luces"}
+                 ]'>
+          <div class="festival-card-image">
+            <span class="festival-card-tag">Feria</span>
+            <span class="gallery-hint">1 foto</span>
+            <img src="images/feria-lebrija-1.jpeg" alt="..." loading="lazy">
+            <div class="festival-card-overlay">
+              <h3>Caseta Feria de Lebrija</h3>
+              <span class="festival-meta">Lebrija (Sevilla) · Feria de mayo</span>
+            </div>
+          </div>
+          <div class="festival-card-body">
+            <p>Descripción corta del evento.</p>
+            <div class="festival-card-features">
+              <span>DJ</span>
+              <span>Sonido P.A.</span>
+              <span>Iluminación</span>
+            </div>
+            <div class="festival-card-actions">...</div>
+          </div>
+        </article>
+        -->
+      </div>
+
+      <div class="gallery-coming-soon">
+        <div class="gallery-coming-soon-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        </div>
+        <h3>Galería en construcción</h3>
+        <p>Estamos preparando una selección de fotos de las últimas ferias y casetas que hemos sonorizado. ¿Quieres ver referencias mientras tanto? Llámanos o escríbenos por WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ======== CONTACT CTA ======== -->
   <section id="contact" style="background: var(--dark3); border-top: 1px solid var(--border);">
     <div class="section-inner" style="text-align: center;">
@@ -254,5 +301,8 @@
       }
     });
   </script>
+
+  <!-- Gallery (modal + lógica) — solo activo si hay cards con data-gallery-items -->
+  <script defer src="gallery.js?v=1"></script>
 </body>
 </html>
