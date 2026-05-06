@@ -2760,6 +2760,39 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* ============================================
+   AUTH MODAL — Separador "o" para Google Sign-In
+   ============================================ */
+.auth-divider {
+  position: relative;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 18px 0 14px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 22px);
+  height: 1px;
+  background: var(--border);
+}
+.auth-divider::before { left: 0; }
+.auth-divider::after { right: 0; }
+
+/* Contenedor del botón de Google: que no haga overflow horizontal */
+#google-signin-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+#google-signin-btn > div { max-width: 100% !important; }
+
+/* ============================================
    REDES SOCIALES — Iconos circulares
    ============================================ */
 .social-links {
