@@ -2760,26 +2760,6 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* ============================================
-   DJ MODAL — Logo unificado (caja fija para todos)
-   ============================================ */
-.dj-modal-logo {
-  width: 200px !important;
-  height: 70px !important;
-  max-width: 200px !important;
-  max-height: 70px !important;
-  object-fit: contain !important;
-  display: block !important;
-}
-@media (max-width: 480px) {
-  .dj-modal-logo {
-    width: 170px !important;
-    height: 60px !important;
-    max-width: 170px !important;
-    max-height: 60px !important;
-  }
-}
-
-/* ============================================
    AUTH MODAL — Separador "o" para Google Sign-In
    ============================================ */
 .auth-divider {
