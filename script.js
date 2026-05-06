@@ -460,12 +460,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           };
 
-          const profile = djProfiles[djName] || { desc: 'La mejor selección para tu boda.', media: '' };
+          const profile = djProfiles[djName] || { desc: 'La mejor selección para tu boda.', photo: '', logo: '' };
 
           // Bind Data to Modal
           document.getElementById('dj-info-name').textContent = djName;
           document.getElementById('dj-info-desc').textContent = profile.desc;
-          document.getElementById('dj-info-media').innerHTML = profile.media;
+          document.getElementById('dj-info-media').innerHTML = profile.photo || '';
+          document.getElementById('dj-info-logo').innerHTML  = profile.logo  || '';
           
           const actionBtn = document.getElementById('dj-info-action-btn');
           
@@ -759,8 +760,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const price = parseFloat(btn.dataset.price) || 0;
       const unit = btn.dataset.unit || '';
 
-      // Check if it's a package (montaje) - only allow one at a time
-      const isPackage = btn.closest('.package-card');
+      // Check if it's a package (montaje) - only allow one at a time.
+      // Ceremonia Civil usa el mismo estilo visual de .package-card pero NO es un paquete:
+      // es un extra opcional que coexiste con cualquier montaje.
+      const isPackage = btn.closest('.package-card') && btn.dataset.name !== 'Ceremonia Civil';
 
       if (isPackage) {
         // Remove any existing package from cart
