@@ -2760,6 +2760,55 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* ============================================
+   REDES SOCIALES — Iconos circulares
+   ============================================ */
+.social-links {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+.social-links a:hover {
+  transform: translateY(-3px);
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #000;
+}
+.social-links a:active { transform: translateY(-1px) scale(0.96); }
+.social-links svg { width: 20px; height: 20px; }
+
+/* Variante para sección de contacto (más prominente) */
+.social-links-large a { width: 52px; height: 52px; }
+.social-links-large svg { width: 22px; height: 22px; }
+
+/* Footer: alinear con texto centrado */
+#footer .social-links {
+  margin-top: 14px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 480px) {
+  .social-links a { width: 40px; height: 40px; }
+  .social-links svg { width: 18px; height: 18px; }
+  .social-links-large a { width: 46px; height: 46px; }
+  .social-links-large svg { width: 20px; height: 20px; }
+}
+
+/* ============================================
    GALLERY EMPTY STATE — Próximamente
    ============================================ */
 .gallery-coming-soon {
