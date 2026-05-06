@@ -431,32 +431,32 @@ document.addEventListener('DOMContentLoaded', () => {
             "Juanfran Montes": {
               desc: "Especialista en animar la pista con la mejor selección musical y una energía inagotable para tu boda.",
               photo: '<img src="images/dj-juanfran.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; position:absolute;">',
-              logo:  '<img src="images/logo-juanfran.png" style="max-height:38px; width:auto;">'
+              logo:  '<img src="images/logo-juanfran.png" style="max-height:78px; max-width:90%; width:auto; object-fit:contain;">'
             },
             "Rafa": {
               desc: "Ritmo, pasión y una técnica impecable. Rafa convertirá tu celebración en un auténtico festival.",
               photo: '<img src="images/dj-rafa-new.png" style="width:100%; height:100%; object-fit:cover; object-position:center 15%; position:absolute;">',
-              logo:  '<img src="images/logo-rafa.png" style="max-height:44px; width:auto; filter:invert(1);">'
+              logo:  '<img src="images/logo-rafa.png" style="max-height:88px; max-width:90%; width:auto; object-fit:contain; filter:invert(1);">'
             },
             "JR Jona Rivas": {
               desc: "La combinación perfecta entre elegancia y locura discotequera. Conecta directamente con tus invitados.",
               photo: '<img src="images/dj-jr.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center top; position:absolute;">',
-              logo:  '<img src="images/logo-jr-white.png" style="max-height:40px; width:auto;">'
+              logo:  '<img src="images/logo-jr-white.png" style="max-height:80px; max-width:90%; width:auto; object-fit:contain;">'
             },
             "Celu Martinez": {
               desc: "Sesiones vibrantes y adaptación total a tu estilo. Magia en los platos para un evento inolvidable.",
               photo: '<div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; position:absolute;"><span style="font-family:\'Montserrat\', sans-serif; font-size:4rem; font-weight:700; color:#333;">CM</span></div><img src="images/dj-celu.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; position:absolute;" onerror="this.style.display=\'none\'">',
-              logo:  '<img src="images/logo-celu.png" style="max-height:38px; width:auto;">'
+              logo:  '<img src="images/logo-celu.png" style="max-height:76px; max-width:90%; width:auto; object-fit:contain;">'
             },
             "Manu Moreno": {
               desc: "Elegancia y oficio en cabina. Manu lee la pista y te lleva de la cena al after sin perder el hilo.",
               photo: '<img src="images/foto-manu.jpeg" style="width:100%; height:100%; object-fit:cover; object-position:center 12%; position:absolute;">',
-              logo:  '<img src="images/logo-manu.png" style="max-height:38px; width:auto;">'
+              logo:  '<img src="images/logo-manu.png" style="max-height:76px; max-width:90%; width:auto; object-fit:contain;">'
             },
             "Cristian White": {
               desc: "Pura adrenalina y un manejo exquisito del público. La garantía absoluta de un control maestro sobre la pista.",
               photo: '<img src="images/dj-cristian-white.png" style="width:100%; height:100%; object-fit:cover; object-position:center 30%; transform:scale(1.3); position:absolute;">',
-              logo:  '<img src="images/logo-cristian-v3.png" style="max-height:38px; width:auto;">'
+              logo:  '<img src="images/logo-cristian-v3.png" style="max-height:76px; max-width:90%; width:auto; object-fit:contain;">'
             }
           };
 
