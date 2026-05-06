@@ -1007,6 +1007,117 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === authModal) authModal.style.display = 'none';
   });
 
+  // ---- GOOGLE SIGN-IN ----
+  const GOOGLE_CLIENT_ID = '453204425742-in0ohhppbgcnm1ig69o34hcsolt1v6pq.apps.googleusercontent.com';
+  const ADMIN_EMAIL = 'producciones@sonoplay.es';
+
+  function decodeJwtPayload(jwt) {
+    try {
+      const base64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64 + '=='.slice(0, (4 - base64.length % 4) % 4);
+      const json = decodeURIComponent(atob(padded).split('').map(c =>
+        '%' + c.charCodeAt(0).toString(16).padStart(2, '0')
+      ).join(''));
+      return JSON.parse(json);
+    } catch (e) {
+      console.error('Error decoding Google JWT', e);
+      return null;
+    }
+  }
+
+  function handleGoogleCredential(response) {
+    const payload = decodeJwtPayload(response.credential);
+    if (!payload || !payload.email) {
+      showAuthError('No pudimos verificar tu cuenta de Google. Inténtalo de nuevo.');
+      return;
+    }
+    const email   = String(payload.email).toLowerCase();
+    const name    = payload.name || payload.given_name || email.split('@')[0];
+    const picture = payload.picture || null;
+    const isAdminEmail = email === ADMIN_EMAIL;
+
+    const user = {
+      name, email, picture,
+      phone: '',
+      role: isAdminEmail ? 'admin' : 'user',
+      provider: 'google',
+      date: new Date().toLocaleDateString('es-ES')
+    };
+
+    if (!isAdminEmail) {
+      const users = getUsers();
+      if (!users.find(u => u.email === email)) {
+        users.push({ ...user, password: null });
+        saveUsers(users);
+      }
+    }
+
+    localStorage.setItem('sonoplay_user', JSON.stringify(user));
+    authModal.style.display = 'none';
+    updateAuthUI();
+    applyPriceVisibility();
+    applyExtrasVisibility();
+    checkPendingBudgetFlow();
+
+    if (isAdminEmail) {
+      window.location.href = 'admin.html';
+    }
+  }
+
+  function injectGoogleSection() {
+    if (document.getElementById('google-signin-btn')) return;
+    const divider = document.createElement('div');
+    divider.className = 'auth-divider';
+    divider.textContent = 'o';
+    const btnWrap = document.createElement('div');
+    btnWrap.id = 'google-signin-btn';
+    btnWrap.style.cssText = 'display:flex;justify-content:center;margin-top:6px;';
+    authForm.insertAdjacentElement('afterend', btnWrap);
+    authForm.insertAdjacentElement('afterend', divider);
+  }
+
+  function renderGoogleButton() {
+    if (!window.google || !google.accounts || !google.accounts.id) return false;
+    const btn = document.getElementById('google-signin-btn');
+    if (!btn) return false;
+    if (btn.dataset.rendered === '1') return true;
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential,
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+    google.accounts.id.renderButton(btn, {
+      theme: 'filled_black',
+      size: 'large',
+      text: 'continue_with',
+      shape: 'rectangular',
+      logo_alignment: 'left',
+      width: 280
+    });
+    btn.dataset.rendered = '1';
+    return true;
+  }
+
+  (function loadGoogleScriptAndRender() {
+    injectGoogleSection();
+    if (window.google && google.accounts && google.accounts.id) {
+      renderGoogleButton();
+      return;
+    }
+    if (document.querySelector('script[data-gsi]')) {
+      const wait = setInterval(() => { if (renderGoogleButton()) clearInterval(wait); }, 200);
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true;
+    s.defer = true;
+    s.dataset.gsi = '1';
+    s.onload = renderGoogleButton;
+    document.head.appendChild(s);
+  })();
+
   // ---- CREA TU PRESUPUESTO FLOW ----
   window.pendingBudgetFlow = false;
   function checkPendingBudgetFlow() {
