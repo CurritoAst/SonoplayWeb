@@ -615,7 +615,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 4px;">
             <h3 style="color: #ef4444;">🔥 Presupuestos abandonados</h3>
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; user-select: none;">
-              <input type="checkbox" id="leads-show-all" style="accent-color: var(--cyan);"> Mostrar también enviados
+              <input type="checkbox" id="leads-show-all" style="accent-color: var(--cyan);"> Mostrar también enviados y confirmados
             </label>
           </div>
           <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">🟢 <strong>Activo</strong>: está montando su presupuesto ahora mismo. 🔥 <strong>Abandonado</strong>: cerró la página o lleva +15 min sin actividad y no envió la solicitud — llámalo y hazle una oferta.</p>
@@ -629,6 +629,7 @@
                   <th>Precio visto</th>
                   <th>Visto el</th>
                   <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody id="leads-list"></tbody>
@@ -901,9 +902,11 @@
     //  - activo:     con actividad en los últimos 15 min y sin cerrar la página
     //  - abandonado: cerró la página, o lleva +15 min sin actividad
     //  - enviado:    completó la solicitud
+    //  - confirmado: el admin ya lo ha gestionado (botón Confirmar)
     const LEAD_ACTIVE_WINDOW_MS = 15 * 60 * 1000;
     function leadState(l) {
       if (l.status === 'enviado') return 'enviado';
+      if (l.status === 'confirmado') return 'confirmado';
       const viewed = l.viewedAt ? new Date(l.viewedAt).getTime() : 0;
       if (!l.left && viewed > Date.now() - LEAD_ACTIVE_WINDOW_MS) return 'activo';
       return 'abandonado';
@@ -917,9 +920,12 @@
 
       statLeads.textContent = leadsCache.filter(l => leadState(l) === 'abandonado').length;
 
-      // Los más recientes primero. Activos y abandonados siempre; enviados solo con el check.
-      const visible = leadsCache.filter(l => showAll || leadState(l) !== 'enviado')
-        .sort((a, b) => (b.viewedAt || '').localeCompare(a.viewedAt || ''));
+      // Los más recientes primero. Activos y abandonados siempre;
+      // enviados y confirmados solo con el check.
+      const visible = leadsCache.filter(l => {
+        const s = leadState(l);
+        return showAll || (s !== 'enviado' && s !== 'confirmado');
+      }).sort((a, b) => (b.viewedAt || '').localeCompare(a.viewedAt || ''));
 
       if (visible.length === 0) {
         noLeads.style.display = 'block';
@@ -938,11 +944,16 @@
           statusBadge = '<span style="display:inline-block; background:rgba(6,182,212,0.15); border:1px solid rgba(6,182,212,0.5); color:var(--cyan); font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🟢 Activo ahora</span>';
         } else if (state === 'abandonado') {
           statusBadge = '<span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🔥 Abandonado</span>';
+        } else if (state === 'confirmado') {
+          statusBadge = '<span style="display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.5); color:#22c55e; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">👍 Confirmado</span>';
         } else {
           statusBadge = '<span style="display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.5); color:#22c55e; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">✅ Enviado</span>';
         }
         if (l.notifiedAt) statusBadge += '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px; white-space:nowrap;">📧 Avisado ' + fmtDateTime(l.notifiedAt) + '</div>';
         const wedding = l.weddingDate ? `<div style="font-size:0.75rem; color:var(--text-muted);">Boda: ${escapeHtml(l.weddingDate)}</div>` : '';
+        const confirmBtn = (state === 'abandonado' || state === 'activo')
+          ? `<button class="btn-save" style="padding: 6px 12px; font-size: 0.78rem; margin-bottom: 6px; display: block; width: 100%;" onclick="confirmLead('${escapeHtml(l.id || '')}')">✔ Confirmar</button>`
+          : '';
         return `
         <tr>
           <td>${escapeHtml(l.name || l.email || '-')}<div style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(l.email || '')}</div>${wedding}</td>
@@ -951,9 +962,36 @@
           <td style="color: var(--cyan); font-weight: 700; white-space: nowrap;">${l.total ? Number(l.total).toLocaleString('es-ES') + ' €' : '-'}</td>
           <td style="white-space: nowrap;">${fmtDateTime(l.viewedAt)}</td>
           <td>${statusBadge}</td>
+          <td style="min-width: 110px;">${confirmBtn}<button class="btn-danger" style="display: block; width: 100%;" onclick="deleteLead('${escapeHtml(l.id || '')}')">🗑 Eliminar</button></td>
         </tr>`;
       }).join('');
     }
+
+    // Acciones de admin sobre un lead
+    window.confirmLead = async function (id) {
+      const l = leadsCache.find(x => x.id === id);
+      if (!l) return;
+      try {
+        await apiAdminPost('api/leads.php', { action: 'confirm', id });
+        showToast('👍 Lead marcado como confirmado');
+        await loadLeads(true);
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      }
+    };
+
+    window.deleteLead = async function (id) {
+      const l = leadsCache.find(x => x.id === id);
+      if (!l) return;
+      if (!confirm(`¿Eliminar el presupuesto de ${l.name || l.email}?`)) return;
+      try {
+        await apiAdminPost('api/leads.php', { action: 'delete', id });
+        showToast('Lead eliminado');
+        await loadLeads(true);
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      }
+    };
 
     document.getElementById('leads-show-all').addEventListener('change', renderLeadsTable);
     loadLeads();

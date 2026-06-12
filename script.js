@@ -1009,16 +1009,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cart.length > 0) updateCartUI();
   })();
 
-  // ---- VACIAR CARRITO ----
-  const cartClearBtn = document.getElementById('cart-clear-btn');
-  if (cartClearBtn) {
-    cartClearBtn.addEventListener('click', () => {
-      if (cart.length === 0) return;
-      if (!confirm('¿Seguro que quieres vaciar el carrito?')) return;
-      cart.splice(0, cart.length);
-      updateCartUI();
-    });
-  }
 
   function updateAddButtons() {
     document.querySelectorAll('.cart-add-btn').forEach(btn => {

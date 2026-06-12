@@ -34,7 +34,42 @@ if ($method !== 'POST') {
 
 $body   = read_body_json();
 $action = $body['action'] ?? '';
-$email  = safe_email($body['email'] ?? '');
+
+// ---- ACCIONES DE ADMIN (X-Admin-Key) ----
+// confirm → el admin ya lo ha gestionado (le llamó / cerró trato)
+// delete  → quitar el lead de la lista
+if ($action === 'confirm' || $action === 'delete') {
+    require_admin();
+    $id     = trim_str($body['id'] ?? '');
+    $lemail = safe_email($body['email'] ?? '');
+    if (!$id && !$lemail) json_error('Falta id o email');
+
+    $hit = 0;
+    with_locked_json('leads.json', function ($leads) use ($action, $id, $lemail, &$hit) {
+        if ($action === 'delete') {
+            $filtered = array_values(array_filter($leads, function ($l) use ($id, $lemail) {
+                if ($id && ($l['id'] ?? '') === $id) return false;
+                if ($lemail && strtolower($l['email'] ?? '') === $lemail) return false;
+                return true;
+            }));
+            $hit = count($leads) - count($filtered);
+            return $hit > 0 ? $filtered : null;
+        }
+        foreach ($leads as $i => $l) {
+            if (($id && ($l['id'] ?? '') === $id) || ($lemail && strtolower($l['email'] ?? '') === $lemail)) {
+                $leads[$i]['status']      = 'confirmado';
+                $leads[$i]['confirmedAt'] = date('c');
+                $hit = 1;
+                return $leads;
+            }
+        }
+        return null;
+    });
+    if (!$hit) json_error('Lead no encontrado', 404);
+    json_response(['ok' => true]);
+}
+
+$email = safe_email($body['email'] ?? '');
 if (!$email) json_error('Email requerido');
 
 // "price-viewed": el usuario tiene carrito / está mirando precios (upsert).
