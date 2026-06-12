@@ -689,10 +689,18 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Cada cambio de carrito actualiza el lead (debounce para no bombardear)
+  // Cada cambio de carrito actualiza el lead. El PRIMER artículo se registra
+  // al instante (si cierra la página a los 2 segundos, el lead ya existe);
+  // los siguientes cambios van con debounce para no bombardear al servidor.
   let leadSyncTimer = null;
+  let leadFirstSyncDone = false;
   function scheduleLeadSync() {
     if (cart.length === 0) return;
+    if (!leadFirstSyncDone) {
+      leadFirstSyncDone = true;
+      trackLead('price-viewed', leadCartPayload());
+      return;
+    }
     clearTimeout(leadSyncTimer);
     leadSyncTimer = setTimeout(() => trackLead('price-viewed', leadCartPayload()), 2500);
   }
@@ -700,14 +708,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Al cerrar/abandonar la página con carrito y sin haber enviado: aviso
   // inmediato al servidor (sendBeacon sobrevive al cierre de la pestaña).
   let budgetSentThisSession = false;
-  window.addEventListener('pagehide', () => {
+  function leadBeacon(action) {
     if (budgetSentThisSession || cart.length === 0) return;
     const user = getUser();
     if (!user || !user.email || user.role === 'admin') return;
-    const payload = Object.assign({ action: 'page-left', email: user.email }, leadCartPayload());
+    const payload = Object.assign({ action, email: user.email }, leadCartPayload());
     try {
       navigator.sendBeacon('api/leads.php', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
     } catch (e) { /* silencioso */ }
+  }
+  // page-left → además dispara el email de aviso inmediato en el servidor
+  window.addEventListener('pagehide', () => leadBeacon('page-left'));
+  // Respaldo: al pasar a segundo plano (cambio de pestaña, minimizar, cerrar
+  // en móvil) guarda el snapshot sin disparar email — en móvil muchas veces
+  // es la única señal que llega antes de que maten la página.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') leadBeacon('price-viewed');
   });
 
   // ---- BUDGET CONTACT MODAL ----
