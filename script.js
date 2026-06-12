@@ -1354,8 +1354,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeBtn     = document.getElementById('package-modal-close');
     const posters      = document.querySelectorAll('.package-poster');
     let currentPoster  = null;
+    let pendingPoster  = null; // montaje pulsado sin sesión — se reabre tras login
 
     function openModal(poster) {
+      // Los montajes requieren estar registrado: sin sesión → login/registro
+      // y, al completarlo, se reabre automáticamente este mismo montaje.
+      if (!isLoggedIn()) {
+        pendingPoster = poster;
+        if (!isRegisterMode) toggleAuthMode();
+        openAuthModal();
+        return;
+      }
+      pendingPoster = null;
       currentPoster = poster;
       const img = poster.querySelector('.poster-img');
       const title = poster.dataset.packageTitle || '';
@@ -1420,6 +1430,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.SonoplayGallery.open(currentPoster);
       });
     }
+
+    // Tras login/registro, continúa donde estaba: reabre el montaje pulsado
+    window.addEventListener('sonoplay:auth-changed', () => {
+      if (pendingPoster && isLoggedIn()) {
+        const poster = pendingPoster;
+        pendingPoster = null;
+        setTimeout(() => openModal(poster), 250); // deja cerrar el modal de auth
+      }
+    });
   })();
 
 });
