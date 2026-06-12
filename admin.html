@@ -618,7 +618,7 @@
               <input type="checkbox" id="leads-show-all" style="accent-color: var(--cyan);"> Mostrar también enviados
             </label>
           </div>
-          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Usuarios que vieron el precio de su presupuesto pero no llegaron a enviar la solicitud. Llámalos y hazles una oferta.</p>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">🟢 <strong>Activo</strong>: está montando su presupuesto ahora mismo. 🔥 <strong>Abandonado</strong>: cerró la página o lleva +15 min sin actividad y no envió la solicitud — llámalo y hazle una oferta.</p>
           <div style="overflow-x: auto;">
             <table class="users-table">
               <thead>
@@ -848,7 +848,7 @@
       }
       noUsers.style.display = 'none';
       list.innerHTML = usersCache.map((u, i) => {
-        const lead = leadsCache.find(l => l.email === (u.email || '').toLowerCase() && l.status === 'abandonado');
+        const lead = leadsCache.find(l => l.email === (u.email || '').toLowerCase() && leadState(l) === 'abandonado');
         const leadBadge = lead
           ? ' <span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:999px; vertical-align:middle; white-space:nowrap;">🔥 Presupuesto abandonado</span>'
           : '';
@@ -897,17 +897,28 @@
       return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     }
 
+    // Estado real de un lead:
+    //  - activo:     con actividad en los últimos 15 min y sin cerrar la página
+    //  - abandonado: cerró la página, o lleva +15 min sin actividad
+    //  - enviado:    completó la solicitud
+    const LEAD_ACTIVE_WINDOW_MS = 15 * 60 * 1000;
+    function leadState(l) {
+      if (l.status === 'enviado') return 'enviado';
+      const viewed = l.viewedAt ? new Date(l.viewedAt).getTime() : 0;
+      if (!l.left && viewed > Date.now() - LEAD_ACTIVE_WINDOW_MS) return 'activo';
+      return 'abandonado';
+    }
+
     function renderLeadsTable() {
       const list = document.getElementById('leads-list');
       const noLeads = document.getElementById('no-leads');
       const statLeads = document.getElementById('stat-leads');
       const showAll = document.getElementById('leads-show-all').checked;
 
-      const abandoned = leadsCache.filter(l => l.status === 'abandonado');
-      statLeads.textContent = abandoned.length;
+      statLeads.textContent = leadsCache.filter(l => leadState(l) === 'abandonado').length;
 
-      // Los más recientes primero
-      const visible = (showAll ? leadsCache.slice() : abandoned.slice())
+      // Los más recientes primero. Activos y abandonados siempre; enviados solo con el check.
+      const visible = leadsCache.filter(l => showAll || leadState(l) !== 'enviado')
         .sort((a, b) => (b.viewedAt || '').localeCompare(a.viewedAt || ''));
 
       if (visible.length === 0) {
@@ -921,9 +932,15 @@
         const phoneTd = l.phone
           ? `<a href="tel:${escapeHtml(l.phone.replace(/\s/g, ''))}" style="color: var(--cyan); font-weight: 700; text-decoration: none;">📞 ${escapeHtml(l.phone)}</a>`
           : '<span style="color: var(--text-muted);">sin teléfono</span>';
-        let statusBadge = l.status === 'abandonado'
-          ? '<span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🔥 Abandonado</span>'
-          : '<span style="display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.5); color:#22c55e; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">✅ Enviado</span>';
+        const state = leadState(l);
+        let statusBadge;
+        if (state === 'activo') {
+          statusBadge = '<span style="display:inline-block; background:rgba(6,182,212,0.15); border:1px solid rgba(6,182,212,0.5); color:var(--cyan); font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🟢 Activo ahora</span>';
+        } else if (state === 'abandonado') {
+          statusBadge = '<span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🔥 Abandonado</span>';
+        } else {
+          statusBadge = '<span style="display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.5); color:#22c55e; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">✅ Enviado</span>';
+        }
         if (l.notifiedAt) statusBadge += '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px; white-space:nowrap;">📧 Avisado ' + fmtDateTime(l.notifiedAt) + '</div>';
         const wedding = l.weddingDate ? `<div style="font-size:0.75rem; color:var(--text-muted);">Boda: ${escapeHtml(l.weddingDate)}</div>` : '';
         return `
@@ -940,6 +957,10 @@
 
     document.getElementById('leads-show-all').addEventListener('change', renderLeadsTable);
     loadLeads();
+
+    // El estado "Activo" caduca con el tiempo aunque no cambien los datos del
+    // servidor → repinta cada minuto para que pase a "Abandonado" solo.
+    setInterval(() => { renderLeadsTable(); renderUsersTable(); }, 60000);
 
     // -------- NOTIFICACIONES DE PRESUPUESTOS ABANDONADOS (solo admin) --------
     // Saltan en este dispositivo mientras el panel esté abierto en alguna

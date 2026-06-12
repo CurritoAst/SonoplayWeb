@@ -61,7 +61,7 @@ if ($action === 'price-viewed' || $action === 'page-left') {
         }
     }
 
-    with_locked_json('leads.json', function ($leads) use ($email, $name, $phone, $weddingDate, $dj, $total, $cart) {
+    with_locked_json('leads.json', function ($leads) use ($action, $email, $name, $phone, $weddingDate, $dj, $total, $cart) {
         $found = false;
         foreach ($leads as $idx => $l) {
             if (isset($l['email']) && strtolower($l['email']) === $email) {
@@ -78,6 +78,7 @@ if ($action === 'price-viewed' || $action === 'page-left') {
                     $leads[$idx]['notifiedAt'] = null;
                 }
                 $leads[$idx]['status']   = 'abandonado';
+                $leads[$idx]['left']     = ($action === 'page-left'); // cerró la página
                 $leads[$idx]['viewedAt'] = date('c');
                 $found = true;
                 break;
@@ -94,6 +95,7 @@ if ($action === 'price-viewed' || $action === 'page-left') {
                 'cart'        => $cart,
                 'total'       => $total,
                 'status'      => 'abandonado',
+                'left'        => ($action === 'page-left'),
                 'viewedAt'    => date('c'),
                 'sentAt'      => null,
                 'notifiedAt'  => null,
