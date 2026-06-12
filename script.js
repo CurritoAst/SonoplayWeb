@@ -234,14 +234,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ---- REVIEWS SLIDER ----
-  const track = document.getElementById('reviews-track');
-  if (track) {
+  // Reinicializable: se llama al cargar (reseñas estáticas del HTML) y de
+  // nuevo si llegan las reseñas reales de Google (api/reviews.php).
+  let revAutoplay = null;
+  let revResizeHandler = null;
+
+  function setupReviewsSlider() {
+    const track = document.getElementById('reviews-track');
+    if (!track) return;
     const slides = track.querySelectorAll('.reviews-slide');
+    if (slides.length === 0) return;
+
+    // Limpia restos de una inicialización anterior
+    if (revAutoplay) { clearInterval(revAutoplay); revAutoplay = null; }
+    if (revResizeHandler) { window.removeEventListener('resize', revResizeHandler); revResizeHandler = null; }
+
+    // Regenera los dots según el número de slides actual
+    const dotsWrap = document.querySelector('.rev-dots');
+    if (dotsWrap) {
+      dotsWrap.innerHTML = Array.from(slides)
+        .map((_, i) => '<span class="rev-dot' + (i === 0 ? ' active' : '') + '"></span>').join('');
+    }
     const dots = document.querySelectorAll('.rev-dot');
-    const prevBtn = document.getElementById('rev-prev');
-    const nextBtn = document.getElementById('rev-next');
+
+    // Clona las flechas para descartar listeners de inits anteriores
+    let prevBtn = document.getElementById('rev-prev');
+    let nextBtn = document.getElementById('rev-next');
+    if (!prevBtn || !nextBtn) return;
+    const prevClone = prevBtn.cloneNode(true);
+    const nextClone = nextBtn.cloneNode(true);
+    prevBtn.replaceWith(prevClone); prevBtn = prevClone;
+    nextBtn.replaceWith(nextClone); nextBtn = nextClone;
+
     let current = 0;
-    let autoPlay;
 
     // Measure height
     function setTrackHeight() {
@@ -286,24 +311,73 @@ document.addEventListener('DOMContentLoaded', () => {
         slide.style.pointerEvents = 'none';
         slide.style.transition = 'opacity 0.6s ease';
       } else {
+        slide.style.position = 'relative';
+        slide.style.opacity = '1';
         slide.style.transition = 'opacity 0.6s ease';
       }
     });
 
     setTrackHeight();
-    window.addEventListener('resize', setTrackHeight);
+    revResizeHandler = setTrackHeight;
+    window.addEventListener('resize', revResizeHandler);
 
     prevBtn.addEventListener('click', () => { goTo(current - 1); resetAuto(); });
     nextBtn.addEventListener('click', () => { goTo(current + 1); resetAuto(); });
     dots.forEach((dot, i) => dot.addEventListener('click', () => { goTo(i); resetAuto(); }));
 
     function resetAuto() {
-      clearInterval(autoPlay);
-      autoPlay = setInterval(() => goTo(current + 1), 5000);
+      clearInterval(revAutoplay);
+      revAutoplay = setInterval(() => goTo(current + 1), 5000);
     }
 
-    autoPlay = setInterval(() => goTo(current + 1), 5000);
+    revAutoplay = setInterval(() => goTo(current + 1), 5000);
   }
+  setupReviewsSlider();
+
+  // ---- RESEÑAS REALES DE GOOGLE ----
+  // Si api/reviews.php devuelve reseñas (Places API configurada), sustituyen
+  // a las estáticas del HTML. Si no, la sección se queda como está.
+  (function loadGoogleReviews() {
+    const track = document.getElementById('reviews-track');
+    if (!track) return;
+    fetch('api/reviews.php', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d || !d.ok || !Array.isArray(d.reviews) || d.reviews.length === 0) return;
+
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+          ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        const cards = d.reviews.map(rv => {
+          const initials = esc((rv.author || '?').trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase());
+          const stars = '★'.repeat(Math.max(1, Math.min(5, Math.round(rv.rating || 5))));
+          let text = String(rv.text || '').trim();
+          if (text.length > 260) text = text.slice(0, 257).trimEnd() + '…';
+          return '<div class="review-card">' +
+            '<div class="review-stars">' + stars + '</div>' +
+            '<p class="review-text">"' + esc(text) + '"</p>' +
+            '<div class="review-author">' +
+              '<div class="reviewer-avatar">' + initials + '</div>' +
+              '<div><span class="reviewer-name">' + esc(rv.author) + '</span>' +
+              '<span class="reviewer-date">Google · ' + esc(rv.relative || '') + '</span></div>' +
+            '</div></div>';
+        });
+
+        // Slides de 3 reseñas (mismo layout que las estáticas)
+        const slidesHtml = [];
+        for (let i = 0; i < cards.length; i += 3) {
+          slidesHtml.push('<div class="reviews-slide">' + cards.slice(i, i + 3).join('') + '</div>');
+        }
+        track.innerHTML = slidesHtml.join('');
+
+        // Nota media y nº de reseñas reales en toda la página
+        if (d.rating) document.querySelectorAll('[data-content-key="content-rating"]').forEach(el => { el.textContent = d.rating; });
+        if (d.total)  document.querySelectorAll('[data-content-key="content-reviews-count"]').forEach(el => { el.textContent = d.total; });
+
+        setupReviewsSlider();
+      })
+      .catch(() => { /* offline o sin configurar — se quedan las estáticas */ });
+  })();
 
   // ---- CONTACT FORM ----
   const form = document.getElementById('contact-form');
