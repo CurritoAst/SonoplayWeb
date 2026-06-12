@@ -1,0 +1,5 @@
+# Bloquear acceso directo a los archivos JSON desde el navegador.
+# Solo PHP (desde /api) puede leerlos vía filesystem.
+<RequireAll>
+  Require all denied
+</RequireAll>

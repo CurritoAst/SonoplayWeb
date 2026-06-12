@@ -28,16 +28,18 @@
   <meta name="twitter:image" content="https://sonoplay.es/images/logo-sonoplay.png" />
 
   <!-- ===== ICONOS ===== -->
-  <link rel="icon" type="image/jpeg" href="images/logo-sonoplay-dark.jpg" />
-  <link rel="apple-touch-icon" href="images/logo-sonoplay.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512.png" />
+  <link rel="apple-touch-icon" href="images/favicon-192.png" />
   <meta name="theme-color" content="#000000" />
 
   <!-- ===== FUENTES Y ESTILOS ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=11" />
-  <script defer src="auth-shared.js?v=2"></script>
+  <link rel="stylesheet" href="styles.css?v=17" />
+  <script defer src="auth-shared.js?v=5"></script>
 
   <!-- ===== GOOGLE ANALYTICS 4 ===== -->
   <!-- TODO: reemplaza G-XXXXXXXXXX por tu Measurement ID real de GA4 -->
@@ -75,7 +77,7 @@
   <nav id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="logo">
-        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 55px; width: auto;">
+        <img src="images/logosonoplay-largo.png" alt="SONOPLAY" style="height: 78px; width: auto;">
       </a>
       <button class="hamburger" id="hamburger" aria-label="Abrir menú">
         <span></span><span></span><span></span>
@@ -217,8 +219,9 @@
       <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 300; color: #fff; margin-bottom: 15px;">¿Tienes una feria o caseta a la vista?</h2>
       <p style="font-size: 1.1rem; color: var(--text); margin-bottom: 40px;">Cuéntanos las fechas, aforo y presupuesto — te enviamos propuesta en 24h.</p>
       <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-        <a href="tel:+34657468685" class="btn-primary">Llamar 657 46 86 85</a>
-        <a href="https://wa.me/34657468685?text=Hola%2C%20me%20interesa%20el%20servicio%20para%20ferias" target="_blank" rel="noopener" class="btn-ghost">WhatsApp</a>
+        <a href="tel:+34605216881" class="btn-primary">Llamar Ezequiel · 605 21 68 81</a>
+        <a href="tel:+34657468685" class="btn-primary">Llamar Administración · 657 46 86 85</a>
+        <a href="https://wa.me/34605216881?text=Hola%2C%20me%20interesa%20el%20servicio%20para%20ferias" target="_blank" rel="noopener" class="btn-ghost">WhatsApp</a>
       </div>
     </div>
   </section>
@@ -238,7 +241,7 @@
     <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.8;">
       <p>© 2025 SONOPLAY — Servicios Audiovisuales</p>
       <p>Calle Alfarero nº3 (Polígono ITV), Lebrija (Sevilla) · 41740</p>
-      <p>657 46 86 85 · <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none;">producciones@sonoplay.es</a></p>
+      <p><strong>Ezequiel:</strong> 605 21 68 81 · <strong>Administración:</strong> 657 46 86 85 · <a href="mailto:producciones@sonoplay.es" style="color: var(--text-muted); text-decoration: none;">producciones@sonoplay.es</a></p>
     </div>
   </footer>
 
@@ -308,6 +311,7 @@
   </script>
 
   <!-- Gallery (modal + lógica) — solo activo si hay cards con data-gallery-items -->
-  <script defer src="gallery.js?v=1"></script>
+  <script defer src="gallery.js?v=3"></script>
+  <script defer src="chatbot.js?v=5"></script>
 </body>
 </html>

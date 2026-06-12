@@ -1,21 +1,58 @@
 /* ============================================
-   SONOPLAY — Auth Modal (shared across all pages)
-   - Email/password (legado)
+   SONOPLAY — Auth Modal (compartido entre páginas)
+   - Email/password vía /api/users.php (servidor compartido)
    - Google Sign-In (Google Identity Services)
+   - Sesión local en localStorage 'sonoplay_user'
    ============================================ */
 
 const GOOGLE_CLIENT_ID = '453204425742-in0ohhppbgcnm1ig69o34hcsolt1v6pq.apps.googleusercontent.com';
-const ADMIN_EMAIL = 'producciones@sonoplay.es'; // siempre minúsculas
+const ADMIN_EMAIL = 'producciones@sonoplay.es'; // Email admin para Google Sign-In (lowercase)
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // Cuenta admin con email/password — hardcodeada como fallback de gestión.
+  // (Cualquier login con admin@sonoplay.es/admin123 funciona sin pasar por servidor.)
   const ADMIN_ACCOUNT = { email: 'admin@sonoplay.es', password: 'admin123', role: 'admin', name: 'Administrador' };
 
-  function getUser()  { return JSON.parse(localStorage.getItem('sonoplay_user') || 'null'); }
-  function getUsers() { return JSON.parse(localStorage.getItem('sonoplay_users') || '[]'); }
-  function saveUsers(users) { localStorage.setItem('sonoplay_users', JSON.stringify(users)); }
+  function getUser()    { return JSON.parse(localStorage.getItem('sonoplay_user') || 'null'); }
   function isLoggedIn() { return !!getUser(); }
-  function isAdmin()  { const u = getUser(); return u && u.role === 'admin'; }
+  function isAdmin()    { const u = getUser(); return u && u.role === 'admin'; }
+
+  // ---------- API HELPERS ----------
+  async function apiPost(action, payload) {
+    const res = await fetch('api/users.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.assign({ action }, payload || {}))
+    });
+    const txt = await res.text();
+    let data;
+    try { data = JSON.parse(txt); }
+    catch (e) { throw new Error('Respuesta inválida del servidor'); }
+    return data;
+  }
+
+  // ---------- AUTO-MIGRACIÓN SILENCIOSA ----------
+  // Si este navegador tiene usuarios registrados antes de la migración al servidor
+  // (en localStorage 'sonoplay_users'), los sube en background. La operación es
+  // idempotente — duplicados se ignoran. Tras éxito, limpia la caché local para
+  // no repetir la llamada en cada visita.
+  (async function autoMigrateLegacyUsers() {
+    try {
+      const raw = localStorage.getItem('sonoplay_users');
+      if (!raw) return;
+      const local = JSON.parse(raw);
+      if (!Array.isArray(local) || local.length === 0) return;
+      const r = await apiPost('migrate', { users: local });
+      if (r && r.ok) {
+        // Datos ya en servidor: limpiamos para no reenviar en futuras visitas
+        localStorage.removeItem('sonoplay_users');
+        if (r.added > 0) console.info('[Sonoplay] Migración automática: ' + r.added + ' usuario(s) sincronizado(s) al servidor');
+      }
+    } catch (e) {
+      // Silencioso — si el servidor no responde, lo intentamos en la siguiente visita
+    }
+  })();
 
   const authModal      = document.getElementById('auth-modal');
   const authForm       = document.getElementById('auth-form');
@@ -36,6 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideAuthError()    { authError.style.display = 'none'; }
   function openAuthModal()    { authModal.style.display = 'flex'; hideAuthError(); }
 
+  function setSubmitting(busy) {
+    if (!authSubmit) return;
+    authSubmit.disabled = !!busy;
+    if (busy) {
+      authSubmit.dataset.originalText = authSubmit.dataset.originalText || authSubmit.textContent;
+      authSubmit.textContent = 'Cargando…';
+    } else if (authSubmit.dataset.originalText) {
+      authSubmit.textContent = authSubmit.dataset.originalText;
+    }
+  }
+
   function toggleAuthMode() {
     isRegisterMode = !isRegisterMode;
     if (isRegisterMode) {
@@ -53,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
       authNameField.style.display  = 'none';
       authPhoneField.style.display = 'none';
     }
+    delete authSubmit.dataset.originalText;
     hideAuthError();
   }
 
@@ -69,32 +118,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   authToggle.addEventListener('click', (e) => { e.preventDefault(); toggleAuthMode(); });
 
-  authForm.addEventListener('submit', (e) => {
+  authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    hideAuthError();
     const email    = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-pass').value;
     const name     = document.getElementById('auth-name').value.trim();
     const phone    = document.getElementById('auth-phone').value.trim();
 
+    if (!email || !password) { showAuthError('Email y contraseña son obligatorios'); return; }
+
     if (isRegisterMode) {
       if (!name) { showAuthError('Introduce tu nombre'); return; }
-      const users = getUsers();
-      if (users.find(u => u.email === email)) { showAuthError('Este email ya está registrado'); return; }
-      const newUser = { name, email, password, phone, role: 'user', date: new Date().toLocaleDateString('es-ES') };
-      users.push(newUser);
-      saveUsers(users);
-      localStorage.setItem('sonoplay_user', JSON.stringify(newUser));
+      setSubmitting(true);
+      try {
+        const r = await apiPost('register', { name, email, password, phone });
+        if (!r.ok) { showAuthError(r.error || 'Error en el registro'); return; }
+        // Sesión local con el usuario devuelto por el servidor
+        localStorage.setItem('sonoplay_user', JSON.stringify(r.user));
+      } catch (err) {
+        showAuthError('No se pudo conectar al servidor. Inténtalo de nuevo.');
+        return;
+      } finally {
+        setSubmitting(false);
+      }
     } else {
+      // Login admin: fallback hardcoded sin servidor
       if (email === ADMIN_ACCOUNT.email && password === ADMIN_ACCOUNT.password) {
         localStorage.setItem('sonoplay_user', JSON.stringify(ADMIN_ACCOUNT));
         authModal.style.display = 'none';
         updateAuthUI();
         return;
       }
-      const users = getUsers();
-      const user  = users.find(u => u.email === email && u.password === password);
-      if (!user) { showAuthError('Email o contraseña incorrectos'); return; }
-      localStorage.setItem('sonoplay_user', JSON.stringify(user));
+      // Login usuario normal: pasa por servidor
+      setSubmitting(true);
+      try {
+        let r = await apiPost('login', { email, password });
+        if (!r.ok) {
+          // FALLBACK PARA USUARIOS LEGACY:
+          // Si el servidor no tiene este usuario pero lo encontramos en localStorage
+          // (registrado antes de la migración en este navegador), lo damos de alta
+          // automáticamente en el servidor y reintentamos el login.
+          const localRaw = localStorage.getItem('sonoplay_users');
+          const localUsers = localRaw ? JSON.parse(localRaw) : [];
+          const legacy = Array.isArray(localUsers)
+            ? localUsers.find(u => u && u.email === email && u.password === password)
+            : null;
+          if (legacy) {
+            const reg = await apiPost('register', {
+              name:  legacy.name  || email.split('@')[0],
+              email: legacy.email,
+              password: password,
+              phone: legacy.phone || ''
+            });
+            if (reg && reg.ok) {
+              r = await apiPost('login', { email, password });
+            }
+          }
+        }
+        if (!r.ok) { showAuthError(r.error || 'Email o contraseña incorrectos'); return; }
+        localStorage.setItem('sonoplay_user', JSON.stringify(r.user));
+      } catch (err) {
+        showAuthError('No se pudo conectar al servidor. Inténtalo de nuevo.');
+        return;
+      } finally {
+        setSubmitting(false);
+      }
     }
     authModal.style.display = 'none';
     updateAuthUI();
@@ -140,44 +229,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function handleGoogleCredential(response) {
+  async function handleGoogleCredential(response) {
     const payload = decodeJwtPayload(response.credential);
     if (!payload || !payload.email) {
       showAuthError('No pudimos verificar tu cuenta de Google. Inténtalo de nuevo.');
       return;
     }
-    const email   = String(payload.email).toLowerCase();
-    const name    = payload.name || payload.given_name || email.split('@')[0];
-    const picture = payload.picture || null;
+    const email    = String(payload.email).toLowerCase();
+    const name     = payload.name || payload.given_name || email.split('@')[0];
+    const picture  = payload.picture || null;
+    const googleId = payload.sub || '';
     const isAdminEmail = email === ADMIN_EMAIL;
 
-    const user = {
-      name,
-      email,
-      picture,
-      phone: '',
-      role: isAdminEmail ? 'admin' : 'user',
-      provider: 'google',
-      date: new Date().toLocaleDateString('es-ES')
-    };
-
-    // Para usuarios normales: añadir al listado si no existe
-    if (!isAdminEmail) {
-      const users = getUsers();
-      if (!users.find(u => u.email === email)) {
-        users.push({ ...user, password: null });
-        saveUsers(users);
-      }
-    }
-
-    localStorage.setItem('sonoplay_user', JSON.stringify(user));
-    authModal.style.display = 'none';
-    updateAuthUI();
-
-    // Si es admin, redirigir directamente al panel
     if (isAdminEmail) {
+      // Admin vía Google: sesión local, redirige al panel
+      const user = { name, email, picture, phone: '', role: 'admin', provider: 'google', date: new Date().toLocaleDateString('es-ES') };
+      localStorage.setItem('sonoplay_user', JSON.stringify(user));
+      authModal.style.display = 'none';
+      updateAuthUI();
       window.location.href = 'admin.html';
+      return;
     }
+
+    // Usuario normal: registramos/loggeamos en el servidor
+    try {
+      const r = await apiPost('google', { email, name, googleId });
+      if (!r.ok) { showAuthError(r.error || 'Error iniciando sesión con Google'); return; }
+      const user = Object.assign({}, r.user, { picture, provider: 'google' });
+      localStorage.setItem('sonoplay_user', JSON.stringify(user));
+      authModal.style.display = 'none';
+      updateAuthUI();
+
+      // Si el usuario Google no tiene teléfono guardado, lo pedimos antes de continuar.
+      // Aparece la primera vez tras registrarse y en cada login hasta que lo introduzca.
+      if (!user.phone) {
+        showPhonePrompt({ email, googleId, name });
+      }
+    } catch (err) {
+      showAuthError('No se pudo conectar al servidor.');
+    }
+  }
+
+  // ---------- MODAL PEDIR TELÉFONO (usuarios Google) ----------
+  function showPhonePrompt(ctx) {
+    if (document.getElementById('phone-prompt-overlay')) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'phone-prompt-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.25s;';
+    overlay.innerHTML =
+      '<div style="background:var(--dark2,#151520);border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:20px;padding:36px 30px;max-width:420px;width:100%;text-align:center;animation:cartSlideIn 0.3s;">' +
+        '<div style="font-size:2.5rem;margin-bottom:10px;">📱</div>' +
+        '<h3 style="color:#fff;font-size:1.35rem;font-weight:700;margin:0 0 8px;">¡Bienvenido' + (ctx.name ? ', ' + escapeHTML(ctx.name.split(' ')[0]) : '') + '! 👋</h3>' +
+        '<p style="color:var(--text-muted,#9ca3af);font-size:0.92rem;line-height:1.5;margin:0 0 22px;">Para terminar de configurar tu cuenta y que podamos contactarte rápido con tu presupuesto, déjanos tu <strong style="color:var(--cyan,#06b6d4);">número de teléfono</strong>.</p>' +
+        '<form id="phone-prompt-form">' +
+          '<input type="tel" id="phone-prompt-input" placeholder="Ej. 600 12 34 56" required autocomplete="tel" inputmode="tel" style="width:100%;background:var(--dark3,#1f1f2e);border:1px solid var(--border,rgba(255,255,255,0.1));color:#fff;padding:14px 16px;border-radius:12px;font-size:1rem;margin-bottom:8px;font-family:inherit;outline:none;text-align:center;letter-spacing:0.05em;" />' +
+          '<div id="phone-prompt-error" style="display:none;color:#ef4444;font-size:0.85rem;margin:6px 0 12px;"></div>' +
+          '<button type="submit" id="phone-prompt-submit" style="width:100%;background:var(--cyan,#06b6d4);color:#000;border:none;padding:14px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit;transition:opacity 0.2s;">Guardar y continuar</button>' +
+        '</form>' +
+        '<button type="button" id="phone-prompt-skip" style="background:none;border:none;color:var(--text-muted,#9ca3af);font-size:0.82rem;cursor:pointer;margin-top:14px;text-decoration:underline;font-family:inherit;">Lo dejo para más tarde</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    const form    = overlay.querySelector('#phone-prompt-form');
+    const input   = overlay.querySelector('#phone-prompt-input');
+    const errEl   = overlay.querySelector('#phone-prompt-error');
+    const submit  = overlay.querySelector('#phone-prompt-submit');
+    const skipBtn = overlay.querySelector('#phone-prompt-skip');
+
+    setTimeout(() => input.focus(), 100);
+
+    function showErr(msg) { errEl.textContent = msg; errEl.style.display = 'block'; }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.style.display = 'none';
+      const phone = input.value.trim();
+      if (phone.replace(/\D/g, '').length < 6) { showErr('Introduce un teléfono válido'); return; }
+
+      submit.disabled = true;
+      submit.textContent = 'Guardando…';
+      try {
+        const r = await apiPost('update-phone', { email: ctx.email, googleId: ctx.googleId, phone });
+        if (!r || !r.ok) { showErr((r && r.error) || 'Error al guardar el teléfono'); return; }
+        // Actualiza la sesión local con el teléfono nuevo
+        const u = getUser();
+        if (u) { u.phone = phone; localStorage.setItem('sonoplay_user', JSON.stringify(u)); }
+        overlay.remove();
+      } catch (err) {
+        showErr('No se pudo conectar al servidor');
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Guardar y continuar';
+      }
+    });
+
+    skipBtn.addEventListener('click', () => overlay.remove());
+  }
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
   // Inyectar el "o" + el contenedor del botón Google en el modal
@@ -224,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (document.querySelector('script[data-gsi]')) {
-      // Ya cargando — esperar
       const wait = setInterval(() => {
         if (renderGoogleButton()) clearInterval(wait);
       }, 200);

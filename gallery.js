@@ -39,9 +39,10 @@
   }
 
   function init() {
-    // Solo inicializa si hay al menos una card con galería
-    const cards = document.querySelectorAll('.festival-card[data-gallery-items]');
-    if (!cards.length) return;
+    // Solo inicializa si hay al menos una card con galería.
+    // Excluimos .package-poster porque tienen su propio modal — la galería se abre desde ese modal.
+    const cards = document.querySelectorAll('[data-gallery-items]:not(.package-poster)');
+    if (!cards.length && !document.querySelector('.package-poster')) return;
 
     injectModal();
 
@@ -122,12 +123,12 @@
 
     // Click en imagen abre galería
     cards.forEach(function (card) {
-      const img = card.querySelector('.festival-card-image');
-      if (!img) return;
-      img.addEventListener('click', function () { openGallery(card); });
-      img.setAttribute('role', 'button');
-      img.setAttribute('tabindex', '0');
-      img.addEventListener('keydown', function (e) {
+      const trigger = card.querySelector('.festival-card-image, .wedding-package-media') || card;
+      trigger.addEventListener('click', function () { openGallery(card); });
+      trigger.setAttribute('role', 'button');
+      trigger.setAttribute('tabindex', '0');
+      trigger.style.cursor = 'pointer';
+      trigger.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           openGallery(card);
@@ -168,6 +169,13 @@
         }
       });
     });
+
+    // Exposición pública: permite abrir la galería desde otros scripts
+    // pasando un elemento con data-gallery-items, data-gallery-title, data-gallery-meta.
+    window.SonoplayGallery = window.SonoplayGallery || {};
+    window.SonoplayGallery.open = function (card) {
+      if (card) openGallery(card);
+    };
   }
 
   if (document.readyState === 'loading') {
