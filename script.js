@@ -6,6 +6,30 @@ const supabaseUrl = 'https://srkhevcgfuqchidmzdtb.supabase.co';
 const supabaseKey = 'sb_publishable_LqVWg8_0_ocYfxH4be7Y6Q_rs55mQmz';
 const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
+/**
+ * Sincroniza precios y contenido editable desde el servidor en background.
+ * Los datos se cachean en localStorage para que el resto del script (que ya
+ * lee de localStorage) los use al instante. Si el servidor falla, se sigue
+ * usando lo que haya en caché — no se rompe la web.
+ */
+(function syncServerData() {
+  function fetchTo(localKey, url, field) {
+    fetch(url, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d || !d.ok) return;
+        const data = d[field] || {};
+        if (Object.keys(data).length === 0) return; // no sobreescribimos con vacío
+        localStorage.setItem(localKey, JSON.stringify(data));
+        // Notificamos para que las páginas puedan reaccionar a cambios live
+        window.dispatchEvent(new CustomEvent('sonoplay:' + field + '-updated', { detail: data }));
+      })
+      .catch(() => { /* offline — silencioso */ });
+  }
+  fetchTo('sonoplay_prices',  'api/prices.php',  'prices');
+  fetchTo('sonoplay_content', 'api/content.php', 'content');
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // ---- NAVBAR SCROLL ----
@@ -569,6 +593,24 @@ document.addEventListener('DOMContentLoaded', () => {
   cartClose.addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', closeCart);
 
+  // ---- LEADS (presupuestos abandonados) ----
+  // Avisa al servidor cuando un usuario logueado VE el precio de su presupuesto
+  // (abre el modal) y cuando finalmente ENVÍA la solicitud. Con eso el admin
+  // detecta leads calientes: vieron el precio pero no completaron.
+  function trackLead(action, extra) {
+    const user = getUser();
+    if (!user || !user.email || user.role === 'admin') return;
+    const payload = Object.assign({ action, email: user.email }, extra || {});
+    try {
+      fetch('api/leads.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(() => {});
+    } catch (e) { /* silencioso — el tracking nunca debe romper la web */ }
+  }
+
   // ---- BUDGET CONTACT MODAL ----
   const budgetOverlay = document.getElementById('budget-modal-overlay');
   const budgetCloseBtn = document.getElementById('budget-modal-close');
@@ -624,12 +666,97 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     waMsg += '\n¿Podrían darme más información? ¡Gracias!';
-    budgetWhatsappBtn.href = 'https://wa.me/34657468685?text=' + encodeURIComponent(waMsg);
+    const waUrl = 'https://wa.me/34605216881?text=' + encodeURIComponent(waMsg);
+    if (budgetWhatsappBtn) budgetWhatsappBtn.href = waUrl;
+    const budgetWhatsappBtnThanks = document.getElementById('budget-whatsapp-btn-thanks');
+    if (budgetWhatsappBtnThanks) budgetWhatsappBtnThanks.href = waUrl;
+
+    // Resetear al estado FORMULARIO al abrir
+    const formState = document.getElementById('budget-form-state');
+    const thanksState = document.getElementById('budget-thanks-state');
+    if (formState && thanksState) {
+      formState.style.display = '';
+      thanksState.style.display = 'none';
+    }
+    const errEl = document.getElementById('budget-form-error');
+    if (errEl) errEl.style.display = 'none';
+
+    // Lead caliente: el usuario está viendo el precio de su presupuesto
+    if (cart.length > 0) {
+      const user = getUser() || {};
+      const djItem = cart.find(it => it.isDj);
+      const savedP = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+      const dThreshold = savedP['discount-threshold'] !== undefined ? parseFloat(savedP['discount-threshold']) : 4000;
+      const dPercent = savedP['discount-percent'] !== undefined ? parseFloat(savedP['discount-percent']) : 10;
+      const seenTotal = (dThreshold > 0 && total >= dThreshold && dPercent > 0)
+        ? total - total * (dPercent / 100) : total;
+      trackLead('price-viewed', {
+        name: user.name || '',
+        phone: user.phone || '',
+        weddingDate: user.weddingDate || '',
+        dj: djItem ? djItem.name : '',
+        cart: cart.map(it => ({ name: it.name, price: it.price * it.qty, qty: it.qty })),
+        total: Math.round(seenTotal * 100) / 100
+      });
+    }
 
     closeCart();
     budgetOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
   }
+
+  // ---- BUDGET FORM SUBMIT ----
+  const budgetForm = document.getElementById('budget-form');
+  if (budgetForm) {
+    budgetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('budget-form-error');
+      const submitBtn = document.getElementById('budget-form-submit');
+      const name = document.getElementById('budget-name').value.trim();
+      const description = document.getElementById('budget-description').value.trim();
+      const hp = budgetForm.querySelector('input[name="_hp"]').value;
+
+      errEl.style.display = 'none';
+      if (name.length < 2) { errEl.textContent = 'Introduce tu nombre.'; errEl.style.display = 'block'; return; }
+      if (description.length < 10) { errEl.textContent = 'Cuéntanos un poco más sobre tu evento.'; errEl.style.display = 'block'; return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando…';
+
+      // Construye snapshot del carrito para enviar al servidor
+      const cartSnapshot = cart.map(it => ({ name: it.name, price: it.price * it.qty, qty: it.qty }));
+      const pkgItem = cart.find(it => it.isPackage);
+      const packageLabel = pkgItem ? pkgItem.name : '';
+
+      try {
+        const res = await fetch('api/budget.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description, cart: cartSnapshot, package: packageLabel, _hp: hp })
+        });
+        const data = await res.json().catch(() => ({ ok: false, error: 'Respuesta inválida' }));
+        if (!res.ok || !data.ok) {
+          errEl.textContent = data.error || 'No se pudo enviar. Inténtalo de nuevo.';
+          errEl.style.display = 'block';
+          return;
+        }
+        // Éxito → muestra estado de gracias
+        trackLead('budget-sent');
+        document.getElementById('budget-form-state').style.display = 'none';
+        document.getElementById('budget-thanks-state').style.display = '';
+        budgetForm.reset();
+      } catch (err) {
+        errEl.textContent = 'No se pudo conectar. Inténtalo de nuevo.';
+        errEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar solicitud';
+      }
+    });
+  }
+
+  const budgetCloseThanks = document.getElementById('budget-modal-close-thanks');
+  if (budgetCloseThanks) budgetCloseThanks.addEventListener('click', () => closeBudgetModal());
 
   function closeBudgetModal() {
     budgetOverlay.style.display = 'none';
@@ -879,13 +1006,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return JSON.parse(localStorage.getItem('sonoplay_user') || 'null');
   }
 
-  function getUsers() {
-    return JSON.parse(localStorage.getItem('sonoplay_users') || '[]');
-  }
-
-  function saveUsers(users) {
-    localStorage.setItem('sonoplay_users', JSON.stringify(users));
-  }
+  // NOTA: el registro/login real lo gestiona auth-shared.js (servidor compartido).
+  // Aquí solo guardamos helpers de SESIÓN local (sonoplay_user) que usan otras
+  // partes de script.js — la lista de usuarios YA NO se guarda en localStorage.
 
   function isLoggedIn() {
     return !!getUser();
@@ -944,182 +1067,6 @@ document.addEventListener('DOMContentLoaded', () => {
     hideAuthError();
   }
 
-  authToggle.addEventListener('click', (e) => { e.preventDefault(); toggleAuthMode(); });
-
-  // Submit login/register
-  authForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-pass').value;
-    const name = document.getElementById('auth-name').value.trim();
-    const phone = document.getElementById('auth-phone').value.trim();
-
-    if (isRegisterMode) {
-      // Register
-      if (!name) { showAuthError('Introduce tu nombre'); return; }
-      const users = getUsers();
-      if (users.find(u => u.email === email)) { showAuthError('Este email ya está registrado'); return; }
-      const newUser = { name, email, password, phone, role: 'user', date: new Date().toLocaleDateString('es-ES') };
-      users.push(newUser);
-      saveUsers(users);
-      localStorage.setItem('sonoplay_user', JSON.stringify(newUser));
-    } else {
-      // Login
-      if (email === ADMIN_ACCOUNT.email && password === ADMIN_ACCOUNT.password) {
-        localStorage.setItem('sonoplay_user', JSON.stringify(ADMIN_ACCOUNT));
-        authModal.style.display = 'none';
-        updateAuthUI();
-        applyPriceVisibility();
-        applyExtrasVisibility();
-        checkPendingBudgetFlow();
-        return;
-      }
-      const users = getUsers();
-      const user = users.find(u => u.email === email && u.password === password);
-      if (!user) { showAuthError('Email o contraseña incorrectos'); return; }
-      localStorage.setItem('sonoplay_user', JSON.stringify(user));
-    }
-
-    authModal.style.display = 'none';
-    updateAuthUI();
-    applyPriceVisibility();
-    applyExtrasVisibility();
-    checkPendingBudgetFlow();
-  });
-
-  // Nav login button
-  navLoginBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (isLoggedIn()) {
-      if (isAdmin()) {
-        window.location.href = 'admin.html';
-      } else {
-        // Logout
-        localStorage.removeItem('sonoplay_user');
-        updateAuthUI();
-        applyPriceVisibility();
-        applyExtrasVisibility();
-      }
-    } else {
-      openAuthModal();
-    }
-  });
-
-  // Close modal clicking outside
-  authModal.addEventListener('click', (e) => {
-    if (e.target === authModal) authModal.style.display = 'none';
-  });
-
-  // ---- GOOGLE SIGN-IN ----
-  const GOOGLE_CLIENT_ID = '453204425742-in0ohhppbgcnm1ig69o34hcsolt1v6pq.apps.googleusercontent.com';
-  const ADMIN_EMAIL = 'producciones@sonoplay.es';
-
-  function decodeJwtPayload(jwt) {
-    try {
-      const base64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      const padded = base64 + '=='.slice(0, (4 - base64.length % 4) % 4);
-      const json = decodeURIComponent(atob(padded).split('').map(c =>
-        '%' + c.charCodeAt(0).toString(16).padStart(2, '0')
-      ).join(''));
-      return JSON.parse(json);
-    } catch (e) {
-      console.error('Error decoding Google JWT', e);
-      return null;
-    }
-  }
-
-  function handleGoogleCredential(response) {
-    const payload = decodeJwtPayload(response.credential);
-    if (!payload || !payload.email) {
-      showAuthError('No pudimos verificar tu cuenta de Google. Inténtalo de nuevo.');
-      return;
-    }
-    const email   = String(payload.email).toLowerCase();
-    const name    = payload.name || payload.given_name || email.split('@')[0];
-    const picture = payload.picture || null;
-    const isAdminEmail = email === ADMIN_EMAIL;
-
-    const user = {
-      name, email, picture,
-      phone: '',
-      role: isAdminEmail ? 'admin' : 'user',
-      provider: 'google',
-      date: new Date().toLocaleDateString('es-ES')
-    };
-
-    if (!isAdminEmail) {
-      const users = getUsers();
-      if (!users.find(u => u.email === email)) {
-        users.push({ ...user, password: null });
-        saveUsers(users);
-      }
-    }
-
-    localStorage.setItem('sonoplay_user', JSON.stringify(user));
-    authModal.style.display = 'none';
-    updateAuthUI();
-    applyPriceVisibility();
-    applyExtrasVisibility();
-    checkPendingBudgetFlow();
-
-    if (isAdminEmail) {
-      window.location.href = 'admin.html';
-    }
-  }
-
-  function injectGoogleSection() {
-    if (document.getElementById('google-signin-btn')) return;
-    const divider = document.createElement('div');
-    divider.className = 'auth-divider';
-    divider.textContent = 'o';
-    const btnWrap = document.createElement('div');
-    btnWrap.id = 'google-signin-btn';
-    btnWrap.style.cssText = 'display:flex;justify-content:center;margin-top:6px;';
-    authForm.insertAdjacentElement('afterend', btnWrap);
-    authForm.insertAdjacentElement('afterend', divider);
-  }
-
-  function renderGoogleButton() {
-    if (!window.google || !google.accounts || !google.accounts.id) return false;
-    const btn = document.getElementById('google-signin-btn');
-    if (!btn) return false;
-    if (btn.dataset.rendered === '1') return true;
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential,
-      auto_select: false,
-      cancel_on_tap_outside: true
-    });
-    google.accounts.id.renderButton(btn, {
-      theme: 'filled_black',
-      size: 'large',
-      text: 'continue_with',
-      shape: 'rectangular',
-      logo_alignment: 'left',
-      width: 280
-    });
-    btn.dataset.rendered = '1';
-    return true;
-  }
-
-  (function loadGoogleScriptAndRender() {
-    injectGoogleSection();
-    if (window.google && google.accounts && google.accounts.id) {
-      renderGoogleButton();
-      return;
-    }
-    if (document.querySelector('script[data-gsi]')) {
-      const wait = setInterval(() => { if (renderGoogleButton()) clearInterval(wait); }, 200);
-      return;
-    }
-    const s = document.createElement('script');
-    s.src = 'https://accounts.google.com/gsi/client';
-    s.async = true;
-    s.defer = true;
-    s.dataset.gsi = '1';
-    s.onload = renderGoogleButton;
-    document.head.appendChild(s);
-  })();
 
   // ---- CREA TU PRESUPUESTO FLOW ----
   window.pendingBudgetFlow = false;
@@ -1280,8 +1227,8 @@ document.addEventListener('DOMContentLoaded', () => {
   applyPriceVisibility();
   applyExtrasVisibility();
 
-  // ---- APPLY ADMIN PRICES ----
-  (function applyAdminPrices() {
+  // ---- APPLY ADMIN PRICES (puede llamarse varias veces si llega update del server) ----
+  function applyAdminPrices() {
     const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
 
     function formatPrice(val, useDot) {
@@ -1298,18 +1245,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const val = prices[key];
 
       if (el.tagName === 'BUTTON') {
-        // Update data-price on cart buttons
         el.dataset.price = val;
       } else if (el.tagName === 'P' && el.dataset.suffix) {
-        // DJ extra hour special format
         el.textContent = 'Hora extra: ' + val + ' €' + el.dataset.suffix;
       } else if (el.tagName === 'P') {
-        // Price display
         el.textContent = formatPrice(val, el.dataset.format === 'dot');
       }
     });
 
-    // Extras prices
     document.querySelectorAll('[data-extra-key]').forEach(el => {
       const key = el.dataset.extraKey;
       if (prices[key] === undefined) return;
@@ -1327,7 +1270,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Update subtotal unit prices
     document.querySelectorAll('.qty-subtotal').forEach(sub => {
       const input = document.getElementById(sub.dataset.qtyInput);
       if (!input) return;
@@ -1338,10 +1280,12 @@ document.addEventListener('DOMContentLoaded', () => {
         sub.textContent = '= ' + (parseFloat(btn.dataset.price) * qty) + ' €';
       }
     });
-  })();
+  }
+  applyAdminPrices();
+  window.addEventListener('sonoplay:prices-updated', applyAdminPrices);
 
-  // ---- APPLY ADMIN CONTENT ----
-  (function applyAdminContent() {
+  // ---- APPLY ADMIN CONTENT (puede llamarse varias veces si llega update del server) ----
+  function applyAdminContent() {
     const content = JSON.parse(localStorage.getItem('sonoplay_content') || '{}');
 
     Object.keys(content).forEach(key => {
@@ -1350,98 +1294,104 @@ document.addEventListener('DOMContentLoaded', () => {
           el.textContent = content[key];
           if (key === 'content-email') el.href = 'mailto:' + content[key];
         } else if (el.dataset.contentTarget) {
-          // Counter target
           el.dataset.target = content[key];
         } else {
           el.textContent = content[key];
         }
       });
-      // Also update counter targets
       document.querySelectorAll(`[data-content-target="${key}"]`).forEach(el => {
         el.dataset.target = content[key];
       });
     });
-  })();
+  }
+  applyAdminContent();
+  window.addEventListener('sonoplay:content-updated', applyAdminContent);
 
-  // ---- LOAD ADMIN IMAGES ----
-  (function loadAdminImages() {
-    const imageMap = {
-      'logo': 'images/logosonoplay-largo.png',
-      'dj-juanfran': 'images/dj-juanfran.jpg',
-      'dj-rafa': 'images/dj-rafa-new.png',
-      'dj-jr': 'images/dj-jr.jpg',
-      'dj-celu': 'images/dj-celu.jpg',
-      'dj-cristian': 'images/dj-cristian-white.png',
-      'dj-manu': 'images/foto-manu.jpeg',
-      'logo-juanfran': 'images/logo-juanfran.png',
-      'logo-rafa': 'images/logo-rafa.png',
-      'logo-jr': 'images/logo-jr-white.png',
-      'logo-celu': 'images/logo-celu.png',
-      'logo-cristian': 'images/logo-cristian-v3.png',
-      'logo-manu': 'images/logo-manu.png',
-      'foto-hexa': 'images/foto-hexa.jpeg',
-      'foto-basic': 'images/foto-basic.jpeg',
-      'foto-totems': 'images/foto-totems.jpeg',
-      'foto-duo': 'images/foto-duo.jpeg',
-      'foto-cubo': 'images/foto-cubo.jpeg',
-      'foto-equis': 'images/foto-equis.jpeg',
-      'foto-ceremonia': 'images/foto-ceremonia.jpeg'
-    };
 
-    // Tag all matching imgs with their key so future updates can find them
-    // even after src has been replaced with a data URL.
-    Object.keys(imageMap).forEach(key => {
-      const defaultSrc = imageMap[key];
-      document.querySelectorAll(`img[src="${defaultSrc}"]`).forEach(img => {
-        if (!img.dataset.imgKey) {
-          img.dataset.imgKey = key;
-          img.dataset.imgDefault = defaultSrc;
+  // ============================================
+  // PACKAGE MODAL — Card deck para Opciones de Montaje
+  // Cada .package-poster contiene un .poster-full-content oculto que se clona
+  // dentro del modal cuando se pulsa el poster. El botón "Añadir al presupuesto"
+  // clonado dispara click() sobre el botón original (que sí tiene handler real),
+  // así no duplicamos la lógica del carrito.
+  // ============================================
+  (function setupPackageModal() {
+    const overlay = document.getElementById('package-modal-overlay');
+    if (!overlay) return;
+
+    const modalImg     = document.getElementById('package-modal-img');
+    const modalTitle   = document.getElementById('package-modal-title');
+    const modalBody    = document.getElementById('package-modal-body');
+    const galleryBtn   = document.getElementById('package-modal-gallery-btn');
+    const closeBtn     = document.getElementById('package-modal-close');
+    const posters      = document.querySelectorAll('.package-poster');
+    let currentPoster  = null;
+
+    function openModal(poster) {
+      currentPoster = poster;
+      const img = poster.querySelector('.poster-img');
+      const title = poster.dataset.packageTitle || '';
+      const fullContent = poster.querySelector('.poster-full-content');
+
+      modalImg.src = img ? img.src : '';
+      modalImg.alt = img ? (img.alt || title) : title;
+      modalTitle.textContent = title;
+
+      modalBody.innerHTML = '';
+      if (fullContent) {
+        Array.from(fullContent.children).forEach(child => {
+          modalBody.appendChild(child.cloneNode(true));
+        });
+      }
+
+      // Wire del botón "Añadir al presupuesto" clonado: dispara click en el original
+      const clonedBtn = modalBody.querySelector('.cart-add-btn');
+      const originalBtn = fullContent ? fullContent.querySelector('.cart-add-btn') : null;
+      if (clonedBtn && originalBtn) {
+        clonedBtn.addEventListener('click', () => {
+          originalBtn.click();
+          // Sincroniza el texto/estado del botón clonado con el original tras la acción
+          setTimeout(() => {
+            clonedBtn.textContent = originalBtn.textContent;
+            clonedBtn.classList.toggle('added', originalBtn.classList.contains('added'));
+          }, 50);
+        });
+      }
+
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+      currentPoster = null;
+    }
+
+    posters.forEach(poster => {
+      poster.addEventListener('click', () => openModal(poster));
+      poster.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(poster);
         }
       });
     });
 
-    const CLOUDINARY_CLOUD = 'dkv2aireq';
-
-    function applyImages(localCache) {
-      document.querySelectorAll('img[data-img-key]').forEach(img => {
-        const key = img.dataset.imgKey;
-        const defaultSrc = img.dataset.imgDefault;
-        // Prioridad: caché local (este dispositivo, instantáneo)
-        // → URL Cloudinary determinista (cualquier dispositivo, pública)
-        // → imagen por defecto local
-        const isLogo = key.startsWith('logo') || key === 'logo';
-        const ext = isLogo ? 'png' : 'jpg';
-        const cloudUrl = 'https://res.cloudinary.com/' + CLOUDINARY_CLOUD + '/image/upload/f_auto,q_auto/sonoplay_' + key + '.' + ext;
-        const desired = (localCache && localCache[key]) ? localCache[key] : cloudUrl;
-
-        if (img.src !== desired && !(desired.startsWith('images/') && img.src.endsWith(desired))) {
-          img.src = desired;
-          // Si la imagen de Cloudinary no existe aún, volver al default local
-          img.onerror = function() { img.src = defaultSrc; img.onerror = null; };
-        }
-        if (localCache && localCache[key]) {
-          img.style.display = '';
-          if (img.parentElement && img.parentElement.classList.contains('wedding-package-media')) {
-            img.parentElement.style.display = '';
-          }
-        }
-      });
-    }
-
-    function readImages() {
-      try { return JSON.parse(localStorage.getItem('sonoplay_images') || '{}'); }
-      catch (e) { return {}; }
-    }
-
-    applyImages(readImages());
-
-    // Live updates from other tabs (admin saves -> storage event fires here)
-    window.addEventListener('storage', e => {
-      if (e.key === 'sonoplay_images') applyImages(readImages());
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal();
     });
 
-    // Live updates within the same tab (admin may dispatch this)
-    window.addEventListener('sonoplay:images-updated', () => applyImages(readImages()));
+    // Botón "Pulsa para ver más fotos" del modal → abre la galería del poster actual
+    if (galleryBtn) {
+      galleryBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!currentPoster || !window.SonoplayGallery || !window.SonoplayGallery.open) return;
+        window.SonoplayGallery.open(currentPoster);
+      });
+    }
   })();
 
 });

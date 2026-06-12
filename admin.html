@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SONOPLAY — Panel de Administración</title>
-  <link rel="icon" type="image/jpeg" href="images/logo-sonoplay-dark.jpg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
@@ -350,7 +352,6 @@
       <a href="#" data-panel="precios">Precios</a>
       <a href="#" data-panel="contenido">Contenido</a>
       <a href="#" data-panel="extras">Servicios Extras</a>
-      <a href="#" data-panel="imagenes">Imágenes</a>
       <a href="#" data-panel="usuarios">Usuarios</a>
     </nav>
 
@@ -376,6 +377,10 @@
           <div class="stat-card">
             <div class="num">5</div>
             <div class="lbl">DJs activos</div>
+          </div>
+          <div class="stat-card" style="border-color: rgba(239,68,68,0.4);">
+            <div class="num" id="stat-leads" style="color: #ef4444;">0</div>
+            <div class="lbl">🔥 Presupuestos abandonados</div>
           </div>
         </div>
       </div>
@@ -600,402 +605,44 @@
         <button class="btn-save" id="save-extras">Guardar extras</button>
       </div>
 
-      <!-- IMÁGENES -->
-      <div class="admin-panel" id="panel-imagenes">
-        <h2>Gestión de Imágenes</h2>
-        <p class="subtitle">Sube fotos y logos. Arrastra una imagen sobre cada tarjeta o haz click para seleccionar.</p>
-
-        <!-- Toolbar: stats + buscador -->
-        <div class="imgs-toolbar">
-          <div class="imgs-stats">
-            <div class="imgs-stat">
-              <span class="imgs-stat-num" id="imgs-total">0</span>
-              <span class="imgs-stat-label">Total imágenes</span>
-            </div>
-            <div class="imgs-stat">
-              <span class="imgs-stat-num cyan" id="imgs-custom">0</span>
-              <span class="imgs-stat-label">Personalizadas</span>
-            </div>
-            <div class="imgs-stat">
-              <span class="imgs-stat-num" id="imgs-default">0</span>
-              <span class="imgs-stat-label">Por defecto</span>
-            </div>
-          </div>
-          <div class="imgs-search">
-            <input type="text" id="imgs-search-input" placeholder="Buscar imagen por nombre…" autocomplete="off">
-          </div>
-        </div>
-
-        <!-- Filtros por categoría -->
-        <div class="imgs-filters" id="imgs-filters">
-          <button class="imgs-filter active" data-filter="all">Todas <span class="imgs-filter-count" data-count="all">0</span></button>
-          <button class="imgs-filter" data-filter="logos">Logos <span class="imgs-filter-count" data-count="logos">0</span></button>
-          <button class="imgs-filter" data-filter="djs">Fotos DJs <span class="imgs-filter-count" data-count="djs">0</span></button>
-          <button class="imgs-filter" data-filter="ceremonia">Ceremonia <span class="imgs-filter-count" data-count="ceremonia">0</span></button>
-          <button class="imgs-filter" data-filter="montajes">Montajes <span class="imgs-filter-count" data-count="montajes">0</span></button>
-        </div>
-
-        <!-- Grid unificado -->
-        <div class="img-grid" id="imgs-grid">
-
-          <!-- LOGO PRINCIPAL -->
-          <div class="img-card" data-img-category="logos" data-img-name="logo sonoplay principal cabecera footer">
-            <span class="img-cat">Logo principal</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo" src="images/logosonoplay-largo.png" alt="Logo">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo" data-img-default="images/logosonoplay-largo.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo" data-img-default="images/logosonoplay-largo.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo SONOPLAY</span>
-              <span class="img-hint">Formato horizontal · PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <!-- FOTOS DE DJs -->
-          <div class="img-card" data-img-category="djs" data-img-name="dj juanfran montes">
-            <span class="img-cat">DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-dj-juanfran" src="images/dj-juanfran.jpg" alt="DJ Juanfran">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-juanfran" data-img-default="images/dj-juanfran.jpg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">DJ Juanfran Montes</span>
-              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="djs" data-img-name="dj rafa">
-            <span class="img-cat">DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-dj-rafa" src="images/dj-rafa-new.png" alt="DJ Rafa">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-rafa" data-img-default="images/dj-rafa-new.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">DJ Rafa</span>
-              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="djs" data-img-name="jr jona rivas">
-            <span class="img-cat">DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-dj-jr" src="images/dj-jr.jpg" alt="DJ JR">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-jr" data-img-default="images/dj-jr.jpg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">JR — Jona Rivas</span>
-              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="djs" data-img-name="dj celu martinez">
-            <span class="img-cat">DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-dj-celu" src="images/dj-celu.jpg" alt="DJ Celu" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-celu" data-img-default="images/dj-celu.jpg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-celu" data-img-default="images/dj-celu.jpg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">DJ Celu Martinez</span>
-              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="djs" data-img-name="cristian white">
-            <span class="img-cat">DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-dj-cristian" src="images/dj-cristian-white.png" alt="DJ Cristian">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-cristian" data-img-default="images/dj-cristian-white.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Cristian White</span>
-              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="djs" data-img-name="dj manu moreno">
-            <span class="img-cat">DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-dj-manu" src="images/foto-manu.jpeg" alt="DJ Manu" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="dj-manu" data-img-default="images/foto-manu.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="dj-manu" data-img-default="images/foto-manu.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">DJ Manu Moreno</span>
-              <span class="img-hint">Recomendado: vertical 800×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <!-- LOGOS DE DJs -->
-          <div class="img-card" data-img-category="logos" data-img-name="logo juanfran montes">
-            <span class="img-cat">Logo DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo-juanfran" src="images/logo-juanfran.png" alt="Logo Juanfran">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-juanfran" data-img-default="images/logo-juanfran.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo Juanfran Montes</span>
-              <span class="img-hint">PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="logos" data-img-name="logo rafa">
-            <span class="img-cat">Logo DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo-rafa" src="images/logo-rafa.png" alt="Logo Rafa">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-rafa" data-img-default="images/logo-rafa.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo Rafa</span>
-              <span class="img-hint">PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="logos" data-img-name="logo jr jona rivas">
-            <span class="img-cat">Logo DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo-jr" src="images/logo-jr-white.png" alt="Logo JR">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-jr" data-img-default="images/logo-jr-white.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo JR Jona Rivas</span>
-              <span class="img-hint">PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="logos" data-img-name="logo celu martinez">
-            <span class="img-cat">Logo DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo-celu" src="images/logo-celu.png" alt="Logo Celu">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-celu" data-img-default="images/logo-celu.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-celu" data-img-default="images/logo-celu.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo Celu Martinez</span>
-              <span class="img-hint">PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="logos" data-img-name="logo cristian white">
-            <span class="img-cat">Logo DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo-cristian" src="images/logo-cristian-v3.png" alt="Logo Cristian">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-cristian" data-img-default="images/logo-cristian-v3.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo Cristian White</span>
-              <span class="img-hint">PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="logos" data-img-name="logo manu moreno">
-            <span class="img-cat">Logo DJ</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview logo-preview">
-              <img id="img-preview-logo-manu" src="images/logo-manu.png" alt="Logo Manu" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="logo-manu" data-img-default="images/logo-manu.png"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="logo-manu" data-img-default="images/logo-manu.png">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Logo Manu Moreno</span>
-              <span class="img-hint">PNG con fondo transparente</span>
-            </div>
-          </div>
-
-          <!-- CEREMONIA CIVIL -->
-          <div class="img-card" data-img-category="ceremonia" data-img-name="foto ceremonia civil">
-            <span class="img-cat">Ceremonia</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-ceremonia" src="images/foto-ceremonia.jpeg" alt="Foto Ceremonia" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-ceremonia" data-img-default="images/foto-ceremonia.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-ceremonia" data-img-default="images/foto-ceremonia.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Ceremonia Civil</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <!-- MONTAJES -->
-          <div class="img-card" data-img-category="montajes" data-img-name="montaje basic">
-            <span class="img-cat">Montaje</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-basic" src="images/foto-basic.jpeg" alt="Foto Basic" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-basic" data-img-default="images/foto-basic.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Montaje BASIC</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="montajes" data-img-name="montaje totems">
-            <span class="img-cat">Montaje</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-totems" src="images/foto-totems.jpeg" alt="Foto Totems" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-totems" data-img-default="images/foto-totems.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Montaje TOTEMS</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="montajes" data-img-name="montaje duo">
-            <span class="img-cat">Montaje</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-duo" src="images/foto-duo.jpeg" alt="Foto Duo" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-duo" data-img-default="images/foto-duo.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Montaje DUO</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="montajes" data-img-name="montaje cubo">
-            <span class="img-cat">Montaje</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-cubo" src="images/foto-cubo.jpeg" alt="Foto Cubo" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-cubo" data-img-default="images/foto-cubo.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Montaje CUBO</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="montajes" data-img-name="montaje equis">
-            <span class="img-cat">Montaje</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-equis" src="images/foto-equis.jpeg" alt="Foto Equis" onerror="this.style.display='none'">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-equis" data-img-default="images/foto-equis.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Montaje EQUIS</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <div class="img-card" data-img-category="montajes" data-img-name="montaje hexa">
-            <span class="img-cat">Montaje</span>
-            <span class="img-badge">Por defecto</span>
-            <div class="img-preview">
-              <img id="img-preview-foto-hexa" src="images/foto-hexa.jpeg" alt="Foto Hexa">
-              <div class="img-loading"><div class="img-spinner"></div><span class="img-loading-text">Subiendo…</span></div>
-            </div>
-            <div class="img-overlay">
-              <label class="ovl-btn ovl-btn-upload">Cambiar<input type="file" accept="image/*" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg"></label>
-              <button class="ovl-btn ovl-btn-reset" data-img-key="foto-hexa" data-img-default="images/foto-hexa.jpeg">Restaurar</button>
-            </div>
-            <div class="img-meta">
-              <span class="img-label">Montaje HEXA</span>
-              <span class="img-hint">Horizontal 1600×1000 px · JPG</span>
-            </div>
-          </div>
-
-          <!-- Empty state -->
-          <div class="imgs-empty" id="imgs-empty" style="display:none;">
-            <div class="imgs-empty-title">Sin resultados</div>
-            <div>Prueba con otra búsqueda o cambia el filtro.</div>
-          </div>
-
-        </div>
-      </div>
-
       <!-- USUARIOS -->
       <div class="admin-panel" id="panel-usuarios">
         <h2>Usuarios Registrados</h2>
-        <p class="subtitle">Listado de usuarios que se han registrado en el dossier</p>
+        <p class="subtitle">Listado de usuarios que se han registrado en el dossier — datos servidor compartido</p>
+
+        <div class="admin-card" id="leads-card" style="border-color: rgba(239,68,68,0.35);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 4px;">
+            <h3 style="color: #ef4444;">🔥 Presupuestos abandonados</h3>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+              <input type="checkbox" id="leads-show-all" style="accent-color: var(--cyan);"> Mostrar también enviados
+            </label>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Usuarios que vieron el precio de su presupuesto pero no llegaron a enviar la solicitud. Llámalos y hazles una oferta.</p>
+          <div style="overflow-x: auto;">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Teléfono</th>
+                  <th>Presupuesto elegido</th>
+                  <th>Precio visto</th>
+                  <th>Visto el</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="leads-list"></tbody>
+            </table>
+          </div>
+          <p id="no-leads" style="color: var(--text-muted); text-align: center; padding: 20px;">Ningún presupuesto abandonado por ahora. 🎉</p>
+        </div>
+
+        <div class="admin-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; background: rgba(245,200,66,0.08); border-color: rgba(245,200,66,0.25);">
+          <div style="font-size: 0.9rem; color: var(--text); line-height: 1.5;">
+            <strong>¿Tenías usuarios en este navegador?</strong><br>
+            <span style="color: var(--text-muted);">Si registraste usuarios antes de la migración al servidor, súbelos aquí (solo una vez).</span>
+          </div>
+          <button class="btn-primary" onclick="migrateLocalUsersToServer()" style="background: var(--gold); color: #000;">Sincronizar usuarios locales al servidor</button>
+        </div>
 
         <div class="admin-card">
           <table class="users-table">
@@ -1044,342 +691,295 @@
       setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // Load saved prices
-    function loadPrices() {
-      const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
-      Object.keys(prices).forEach(key => {
-        const input = document.getElementById('price-' + key) || document.getElementById('extra-' + key);
-        if (input) input.value = prices[key];
+    // ============================================
+    // BACKEND API — datos compartidos vía /api/*.php
+    // localStorage queda SOLO como caché y para "Sincronizar al servidor"
+    // ============================================
+    const ADMIN_KEY = 'admin123'; // debe coincidir con SONOPLAY_ADMIN_KEY de api/_common.php
+    let usersCache = []; // se rellena en loadUsers() para que deleteUser(idx) sepa qué id borrar
+    let leadsCache = []; // presupuestos vistos/abandonados (api/leads.php)
+
+    async function apiGet(path) {
+      const res = await fetch(path, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    // Clave admin también por query param (?key=) como fallback: algunos hostings
+    // filtran cabeceras personalizadas como X-Admin-Key.
+    function withKey(path) {
+      return path + (path.indexOf('?') === -1 ? '?' : '&') + 'key=' + encodeURIComponent(ADMIN_KEY);
+    }
+    async function apiAdminPost(path, payload) {
+      const res = await fetch(withKey(path), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_KEY },
+        body: JSON.stringify(payload)
       });
+      const data = await res.json().catch(() => ({ ok: false, error: 'Respuesta no válida' }));
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Error en el servidor');
+      return data;
+    }
+
+    // -------- PRECIOS --------
+    async function loadPrices() {
+      try {
+        const r = await apiGet('api/prices.php');
+        const prices = (r && r.prices) || {};
+        // Cache local para que el resto del sitio tenga datos al instante
+        localStorage.setItem('sonoplay_prices', JSON.stringify(prices));
+        Object.keys(prices).forEach(key => {
+          const input = document.getElementById('price-' + key) || document.getElementById('extra-' + key);
+          if (input) input.value = prices[key];
+        });
+      } catch (err) {
+        // Fallback: usa la caché local si el servidor falla
+        const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+        Object.keys(prices).forEach(key => {
+          const input = document.getElementById('price-' + key) || document.getElementById('extra-' + key);
+          if (input) input.value = prices[key];
+        });
+        showToast('⚠️ No se pudo conectar al servidor — usando datos locales');
+      }
     }
     loadPrices();
 
-    // Save prices
-    document.getElementById('save-prices').addEventListener('click', () => {
-      const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+    document.getElementById('save-prices').addEventListener('click', async () => {
+      const merge = {};
       document.querySelectorAll('#panel-precios input[type="number"]').forEach(input => {
         const key = input.id.replace('price-', '');
-        prices[key] = parseFloat(input.value);
+        merge[key] = parseFloat(input.value);
       });
-      localStorage.setItem('sonoplay_prices', JSON.stringify(prices));
-      showToast('Precios actualizados');
+      try {
+        const r = await apiAdminPost('api/prices.php', { merge });
+        localStorage.setItem('sonoplay_prices', JSON.stringify(r.prices));
+        showToast('Precios actualizados');
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      }
     });
 
-    // Save extras
-    document.getElementById('save-extras').addEventListener('click', () => {
-      const prices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+    document.getElementById('save-extras').addEventListener('click', async () => {
+      const merge = {};
       document.querySelectorAll('#panel-extras input[type="number"]').forEach(input => {
         const key = input.id.replace('extra-', '');
-        prices[key] = parseFloat(input.value);
+        merge[key] = parseFloat(input.value);
       });
-      localStorage.setItem('sonoplay_prices', JSON.stringify(prices));
-      showToast('Servicios extras actualizados');
+      try {
+        const r = await apiAdminPost('api/prices.php', { merge });
+        localStorage.setItem('sonoplay_prices', JSON.stringify(r.prices));
+        showToast('Servicios extras actualizados');
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      }
     });
 
-    // Save content
-    document.getElementById('save-content').addEventListener('click', () => {
+    // -------- CONTENIDO --------
+    async function loadContent() {
+      try {
+        const r = await apiGet('api/content.php');
+        const content = (r && r.content) || {};
+        localStorage.setItem('sonoplay_content', JSON.stringify(content));
+        Object.keys(content).forEach(key => {
+          const el = document.getElementById(key);
+          if (el) el.value = content[key];
+        });
+      } catch (err) {
+        const content = JSON.parse(localStorage.getItem('sonoplay_content') || '{}');
+        Object.keys(content).forEach(key => {
+          const el = document.getElementById(key);
+          if (el) el.value = content[key];
+        });
+      }
+    }
+    loadContent();
+
+    document.getElementById('save-content').addEventListener('click', async () => {
       const content = {};
       document.querySelectorAll('#panel-contenido input, #panel-contenido textarea').forEach(input => {
         content[input.id] = input.value;
       });
-      localStorage.setItem('sonoplay_content', JSON.stringify(content));
-      showToast('Contenido actualizado');
+      try {
+        const r = await apiAdminPost('api/content.php', { content });
+        localStorage.setItem('sonoplay_content', JSON.stringify(r.content));
+        showToast('Contenido actualizado');
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      }
     });
 
-    // Load content
-    const savedContent = JSON.parse(localStorage.getItem('sonoplay_content') || '{}');
-    Object.keys(savedContent).forEach(key => {
-      const el = document.getElementById(key);
-      if (el) el.value = savedContent[key];
-    });
-
-    // Users list
-    function loadUsers() {
-      const users = JSON.parse(localStorage.getItem('sonoplay_users') || '[]');
+    // -------- USUARIOS --------
+    // loadUsers(silent=true) → no muestra error toast si falla, ideal para auto-refresh.
+    async function loadUsers(silent) {
       const list = document.getElementById('users-list');
       const noUsers = document.getElementById('no-users');
-      document.getElementById('stat-users').textContent = users.length;
+      const statUsers = document.getElementById('stat-users');
+      try {
+        const res = await fetch('api/users.php?t=' + Date.now() + '&key=' + encodeURIComponent(ADMIN_KEY), {
+          headers: { 'X-Admin-Key': ADMIN_KEY },
+          cache: 'no-store'
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || 'Error al cargar usuarios');
+        const next = data.users || [];
 
-      if (users.length === 0) {
+        // Si los datos son idénticos, no toques el DOM (evita parpadeo y no afecta nada
+        // que el admin pudiera estar haciendo).
+        if (JSON.stringify(next) === JSON.stringify(usersCache)) return;
+        usersCache = next;
+      } catch (err) {
+        if (!silent) showToast('❌ ' + err.message);
+        return; // No tocamos el DOM si falla — mantenemos lo último que se mostró
+      }
+
+      renderUsersTable();
+    }
+
+    function renderUsersTable() {
+      const list = document.getElementById('users-list');
+      const noUsers = document.getElementById('no-users');
+      const statUsers = document.getElementById('stat-users');
+      statUsers.textContent = usersCache.length;
+      if (usersCache.length === 0) {
         noUsers.style.display = 'block';
+        list.innerHTML = '';
         return;
       }
       noUsers.style.display = 'none';
-
-      list.innerHTML = users.map((u, i) => `
+      list.innerHTML = usersCache.map((u, i) => {
+        const lead = leadsCache.find(l => l.email === (u.email || '').toLowerCase() && l.status === 'abandonado');
+        const leadBadge = lead
+          ? ' <span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:999px; vertical-align:middle; white-space:nowrap;">🔥 Presupuesto abandonado</span>'
+          : '';
+        return `
         <tr>
-          <td>${u.name || '-'}</td>
-          <td>${u.email}</td>
-          <td>${u.phone || '-'}</td>
-          <td>${u.date || '-'}</td>
+          <td>${escapeHtml(u.name || '-')}${leadBadge}</td>
+          <td>${escapeHtml(u.email)}</td>
+          <td>${escapeHtml(u.phone || '-')}</td>
+          <td>${escapeHtml((u.createdAt || u.date || '-').toString().split('T')[0])}</td>
           <td><button class="btn-danger" onclick="deleteUser(${i})">Eliminar</button></td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
     loadUsers();
 
-    window.deleteUser = function(idx) {
-      const users = JSON.parse(localStorage.getItem('sonoplay_users') || '[]');
-      users.splice(idx, 1);
-      localStorage.setItem('sonoplay_users', JSON.stringify(users));
-      loadUsers();
-      showToast('Usuario eliminado');
+    // -------- LEADS (presupuestos abandonados) --------
+    async function loadLeads(silent) {
+      try {
+        const res = await fetch('api/leads.php?t=' + Date.now() + '&key=' + encodeURIComponent(ADMIN_KEY), {
+          headers: { 'X-Admin-Key': ADMIN_KEY },
+          cache: 'no-store'
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || 'Error al cargar leads');
+        const next = data.leads || [];
+        if (JSON.stringify(next) === JSON.stringify(leadsCache)) return;
+        leadsCache = next;
+      } catch (err) {
+        if (!silent) showToast('❌ ' + err.message);
+        return;
+      }
+      renderLeadsTable();
+      renderUsersTable(); // refresca los badges 🔥 de la tabla de usuarios
+    }
+
+    function fmtDateTime(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderLeadsTable() {
+      const list = document.getElementById('leads-list');
+      const noLeads = document.getElementById('no-leads');
+      const statLeads = document.getElementById('stat-leads');
+      const showAll = document.getElementById('leads-show-all').checked;
+
+      const abandoned = leadsCache.filter(l => l.status === 'abandonado');
+      statLeads.textContent = abandoned.length;
+
+      // Los más recientes primero
+      const visible = (showAll ? leadsCache.slice() : abandoned.slice())
+        .sort((a, b) => (b.viewedAt || '').localeCompare(a.viewedAt || ''));
+
+      if (visible.length === 0) {
+        noLeads.style.display = 'block';
+        list.innerHTML = '';
+        return;
+      }
+      noLeads.style.display = 'none';
+      list.innerHTML = visible.map(l => {
+        const cartTxt = (l.cart || []).map(it => escapeHtml(it.name) + (it.qty > 1 ? ' x' + it.qty : '')).join('<br>') || '-';
+        const phoneTd = l.phone
+          ? `<a href="tel:${escapeHtml(l.phone.replace(/\s/g, ''))}" style="color: var(--cyan); font-weight: 700; text-decoration: none;">📞 ${escapeHtml(l.phone)}</a>`
+          : '<span style="color: var(--text-muted);">sin teléfono</span>';
+        const statusBadge = l.status === 'abandonado'
+          ? '<span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🔥 Abandonado</span>'
+          : '<span style="display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.5); color:#22c55e; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">✅ Enviado</span>';
+        const wedding = l.weddingDate ? `<div style="font-size:0.75rem; color:var(--text-muted);">Boda: ${escapeHtml(l.weddingDate)}</div>` : '';
+        return `
+        <tr>
+          <td>${escapeHtml(l.name || l.email || '-')}<div style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(l.email || '')}</div>${wedding}</td>
+          <td>${phoneTd}</td>
+          <td style="font-size:0.8rem; line-height:1.5;">${cartTxt}</td>
+          <td style="color: var(--cyan); font-weight: 700; white-space: nowrap;">${l.total ? Number(l.total).toLocaleString('es-ES') + ' €' : '-'}</td>
+          <td style="white-space: nowrap;">${fmtDateTime(l.viewedAt)}</td>
+          <td>${statusBadge}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    document.getElementById('leads-show-all').addEventListener('change', renderLeadsTable);
+    loadLeads();
+
+    window.deleteUser = async function(idx) {
+      const u = usersCache[idx];
+      if (!u) return;
+      if (!confirm(`¿Eliminar al usuario ${u.email}?`)) return;
+      try {
+        await apiAdminPost('api/users.php', { action: 'delete', id: u.id, email: u.email });
+        showToast('Usuario eliminado');
+        await loadUsers();
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      }
     };
 
-    // === IMAGES MANAGEMENT ===
-    function loadSavedImages() {
-      const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-      const CLOUDINARY_CLOUD = 'dkv2aireq';
-      document.querySelectorAll('.img-preview img').forEach(img => {
-        const id = img.id;
-        if (!id.startsWith('img-preview-')) return;
-        const key = id.replace('img-preview-', '');
-        
-        const isLogo = key.startsWith('logo') || key === 'logo';
-        const ext = isLogo ? 'png' : 'jpg';
-        const cloudUrl = 'https://res.cloudinary.com/' + CLOUDINARY_CLOUD + '/image/upload/f_auto,q_auto/sonoplay_' + key + '.' + ext;
-        const desired = images[key] ? images[key] : cloudUrl;
-        
-        // Grab the default source before overwriting in case it fails to load from the cloud
-        const defaultSrc = img.src; 
-
-        if (img.src !== desired && !(desired.startsWith('images/') && img.src.endsWith(desired))) {
-          img.src = desired;
-          img.onerror = function() { img.src = defaultSrc; img.onerror = null; };
-        }
-      });
-    }
-    loadSavedImages();
-
-    // ============== GESTIÓN DE IMÁGENES ==============
-    const CLOUDINARY_CLOUD = 'dkv2aireq';
-    const CLOUDINARY_PRESET = 'sonoplay';
-
-    // Helpers de estado de cada card
-    function getImgCard(key) {
-      const input = document.querySelector('.img-card input[type="file"][data-img-key="' + key + '"]');
-      return input ? input.closest('.img-card') : null;
-    }
-    function setCardCustom(key, isCustom) {
-      const card = getImgCard(key);
-      if (!card) return;
-      card.classList.toggle('is-custom', isCustom);
-      card.classList.toggle('is-default', !isCustom);
-      const badge = card.querySelector('.img-badge');
-      if (badge) badge.textContent = isCustom ? 'Personalizada' : 'Por defecto';
-      updateImgStats();
-    }
-    function setCardLoading(key, isLoading) {
-      const card = getImgCard(key);
-      if (!card) return;
-      card.classList.toggle('is-loading', isLoading);
-    }
-    function updateImgStats() {
-      const allCards = document.querySelectorAll('#imgs-grid .img-card');
-      const custom = document.querySelectorAll('#imgs-grid .img-card.is-custom').length;
-      document.getElementById('imgs-total').textContent = allCards.length;
-      document.getElementById('imgs-custom').textContent = custom;
-      document.getElementById('imgs-default').textContent = allCards.length - custom;
-      // Counts por filtro
-      document.querySelectorAll('.imgs-filter-count').forEach(el => {
-        const cat = el.dataset.count;
-        const n = cat === 'all'
-          ? allCards.length
-          : document.querySelectorAll('#imgs-grid .img-card[data-img-category="' + cat + '"]').length;
-        el.textContent = n;
-      });
-    }
-
-    // Inicializar el estado custom/default de cada card según localStorage
-    function initCardStates() {
-      const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-      document.querySelectorAll('#imgs-grid .img-card').forEach(card => {
-        const input = card.querySelector('input[type="file"]');
-        if (!input) return;
-        const key = input.dataset.imgKey;
-        const isCustom = !!images[key];
-        card.classList.add(isCustom ? 'is-custom' : 'is-default');
-        const badge = card.querySelector('.img-badge');
-        if (badge) badge.textContent = isCustom ? 'Personalizada' : 'Por defecto';
-      });
-      updateImgStats();
-    }
-    initCardStates();
-
-    // Sube un File a Cloudinary (extraído para reutilizar desde input + drag&drop)
-    function uploadImage(file, key) {
-      if (!file || !key) return;
-
-      if (!file.type.startsWith('image/')) {
-        showToast('El archivo debe ser una imagen');
-        return;
+    // -------- MIGRACIÓN ONE-TIME desde localStorage del admin --------
+    window.migrateLocalUsersToServer = async function() {
+      const local = JSON.parse(localStorage.getItem('sonoplay_users') || '[]');
+      if (!local.length) { showToast('No hay usuarios locales que migrar'); return; }
+      if (!confirm(`Vas a subir ${local.length} usuario(s) de este navegador al servidor. ¿Continuar?`)) return;
+      try {
+        const r = await apiAdminPost('api/users.php', { action: 'migrate', users: local });
+        showToast(`✅ Migración OK — ${r.added} nuevos, ${r.total} en total`);
+        await loadUsers();
+      } catch (err) {
+        showToast('❌ ' + err.message);
       }
-      if (file.size > 50 * 1024 * 1024) {
-        showToast('La imagen no puede superar 50MB');
-        return;
+    };
+
+    // -------- AUTO-REFRESH USUARIOS --------
+    // Refresca la lista cada 30s en silencio. Solo actúa cuando:
+    //   1) El panel Usuarios o Dashboard están visibles (no interrumpe edición en Precios/Contenido).
+    //   2) La pestaña del navegador está activa (no gastamos peticiones en background).
+    //   3) Los datos del servidor han cambiado (si no, ni siquiera toca el DOM).
+    (function setupUsersAutoRefresh() {
+      const REFRESH_MS = 30000;
+      function shouldRefresh() {
+        if (document.hidden) return false;
+        const dashOn  = document.getElementById('panel-dashboard')?.classList.contains('active');
+        const usersOn = document.getElementById('panel-usuarios')?.classList.contains('active');
+        return dashOn || usersOn;
       }
-
-      const isLogo = key.startsWith('logo') || key === 'logo';
-      const MAX_DIM = isLogo ? 1200 : 3000;
-      const keepPng = isLogo && file.type === 'image/png';
-
-      setCardLoading(key, true);
-      showToast('Subiendo imagen…');
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const rawImg = new Image();
-        rawImg.onload = function() {
-          let { width, height } = rawImg;
-          const scale = Math.min(1, MAX_DIM / Math.max(width, height));
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(rawImg, 0, 0, width, height);
-          const mime = keepPng ? 'image/png' : 'image/jpeg';
-          const quality = keepPng ? undefined : 0.92;
-
-          canvas.toBlob(function(blob) {
-            const fd = new FormData();
-            fd.append('file', blob, key + (keepPng ? '.png' : '.jpg'));
-            fd.append('upload_preset', CLOUDINARY_PRESET);
-            fd.append('public_id', 'sonoplay_' + key);
-
-            fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
-              method: 'POST',
-              body: fd
-            })
-            .then(r => r.json())
-            .then(data => {
-              setCardLoading(key, false);
-              if (data.secure_url) {
-                const url = data.secure_url;
-                const preview = document.getElementById('img-preview-' + key);
-                if (preview) { preview.src = url; preview.style.display = ''; }
-                const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-                images[key] = url;
-                localStorage.setItem('sonoplay_images', JSON.stringify(images));
-                setCardCustom(key, true);
-                window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
-                showToast('Imagen subida correctamente ✓');
-              } else {
-                showToast('Error: ' + (data.error?.message || 'inténtalo de nuevo'));
-              }
-            })
-            .catch(() => {
-              setCardLoading(key, false);
-              showToast('Error de red. Comprueba tu conexión.');
-            });
-          }, mime, quality);
-        };
-        rawImg.onerror = function() {
-          setCardLoading(key, false);
-          showToast('No se pudo leer la imagen');
-        };
-        rawImg.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // Inputs file (click) — al cambiar disparan upload
-    document.querySelectorAll('.img-card input[type="file"]').forEach(input => {
-      input.addEventListener('change', function() {
-        const file = this.files[0];
-        if (!file) return;
-        uploadImage(file, this.dataset.imgKey);
-        this.value = ''; // permite volver a subir el mismo archivo
-      });
-    });
-
-    // Botones de restaurar
-    document.querySelectorAll('.ovl-btn-reset').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const key = this.getAttribute('data-img-key');
-        const defaultSrc = this.getAttribute('data-img-default');
-        if (!key || !defaultSrc) return;
-        const preview = document.getElementById('img-preview-' + key);
-        if (preview) preview.src = defaultSrc;
-        const images = JSON.parse(localStorage.getItem('sonoplay_images') || '{}');
-        delete images[key];
-        localStorage.setItem('sonoplay_images', JSON.stringify(images));
-        setCardCustom(key, false);
-        window.dispatchEvent(new CustomEvent('sonoplay:images-updated', { detail: { key } }));
-        showToast('Imagen restaurada');
-      });
-    });
-
-    // Drag & drop sobre cada card
-    document.querySelectorAll('#imgs-grid .img-card').forEach(card => {
-      const input = card.querySelector('input[type="file"]');
-      if (!input) return;
-      const key = input.dataset.imgKey;
-
-      ['dragenter', 'dragover'].forEach(evt => {
-        card.addEventListener(evt, e => {
-          e.preventDefault();
-          e.stopPropagation();
-          card.classList.add('is-dragover');
-        });
-      });
-      ['dragleave', 'dragend', 'drop'].forEach(evt => {
-        card.addEventListener(evt, e => {
-          e.preventDefault();
-          e.stopPropagation();
-          card.classList.remove('is-dragover');
-        });
-      });
-      card.addEventListener('drop', e => {
-        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-        if (file) uploadImage(file, key);
-      });
-
-      // Click en el preview también abre el selector
-      const preview = card.querySelector('.img-preview');
-      if (preview) {
-        preview.addEventListener('click', e => {
-          // Evita doble apertura si se clickea el botón overlay
-          if (e.target.closest('.ovl-btn')) return;
-          input.click();
-        });
-      }
-    });
-
-    // Filtros por categoría
-    document.querySelectorAll('.imgs-filter').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.imgs-filter').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyImgFilters();
-      });
-    });
-
-    // Buscador
-    const imgSearchInput = document.getElementById('imgs-search-input');
-    if (imgSearchInput) {
-      imgSearchInput.addEventListener('input', applyImgFilters);
-    }
-
-    function applyImgFilters() {
-      const activeFilter = document.querySelector('.imgs-filter.active')?.dataset.filter || 'all';
-      const q = (imgSearchInput?.value || '').trim().toLowerCase();
-      let visible = 0;
-      document.querySelectorAll('#imgs-grid .img-card').forEach(card => {
-        const matchesCat = activeFilter === 'all' || card.dataset.imgCategory === activeFilter;
-        const matchesText = !q || (card.dataset.imgName || '').includes(q) || (card.querySelector('.img-label')?.textContent.toLowerCase().includes(q));
-        const show = matchesCat && matchesText;
-        card.classList.toggle('is-hidden', !show);
-        if (show) visible++;
-      });
-      const empty = document.getElementById('imgs-empty');
-      if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
-    }
+      setInterval(() => {
+        if (shouldRefresh()) { loadUsers(true); loadLeads(true); }
+      }, REFRESH_MS);
+    })();
 
     // Logout
     document.getElementById('admin-logout').addEventListener('click', () => {
