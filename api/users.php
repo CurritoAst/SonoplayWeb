@@ -50,6 +50,7 @@ if ($action === 'register') {
     $phone   = trim_str($body['phone'] ?? '');
     $wedding = safe_date($body['weddingDate'] ?? '');
     if (!$name || !$email || !$pass) json_error('Faltan campos obligatorios');
+    if (strlen(preg_replace('/\D/', '', $phone)) < 6 || strlen($phone) > 30) json_error('Introduce un teléfono válido');
 
     $err = null; $out = null;
     with_locked_json('users.json', function ($users) use ($name, $email, $pass, $phone, $wedding, &$err, &$out) {

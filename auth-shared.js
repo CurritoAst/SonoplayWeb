@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isRegisterMode) {
       if (!name) { showAuthError('Introduce tu nombre'); return; }
+      if (phone.replace(/\D/g, '').length < 6) { showAuthError('Introduce un teléfono válido'); return; }
       if (weddingInput && !weddingDate) { showAuthError('Indícanos la fecha de tu boda o evento'); return; }
       setSubmitting(true);
       try {
@@ -302,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
           '<div id="phone-prompt-error" style="display:none;color:#ef4444;font-size:0.85rem;margin:6px 0 12px;"></div>' +
           '<button type="submit" id="phone-prompt-submit" style="width:100%;background:var(--cyan,#06b6d4);color:#000;border:none;padding:14px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit;transition:opacity 0.2s;">Guardar y continuar</button>' +
         '</form>' +
-        '<button type="button" id="phone-prompt-skip" style="background:none;border:none;color:var(--text-muted,#9ca3af);font-size:0.82rem;cursor:pointer;margin-top:14px;text-decoration:underline;font-family:inherit;">Lo dejo para más tarde</button>' +
       '</div>';
     document.body.appendChild(overlay);
 
@@ -311,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const weddingI = overlay.querySelector('#wedding-prompt-input');
     const errEl    = overlay.querySelector('#phone-prompt-error');
     const submit   = overlay.querySelector('#phone-prompt-submit');
-    const skipBtn  = overlay.querySelector('#phone-prompt-skip');
 
     // Prerrellena lo que ya sepamos (ej. tiene teléfono pero falta la fecha)
     if (ctx.phone) input.value = ctx.phone;
@@ -345,8 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
         submit.textContent = 'Guardar y continuar';
       }
     });
-
-    skipBtn.addEventListener('click', () => overlay.remove());
   }
 
   function escapeHTML(s) {
