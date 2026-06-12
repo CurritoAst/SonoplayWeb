@@ -169,6 +169,14 @@ const LEADS_ABANDON_AFTER   = 900;    // 15 min sin actividad → notificable
 const LEADS_NOTIFY_THROTTLE = 300;    // escaneo como mucho cada 5 min
 const LEADS_RENOTIFY_AFTER  = 86400;  // máx. 1 email por lead cada 24 h
 
+/** Email de aviso interno a producciones@ (texto plano UTF-8). */
+function sonoplay_alert_mail(string $subject, array $lines): bool {
+    $headers  = "From: SONOPLAY Web <no-reply@sonoplay.es>\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+    return @mail(LEADS_NOTIFY_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', implode("\n", $lines), $headers);
+}
+
 /** Envía el email de aviso de un lead abandonado. */
 function leads_send_alert(array $l): bool {
     $name  = $l['name'] ?: ($l['email'] ?? 'Cliente');
@@ -200,11 +208,7 @@ function leads_send_alert(array $l): bool {
     $lines[] = 'Panel de admin: https://sonoplay.es/admin.html (sección Usuarios)';
 
     $subject = '[SONOPLAY] 🔥 Presupuesto abandonado — ' . $name . ($total ? ' (' . $total . ')' : '');
-    $headers  = "From: SONOPLAY Web <no-reply@sonoplay.es>\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
-
-    return @mail(LEADS_NOTIFY_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', implode("\n", $lines), $headers);
+    return sonoplay_alert_mail($subject, $lines);
 }
 
 /**

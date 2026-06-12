@@ -75,7 +75,24 @@ if ($action === 'register') {
     if ($err) json_error($err, 409);
     if (!$out) json_error('Error guardando el usuario', 500);
     snapshot_backup('users.json');
+    notify_new_user($out, 'Formulario web');
     json_response(['ok' => true, 'user' => $out]);
+}
+
+/** Aviso interno: alguien se ha registrado en la web. */
+function notify_new_user(array $u, string $via): void {
+    $lines = [];
+    $lines[] = '👤 NUEVO REGISTRO EN LA WEB';
+    $lines[] = '';
+    $lines[] = 'Nombre:    ' . ($u['name'] ?: '-');
+    $lines[] = 'Email:     ' . ($u['email'] ?? '-');
+    $lines[] = 'Teléfono:  ' . (!empty($u['phone']) ? $u['phone'] : '- (aún sin dar)');
+    $lines[] = 'Fecha boda: ' . (!empty($u['weddingDate']) ? date('d/m/Y', strtotime($u['weddingDate'])) : '- (aún sin dar)');
+    $lines[] = 'Vía:       ' . $via;
+    $lines[] = 'Fecha:     ' . date('d/m/Y H:i');
+    $lines[] = '';
+    $lines[] = 'Panel de admin: https://sonoplay.es/admin.html (sección Usuarios)';
+    sonoplay_alert_mail('[SONOPLAY] 👤 Nuevo registro — ' . ($u['name'] ?: ($u['email'] ?? '')), $lines);
 }
 
 // ---------------- LOGIN ----------------
@@ -131,6 +148,7 @@ if ($action === 'google') {
     });
     if (!$out) json_error('Error guardando usuario Google', 500);
     snapshot_backup('users.json');
+    if ($isNew) notify_new_user($out, 'Google Sign-In');
     json_response(['ok' => true, 'user' => $out, 'isNew' => $isNew]);
 }
 
