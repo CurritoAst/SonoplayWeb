@@ -652,9 +652,10 @@ document.addEventListener('DOMContentLoaded', () => {
   cartOverlay.addEventListener('click', closeCart);
 
   // ---- LEADS (presupuestos abandonados) ----
-  // Avisa al servidor cuando un usuario logueado VE el precio de su presupuesto
-  // (abre el modal) y cuando finalmente ENVÍA la solicitud. Con eso el admin
-  // detecta leads calientes: vieron el precio pero no completaron.
+  // El lead se registra en el servidor desde que el usuario logueado tiene
+  // algo en el carrito (ve precios). Si cierra la página sin enviar la
+  // solicitud, un beacon avisa al servidor para que notifique al admin por
+  // email. Si la deja abierta sin actividad, el servidor lo detecta solo.
   function trackLead(action, extra) {
     const user = getUser();
     if (!user || !user.email || user.role === 'admin') return;
@@ -668,6 +669,46 @@ document.addEventListener('DOMContentLoaded', () => {
       }).catch(() => {});
     } catch (e) { /* silencioso — el tracking nunca debe romper la web */ }
   }
+
+  // Snapshot del carrito (con descuento aplicado) para enviar al servidor
+  function leadCartPayload() {
+    const user = getUser() || {};
+    const djItem = cart.find(it => it.isDj);
+    const savedP = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+    const th = savedP['discount-threshold'] !== undefined ? parseFloat(savedP['discount-threshold']) : 4000;
+    const pc = savedP['discount-percent'] !== undefined ? parseFloat(savedP['discount-percent']) : 10;
+    let total = cart.reduce((s, it) => s + it.price * it.qty, 0);
+    if (th > 0 && total >= th && pc > 0) total = total - total * (pc / 100);
+    return {
+      name: user.name || '',
+      phone: user.phone || '',
+      weddingDate: user.weddingDate || '',
+      dj: djItem ? djItem.name : '',
+      cart: cart.map(it => ({ name: it.name, price: it.price * it.qty, qty: it.qty })),
+      total: Math.round(total * 100) / 100
+    };
+  }
+
+  // Cada cambio de carrito actualiza el lead (debounce para no bombardear)
+  let leadSyncTimer = null;
+  function scheduleLeadSync() {
+    if (cart.length === 0) return;
+    clearTimeout(leadSyncTimer);
+    leadSyncTimer = setTimeout(() => trackLead('price-viewed', leadCartPayload()), 2500);
+  }
+
+  // Al cerrar/abandonar la página con carrito y sin haber enviado: aviso
+  // inmediato al servidor (sendBeacon sobrevive al cierre de la pestaña).
+  let budgetSentThisSession = false;
+  window.addEventListener('pagehide', () => {
+    if (budgetSentThisSession || cart.length === 0) return;
+    const user = getUser();
+    if (!user || !user.email || user.role === 'admin') return;
+    const payload = Object.assign({ action: 'page-left', email: user.email }, leadCartPayload());
+    try {
+      navigator.sendBeacon('api/leads.php', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+    } catch (e) { /* silencioso */ }
+  });
 
   // ---- BUDGET CONTACT MODAL ----
   const budgetOverlay = document.getElementById('budget-modal-overlay');
@@ -770,23 +811,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (errEl) errEl.style.display = 'none';
 
     // Lead caliente: el usuario está viendo el precio de su presupuesto
-    if (cart.length > 0) {
-      const user = getUser() || {};
-      const djItem = cart.find(it => it.isDj);
-      const savedP = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
-      const dThreshold = savedP['discount-threshold'] !== undefined ? parseFloat(savedP['discount-threshold']) : 4000;
-      const dPercent = savedP['discount-percent'] !== undefined ? parseFloat(savedP['discount-percent']) : 10;
-      const seenTotal = (dThreshold > 0 && total >= dThreshold && dPercent > 0)
-        ? total - total * (dPercent / 100) : total;
-      trackLead('price-viewed', {
-        name: user.name || '',
-        phone: user.phone || '',
-        weddingDate: user.weddingDate || '',
-        dj: djItem ? djItem.name : '',
-        cart: cart.map(it => ({ name: it.name, price: it.price * it.qty, qty: it.qty })),
-        total: Math.round(seenTotal * 100) / 100
-      });
-    }
+    if (cart.length > 0) trackLead('price-viewed', leadCartPayload());
 
     closeCart();
     budgetOverlay.style.display = 'flex';
@@ -833,6 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         // Éxito → muestra estado de gracias
+        budgetSentThisSession = true;
         trackLead('budget-sent');
         document.getElementById('budget-form-state').style.display = 'none';
         document.getElementById('budget-thanks-state').style.display = '';
@@ -949,6 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
     updateAddButtons();
     if (window.syncDjSelection) window.syncDjSelection();
+    scheduleLeadSync(); // registra/actualiza el lead con cada cambio de carrito
   }
 
   function updateAddButtons() {

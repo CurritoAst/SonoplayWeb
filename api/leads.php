@@ -21,6 +21,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     require_admin();
+    // Aprovecha la visita del admin para despachar avisos pendientes ya
+    leads_notify_pending(true);
     $leads = read_json('leads.json', []);
     if (!is_array($leads)) $leads = [];
     json_response(['ok' => true, 'leads' => array_values($leads)]);
@@ -35,7 +37,10 @@ $action = $body['action'] ?? '';
 $email  = safe_email($body['email'] ?? '');
 if (!$email) json_error('Email requerido');
 
-if ($action === 'price-viewed') {
+// "price-viewed": el usuario tiene carrito / está mirando precios (upsert).
+// "page-left": igual, pero porque ha cerrado/abandonado la página (beacon)
+//              → además dispara el email de aviso inmediatamente.
+if ($action === 'price-viewed' || $action === 'page-left') {
     $name        = mb_substr(trim_str($body['name'] ?? ''), 0, 100);
     $phone       = mb_substr(trim_str($body['phone'] ?? ''), 0, 30);
     $weddingDate = mb_substr(trim_str($body['weddingDate'] ?? ''), 0, 10);
@@ -66,8 +71,14 @@ if ($action === 'price-viewed') {
                 $leads[$idx]['dj']          = $dj;
                 $leads[$idx]['cart']        = $cart;
                 $leads[$idx]['total']       = $total;
-                $leads[$idx]['status']      = 'abandonado';
-                $leads[$idx]['viewedAt']    = date('c');
+                // Si ya había enviado, o se le avisó hace más de 24h, esto es
+                // un ciclo de interés NUEVO → vuelve a ser notificable.
+                if (($l['status'] ?? '') === 'enviado'
+                    || (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) < time() - LEADS_RENOTIFY_AFTER)) {
+                    $leads[$idx]['notifiedAt'] = null;
+                }
+                $leads[$idx]['status']   = 'abandonado';
+                $leads[$idx]['viewedAt'] = date('c');
                 $found = true;
                 break;
             }
@@ -85,10 +96,34 @@ if ($action === 'price-viewed') {
                 'status'      => 'abandonado',
                 'viewedAt'    => date('c'),
                 'sentAt'      => null,
+                'notifiedAt'  => null,
             ];
         }
         return $leads;
     });
+
+    // Cerró la página con carrito sin enviar → email de aviso inmediato
+    if ($action === 'page-left' && count($cart) > 0) {
+        $leads = read_json('leads.json', []);
+        foreach ($leads as $l) {
+            if (!isset($l['email']) || strtolower($l['email']) !== $email) continue;
+            if (($l['status'] ?? '') !== 'abandonado') break;
+            if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > time() - LEADS_RENOTIFY_AFTER) break;
+            if (leads_send_alert($l)) {
+                with_locked_json('leads.json', function ($leads) use ($email) {
+                    foreach ($leads as $i => $x) {
+                        if (isset($x['email']) && strtolower($x['email']) === $email) {
+                            $leads[$i]['notifiedAt'] = date('c');
+                            return $leads;
+                        }
+                    }
+                    return null;
+                });
+            }
+            break;
+        }
+    }
+
     json_response(['ok' => true]);
 }
 

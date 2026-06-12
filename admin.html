@@ -919,9 +919,10 @@
         const phoneTd = l.phone
           ? `<a href="tel:${escapeHtml(l.phone.replace(/\s/g, ''))}" style="color: var(--cyan); font-weight: 700; text-decoration: none;">📞 ${escapeHtml(l.phone)}</a>`
           : '<span style="color: var(--text-muted);">sin teléfono</span>';
-        const statusBadge = l.status === 'abandonado'
+        let statusBadge = l.status === 'abandonado'
           ? '<span style="display:inline-block; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.5); color:#ef4444; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">🔥 Abandonado</span>'
           : '<span style="display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.5); color:#22c55e; font-size:0.7rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;">✅ Enviado</span>';
+        if (l.notifiedAt) statusBadge += '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px; white-space:nowrap;">📧 Avisado ' + fmtDateTime(l.notifiedAt) + '</div>';
         const wedding = l.weddingDate ? `<div style="font-size:0.75rem; color:var(--text-muted);">Boda: ${escapeHtml(l.weddingDate)}</div>` : '';
         return `
         <tr>

@@ -154,3 +154,97 @@ function safe_date($v): string {
     [$y, $m, $d] = array_map('intval', explode('-', $v));
     return checkdate($m, $d, $y) ? $v : '';
 }
+
+/* ============================================================
+   NOTIFICACIÓN DE PRESUPUESTOS ABANDONADOS
+   - Cada lead "abandonado" (vio precios y no envió) genera UN email a
+     producciones@ cuando: cierra la página (aviso inmediato vía beacon,
+     ver leads.php) o lleva LEADS_ABANDON_AFTER seg. sin actividad.
+   - leads_notify_pending() corre al final de CADA petición a la API
+     (shutdown function, con throttle), así no depende de ningún cron.
+   ============================================================ */
+
+const LEADS_NOTIFY_TO       = 'producciones@sonoplay.es';
+const LEADS_ABANDON_AFTER   = 900;    // 15 min sin actividad → notificable
+const LEADS_NOTIFY_THROTTLE = 300;    // escaneo como mucho cada 5 min
+const LEADS_RENOTIFY_AFTER  = 86400;  // máx. 1 email por lead cada 24 h
+
+/** Envía el email de aviso de un lead abandonado. */
+function leads_send_alert(array $l): bool {
+    $name  = $l['name'] ?: ($l['email'] ?? 'Cliente');
+    $total = isset($l['total']) && $l['total'] ? number_format((float)$l['total'], 0, ',', '.') . ' €' : '';
+
+    $lines = [];
+    $lines[] = '🔥 PRESUPUESTO ABANDONADO — lead caliente';
+    $lines[] = '';
+    $lines[] = 'Nombre:    ' . $name;
+    if (!empty($l['email']))       $lines[] = 'Email:     ' . $l['email'];
+    if (!empty($l['phone']))       $lines[] = 'Teléfono:  ' . $l['phone'];
+    if (!empty($l['weddingDate'])) $lines[] = 'Fecha boda: ' . date('d/m/Y', strtotime($l['weddingDate']));
+    if (!empty($l['viewedAt']))    $lines[] = 'Último vistazo: ' . date('d/m/Y H:i', strtotime($l['viewedAt']));
+    $lines[] = '';
+    $lines[] = '— Presupuesto que estaba mirando —';
+    foreach (($l['cart'] ?? []) as $item) {
+        $iname = trim_str($item['name'] ?? '');
+        if (!$iname) continue;
+        $qty = isset($item['qty']) && (int)$item['qty'] > 1 ? ' x' . (int)$item['qty'] : '';
+        $price = isset($item['price']) ? ' — ' . number_format((float)$item['price'], 0, ',', '.') . ' €' : '';
+        $lines[] = '• ' . $iname . $qty . $price;
+    }
+    if ($total) {
+        $lines[] = '';
+        $lines[] = 'TOTAL QUE VIO: ' . $total;
+    }
+    $lines[] = '';
+    $lines[] = 'No llegó a enviar la solicitud. Llámale y hazle una oferta.';
+    $lines[] = 'Panel de admin: https://sonoplay.es/admin.html (sección Usuarios)';
+
+    $subject = '[SONOPLAY] 🔥 Presupuesto abandonado — ' . $name . ($total ? ' (' . $total . ')' : '');
+    $headers  = "From: SONOPLAY Web <no-reply@sonoplay.es>\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+
+    return @mail(LEADS_NOTIFY_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', implode("\n", $lines), $headers);
+}
+
+/**
+ * Busca leads abandonados sin actividad reciente y aún no avisados, y envía
+ * el email. $force salta el throttle (lo usa el GET del panel de admin).
+ */
+function leads_notify_pending(bool $force = false): void {
+    if (!is_dir(DATA_DIR)) return;
+    $stamp = DATA_DIR . '/.leads-notify-stamp';
+    if (!$force) {
+        $last = @filemtime($stamp);
+        if ($last && time() - $last < LEADS_NOTIFY_THROTTLE) return;
+    }
+    @touch($stamp);
+
+    $leads = read_json('leads.json', []);
+    if (!is_array($leads) || count($leads) === 0) return;
+
+    $now = time();
+    $notified = [];
+    foreach ($leads as $l) {
+        if (($l['status'] ?? '') !== 'abandonado') continue;
+        if (empty($l['cart'])) continue;
+        $viewed = !empty($l['viewedAt']) ? strtotime($l['viewedAt']) : 0;
+        if (!$viewed || $viewed > $now - LEADS_ABANDON_AFTER) continue; // aún activo
+        if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > $now - LEADS_RENOTIFY_AFTER) continue;
+        if (leads_send_alert($l)) $notified[strtolower($l['email'] ?? '')] = true;
+    }
+    if (count($notified) === 0) return;
+
+    with_locked_json('leads.json', function ($leads) use ($notified) {
+        foreach ($leads as $i => $l) {
+            if (isset($notified[strtolower($l['email'] ?? '')])) {
+                $leads[$i]['notifiedAt'] = date('c');
+            }
+        }
+        return $leads;
+    });
+}
+
+// Corre al terminar cualquier petición a la API (la respuesta ya se envió,
+// el visitante no espera). Cada visita a la web pasa por aquí vía prices.php.
+register_shutdown_function(function () { leads_notify_pending(); });
