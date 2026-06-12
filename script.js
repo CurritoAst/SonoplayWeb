@@ -440,101 +440,85 @@ document.addEventListener('DOMContentLoaded', () => {
     djNext.addEventListener('click', () => djGoTo(djCurrent + 1));
     djDots.forEach((dot, i) => dot.addEventListener('click', () => djGoTo(i)));
 
-    // Click on slides: side slides navigate, center slide selects DJ
+    // ---- SELECCIÓN DJ A UN CLIC ----
+    // Un clic sobre el DJ central lo selecciona directamente (sin modal ni
+    // botón de confirmación). Volver a hacer clic lo deselecciona.
+    function selectDj(djName) {
+      const existingDj = cart.find(item => item.isDj);
+      const isSame = existingDj && existingDj.djName === djName;
+
+      const existingDjIdx = cart.findIndex(item => item.isDj);
+      if (existingDjIdx !== -1) cart.splice(existingDjIdx, 1);
+
+      const toast = document.getElementById('dj-toast');
+      if (isSame) {
+        // Toggle: clic sobre el DJ ya elegido → lo quita
+        if (toast) {
+          toast.textContent = 'Has quitado a ' + djName + ' de tu presupuesto';
+          toast.style.top = '30px';
+          setTimeout(() => { toast.style.top = '-100px'; }, 2500);
+        }
+        if (typeof updateCartUI === 'function') updateCartUI();
+        return;
+      }
+
+      const djPrice = (JSON.parse(localStorage.getItem('sonoplay_prices') || '{}')).dj || 484;
+      cart.push({ name: 'DJ ' + djName + ' (5h)', price: djPrice, qty: 1, unit: '', isPackage: false, isDj: true, djName: djName });
+      if (typeof updateCartUI === 'function') updateCartUI();
+
+      if (toast) {
+        toast.textContent = '✓ Has elegido a ' + djName;
+        toast.style.top = '30px';
+        setTimeout(() => { toast.style.top = '-100px'; }, 2500);
+      }
+
+      setTimeout(() => {
+        const extrasSection = document.getElementById('extras');
+        if (extrasSection) {
+          const offset = 80;
+          const top = extrasSection.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }, 500);
+    }
+
+    // Marca visualmente el slide del DJ que está en el carrito
+    window.syncDjSelection = function () {
+      const djItem = cart.find(it => it.isDj);
+      djSlides.forEach(slide => {
+        slide.classList.toggle('dj-selected', !!djItem && djItem.djName === slide.dataset.dj);
+      });
+    };
+
+    // Click on slides: side slides navigate, center slide selects DJ (1 clic)
     djSlides.forEach((slide, i) => {
       slide.addEventListener('click', () => {
         if (i !== djCurrent) {
           djGoTo(i);
         } else {
-          // Open DJ Info Modal
           const djName = slide.dataset.dj;
           if (!djName) return;
 
-          // Perfiles mockeados para Inyección Dinámica
-          const djProfiles = {
-            "Juanfran Montes": {
-              desc: "Especialista en animar la pista con la mejor selección musical y una energía inagotable para tu boda.",
-              photo: '<img src="images/dj-juanfran.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; position:absolute;">',
-              logo:  '<img src="images/logo-juanfran.png" style="width:180px; height:auto; display:block; margin:0 auto;">'
-            },
-            "Rafa": {
-              desc: "Ritmo, pasión y una técnica impecable. Rafa convertirá tu celebración en un auténtico festival.",
-              photo: '<img src="images/dj-rafa-new.png" style="width:100%; height:100%; object-fit:cover; object-position:center 15%; position:absolute;">',
-              logo:  '<img src="images/logo-rafa.png" style="height:150px; width:auto; filter:invert(1); display:block; margin:0 auto;">'
-            },
-            "JR Jona Rivas": {
-              desc: "La combinación perfecta entre elegancia y locura discotequera. Conecta directamente con tus invitados.",
-              photo: '<img src="images/dj-jr.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center top; position:absolute;">',
-              logo:  '<img src="images/logo-jr-white.png" style="height:130px; width:auto; display:block; margin:0 auto;">'
-            },
-            "Celu Martinez": {
-              desc: "Sesiones vibrantes y adaptación total a tu estilo. Magia en los platos para un evento inolvidable.",
-              photo: '<div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; position:absolute;"><span style="font-family:\'Montserrat\', sans-serif; font-size:4rem; font-weight:700; color:#333;">CM</span></div><img src="images/dj-celu.jpg" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; position:absolute;" onerror="this.style.display=\'none\'">',
-              logo:  '<img src="images/logo-celu.png" style="width:180px; height:auto; display:block; margin:0 auto;">'
-            },
-            "Manu Moreno": {
-              desc: "Elegancia y oficio en cabina. Manu lee la pista y te lleva de la cena al after sin perder el hilo.",
-              photo: '<img src="images/foto-manu.jpeg" style="width:100%; height:100%; object-fit:cover; object-position:center 12%; position:absolute;">',
-              logo:  '<img src="images/logo-manu.png" style="width:180px; height:auto; display:block; margin:0 auto;">'
-            },
-            "Cristian White": {
-              desc: "Pura adrenalina y un manejo exquisito del público. La garantía absoluta de un control maestro sobre la pista.",
-              photo: '<img src="images/dj-cristian-white.png" style="width:100%; height:100%; object-fit:cover; object-position:center 30%; transform:scale(1.3); position:absolute;">',
-              logo:  '<img src="images/logo-cristian-v3.png" style="width:220px; height:auto; display:block; margin:0 auto;">'
-            }
-          };
-
-          const profile = djProfiles[djName] || { desc: 'La mejor selección para tu boda.', photo: '', logo: '' };
-
-          // Bind Data to Modal
-          document.getElementById('dj-info-name').textContent = djName;
-          document.getElementById('dj-info-desc').textContent = profile.desc;
-          document.getElementById('dj-info-media').innerHTML = profile.photo || '';
-          document.getElementById('dj-info-logo').innerHTML  = profile.logo  || '';
-          
-          const actionBtn = document.getElementById('dj-info-action-btn');
-          
           if (!isLoggedIn()) {
-            actionBtn.innerHTML = '🔒 Regístrate para seleccionar';
-            actionBtn.onclick = () => {
-              document.getElementById('dj-info-modal-overlay').style.display = 'none';
-              if (!window.isRegisterMode && typeof toggleAuthMode === 'function') toggleAuthMode();
-              if (typeof openAuthModal === 'function') openAuthModal();
-            };
-          } else {
-            actionBtn.innerHTML = '+ Seleccionar este DJ';
-            actionBtn.onclick = () => {
-              document.getElementById('dj-info-modal-overlay').style.display = 'none';
-              
-              const existingDjIdx = cart.findIndex(item => item.isDj);
-              if (existingDjIdx !== -1) cart.splice(existingDjIdx, 1);
-
-              const djPrice = (JSON.parse(localStorage.getItem('sonoplay_prices') || '{}')).dj || 484;
-              cart.push({ name: 'DJ ' + djName + ' (5h)', price: djPrice, qty: 1, unit: '', isPackage: false, isDj: true });
-              if (typeof updateCartUI === 'function') updateCartUI();
-
-              const toast = document.getElementById('dj-toast');
-              if (toast) {
-                toast.textContent = 'Has elegido a ' + djName;
-                toast.style.top = '30px';
-                setTimeout(() => { toast.style.top = '-100px'; }, 2500);
-              }
-
-              setTimeout(() => {
-                const extrasSection = document.getElementById('extras');
-                if (extrasSection) {
-                  const offset = 80;
-                  const top = extrasSection.getBoundingClientRect().top + window.scrollY - offset;
-                  window.scrollTo({ top, behavior: 'smooth' });
-                }
-              }, 500);
-            };
+            // Guarda la intención para retomarla tras el login/registro
+            window.pendingDjName = djName;
+            if (!isRegisterMode) toggleAuthMode();
+            openAuthModal();
+            return;
           }
 
-          // Show the new Modal
-          document.getElementById('dj-info-modal-overlay').style.display = 'flex';
+          selectDj(djName);
         }
       });
+    });
+
+    // Tras login/registro, retoma la selección de DJ pendiente
+    window.addEventListener('sonoplay:auth-changed', () => {
+      if (window.pendingDjName && isLoggedIn()) {
+        const name = window.pendingDjName;
+        window.pendingDjName = null;
+        selectDj(name);
+      }
     });
 
     // Hover effects for arrows
@@ -856,6 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cartTotalEl.textContent = finalTotal > 0 ? finalTotal.toFixed(2).replace(/\.00$/, '') + ' €' : '0 €';
     updateCartBadge();
     updateAddButtons();
+    if (window.syncDjSelection) window.syncDjSelection();
   }
 
   function updateAddButtons() {
@@ -1226,6 +1211,15 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
   applyPriceVisibility();
   applyExtrasVisibility();
+
+  // Tras login/registro (gestionado en auth-shared.js): desbloquea precios y
+  // extras sin recargar, y retoma el flujo "crea tu presupuesto" si estaba pendiente.
+  window.addEventListener('sonoplay:auth-changed', () => {
+    updateAuthUI();
+    applyPriceVisibility();
+    applyExtrasVisibility();
+    checkPendingBudgetFlow();
+  });
 
   // ---- APPLY ADMIN PRICES (puede llamarse varias veces si llega update del server) ----
   function applyAdminPrices() {

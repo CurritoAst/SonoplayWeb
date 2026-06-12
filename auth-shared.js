@@ -193,6 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     authModal.style.display = 'none';
     updateAuthUI();
+    // Notifica al resto de la página (script.js) para refrescar precios
+    // ocultos y retomar la acción que el usuario tenía pendiente.
+    window.dispatchEvent(new CustomEvent('sonoplay:auth-changed'));
   });
 
   navLoginBtn.addEventListener('click', (e) => {
@@ -265,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('sonoplay_user', JSON.stringify(user));
       authModal.style.display = 'none';
       updateAuthUI();
+      window.dispatchEvent(new CustomEvent('sonoplay:auth-changed'));
 
       // Si el usuario Google no tiene teléfono o fecha de boda guardados, los
       // pedimos antes de continuar. Aparece la primera vez tras registrarse y
