@@ -341,6 +341,7 @@
   <header class="admin-header">
     <h1>SONO<span>PLAY</span> — Admin</h1>
     <div class="admin-header-actions">
+      <button class="btn-back" id="admin-notifs-btn" title="Aviso en este dispositivo cuando haya un presupuesto abandonado">🔔 Activar avisos</button>
       <a href="index.html" class="btn-back">Ver web</a>
       <button class="btn-logout" id="admin-logout">Cerrar sesión</button>
     </div>
@@ -886,6 +887,7 @@
       }
       renderLeadsTable();
       renderUsersTable(); // refresca los badges 🔥 de la tabla de usuarios
+      checkLeadNotifications();
     }
 
     function fmtDateTime(iso) {
@@ -939,6 +941,94 @@
     document.getElementById('leads-show-all').addEventListener('change', renderLeadsTable);
     loadLeads();
 
+    // -------- NOTIFICACIONES DE PRESUPUESTOS ABANDONADOS (solo admin) --------
+    // Saltan en este dispositivo mientras el panel esté abierto en alguna
+    // pestaña (aunque esté en segundo plano). Se disparan cuando el servidor
+    // marca el lead como abandonado de verdad (notifiedAt — mismo momento que
+    // el email): cerró la página con carrito o lleva 15 min inactivo.
+    const notifsBtn = document.getElementById('admin-notifs-btn');
+    let adminSwReg = null;
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('admin-sw.js').then(r => { adminSwReg = r; }).catch(() => {});
+    }
+
+    function notifsEnabled() {
+      return localStorage.getItem('sonoplay_admin_notifs') === 'on'
+        && 'Notification' in window && Notification.permission === 'granted';
+    }
+
+    function updateNotifsBtn() {
+      if (!('Notification' in window)) { notifsBtn.style.display = 'none'; return; }
+      if (Notification.permission === 'denied') {
+        notifsBtn.textContent = '🔕 Avisos bloqueados';
+        notifsBtn.title = 'Has bloqueado las notificaciones para esta web — actívalas en los ajustes del navegador (icono del candado en la barra de dirección)';
+        return;
+      }
+      notifsBtn.textContent = notifsEnabled() ? '🔔 Avisos activados' : '🔔 Activar avisos';
+    }
+
+    notifsBtn.addEventListener('click', async () => {
+      if (!('Notification' in window)) return;
+      if (notifsEnabled()) {
+        localStorage.setItem('sonoplay_admin_notifs', 'off');
+        showToast('Avisos desactivados en este dispositivo');
+        updateNotifsBtn();
+        return;
+      }
+      const perm = await Notification.requestPermission();
+      if (perm === 'granted') {
+        localStorage.setItem('sonoplay_admin_notifs', 'on');
+        showToast('🔔 Avisos activados — te llegarán mientras el panel esté abierto');
+        showLeadNotification({ name: 'Prueba', total: 0, phone: '', email: '_test' }, true);
+      } else {
+        showToast('No se concedió el permiso de notificaciones');
+      }
+      updateNotifsBtn();
+    });
+    updateNotifsBtn();
+
+    function showLeadNotification(l, isTest) {
+      const title = isTest ? '🔔 Avisos activados correctamente' : '🔥 Presupuesto abandonado';
+      let body;
+      if (isTest) {
+        body = 'Así te avisaremos cuando alguien deje un presupuesto a medias.';
+      } else {
+        body = (l.name || l.email || 'Cliente')
+          + (l.total ? ' — ' + Number(l.total).toLocaleString('es-ES') + ' €' : '');
+        if (l.phone) body += '\n📞 ' + l.phone;
+      }
+      const opts = {
+        body,
+        icon: 'images/favicon-192.png',
+        badge: 'images/favicon-192.png',
+        tag: 'sonoplay-lead-' + (l.email || ''),
+        data: { url: 'admin.html' }
+      };
+      try {
+        if (adminSwReg && adminSwReg.showNotification) {
+          adminSwReg.showNotification(title, opts); // Android necesita el SW
+        } else {
+          const n = new Notification(title, opts);
+          n.onclick = () => { window.focus(); n.close(); };
+        }
+      } catch (e) { /* navegador sin soporte — el email sigue llegando */ }
+    }
+
+    function checkLeadNotifications() {
+      if (!notifsEnabled()) return;
+      const seen = JSON.parse(localStorage.getItem('sonoplay_notified_leads') || '{}');
+      let changed = false;
+      leadsCache.forEach(l => {
+        if (l.status !== 'abandonado' || !l.notifiedAt) return;
+        const key = (l.email || l.id || '');
+        if (!key || seen[key] === l.notifiedAt) return;
+        showLeadNotification(l);
+        seen[key] = l.notifiedAt;
+        changed = true;
+      });
+      if (changed) localStorage.setItem('sonoplay_notified_leads', JSON.stringify(seen));
+    }
+
     window.deleteUser = async function(idx) {
       const u = usersCache[idx];
       if (!u) return;
@@ -974,7 +1064,9 @@
     (function setupUsersAutoRefresh() {
       const REFRESH_MS = 30000;
       function shouldRefresh() {
-        if (document.hidden) return false;
+        // Con los avisos activados seguimos consultando aunque la pestaña
+        // esté en segundo plano — si no, las notificaciones nunca saltarían.
+        if (document.hidden) return notifsEnabled();
         const dashOn  = document.getElementById('panel-dashboard')?.classList.contains('active');
         const usersOn = document.getElementById('panel-usuarios')?.classList.contains('active');
         return dashOn || usersOn;
