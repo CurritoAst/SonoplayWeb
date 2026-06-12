@@ -873,12 +873,14 @@ document.addEventListener('DOMContentLoaded', () => {
           errEl.style.display = 'block';
           return;
         }
-        // Éxito → muestra estado de gracias
+        // Éxito → muestra estado de gracias y vacía el carrito (ya enviado)
         budgetSentThisSession = true;
         trackLead('budget-sent');
         document.getElementById('budget-form-state').style.display = 'none';
         document.getElementById('budget-thanks-state').style.display = '';
         budgetForm.reset();
+        cart.splice(0, cart.length);
+        updateCartUI();
       } catch (err) {
         errEl.textContent = 'No se pudo conectar. Inténtalo de nuevo.';
         errEl.style.display = 'block';
@@ -991,7 +993,31 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
     updateAddButtons();
     if (window.syncDjSelection) window.syncDjSelection();
+    // Persistencia: el carrito sobrevive a recargas y a cerrar el navegador
+    try { localStorage.setItem('sonoplay_cart', JSON.stringify(cart)); } catch (e) {}
     scheduleLeadSync(); // registra/actualiza el lead con cada cambio de carrito
+  }
+
+  // ---- RESTAURAR CARRITO GUARDADO ----
+  (function restoreCart() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('sonoplay_cart') || '[]');
+      if (Array.isArray(saved)) {
+        saved.forEach(it => { if (it && it.name && typeof it.price === 'number') cart.push(it); });
+      }
+    } catch (e) { /* datos corruptos — empezamos de cero */ }
+    if (cart.length > 0) updateCartUI();
+  })();
+
+  // ---- VACIAR CARRITO ----
+  const cartClearBtn = document.getElementById('cart-clear-btn');
+  if (cartClearBtn) {
+    cartClearBtn.addEventListener('click', () => {
+      if (cart.length === 0) return;
+      if (!confirm('¿Seguro que quieres vaciar el carrito?')) return;
+      cart.splice(0, cart.length);
+      updateCartUI();
+    });
   }
 
   function updateAddButtons() {

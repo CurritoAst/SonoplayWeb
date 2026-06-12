@@ -104,27 +104,10 @@ if ($action === 'price-viewed' || $action === 'page-left') {
         return $leads;
     });
 
-    // Cerró la página con carrito sin enviar → email de aviso inmediato
-    if ($action === 'page-left' && count($cart) > 0) {
-        $leads = read_json('leads.json', []);
-        foreach ($leads as $l) {
-            if (!isset($l['email']) || strtolower($l['email']) !== $email) continue;
-            if (($l['status'] ?? '') !== 'abandonado') break;
-            if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > time() - LEADS_RENOTIFY_AFTER) break;
-            if (leads_send_alert($l)) {
-                with_locked_json('leads.json', function ($leads) use ($email) {
-                    foreach ($leads as $i => $x) {
-                        if (isset($x['email']) && strtolower($x['email']) === $email) {
-                            $leads[$i]['notifiedAt'] = date('c');
-                            return $leads;
-                        }
-                    }
-                    return null;
-                });
-            }
-            break;
-        }
-    }
+    // El email de aviso lo gestiona leads_notify_pending() (en _common.php):
+    // tras cerrar la página espera LEADS_LEFT_GRACE (2 min) por si era una
+    // recarga — si el usuario vuelve, price-viewed reactiva el lead y no hay
+    // email. Con la página abierta inactiva aplica LEADS_ABANDON_AFTER (15 min).
 
     json_response(['ok' => true]);
 }

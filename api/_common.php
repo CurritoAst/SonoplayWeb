@@ -166,6 +166,8 @@ function safe_date($v): string {
 
 const LEADS_NOTIFY_TO       = 'producciones@sonoplay.es';
 const LEADS_ABANDON_AFTER   = 900;    // 15 min sin actividad → notificable
+const LEADS_LEFT_GRACE      = 120;    // cerró la página: avisar si no vuelve en 2 min
+                                      // (una recarga reactiva el lead y cancela el aviso)
 const LEADS_NOTIFY_THROTTLE = 300;    // escaneo como mucho cada 5 min
 const LEADS_RENOTIFY_AFTER  = 86400;  // máx. 1 email por lead cada 24 h
 
@@ -233,7 +235,9 @@ function leads_notify_pending(bool $force = false): void {
         if (($l['status'] ?? '') !== 'abandonado') continue;
         if (empty($l['cart'])) continue;
         $viewed = !empty($l['viewedAt']) ? strtotime($l['viewedAt']) : 0;
-        if (!$viewed || $viewed > $now - LEADS_ABANDON_AFTER) continue; // aún activo
+        // Si cerró la página basta la gracia corta; si sigue abierta, 15 min de inactividad
+        $threshold = !empty($l['left']) ? LEADS_LEFT_GRACE : LEADS_ABANDON_AFTER;
+        if (!$viewed || $viewed > $now - $threshold) continue; // aún activo
         if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > $now - LEADS_RENOTIFY_AFTER) continue;
         if (leads_send_alert($l)) $notified[strtolower($l['email'] ?? '')] = true;
     }
