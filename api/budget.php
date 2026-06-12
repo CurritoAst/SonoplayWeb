@@ -28,10 +28,13 @@ if (!empty($body['_hp'])) {
     json_response(['ok' => true]); // mentimos al bot, no enviamos
 }
 
-$name = trim_str($body['name']        ?? '');
-$desc = trim_str($body['description'] ?? '');
-$cart = $body['cart']    ?? null;          // array opcional con items del carrito
-$pkg  = trim_str($body['package']     ?? '');  // texto del paquete elegido (opcional)
+$name    = trim_str($body['name']        ?? '');
+$desc    = trim_str($body['description'] ?? '');
+$cart    = $body['cart']    ?? null;          // array opcional con items del carrito
+$pkg     = trim_str($body['package']     ?? '');  // texto del paquete elegido (opcional)
+$email   = safe_email($body['email'] ?? '');      // datos del perfil del usuario logueado
+$phone   = mb_substr(trim_str($body['phone'] ?? ''), 0, 30);
+$wedding = safe_date($body['weddingDate'] ?? '');
 
 if (mb_strlen($name) < 2)  json_error('Introduce tu nombre');
 if (mb_strlen($desc) < 10) json_error('Cuéntanos un poco más sobre tu evento');
@@ -59,6 +62,9 @@ $attempts[] = $now;
 // Construir el cuerpo del email
 $lines = [];
 $lines[] = "Nombre: $name";
+if ($email)   $lines[] = "Email:  $email";
+if ($phone)   $lines[] = "Teléfono: $phone";
+if ($wedding) $lines[] = "Fecha de boda: " . date('d/m/Y', strtotime($wedding));
 $lines[] = "";
 $lines[] = "Motivo / descripción:";
 $lines[] = $desc;
@@ -86,9 +92,9 @@ $lines[] = "Fecha:           " . date('d/m/Y H:i');
 $subject = '[SONOPLAY] Nueva solicitud de presupuesto — ' . $name;
 $message = implode("\n", $lines);
 
-// Cabeceras
+// Cabeceras — si conocemos el email del cliente, responder le responde a él
 $headers  = 'From: ' . FROM_NAME . ' <' . FROM_EMAIL . ">\r\n";
-$headers .= 'Reply-To: ' . FROM_EMAIL . "\r\n";
+$headers .= 'Reply-To: ' . ($email ?: FROM_EMAIL) . "\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 

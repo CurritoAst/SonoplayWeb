@@ -629,8 +629,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     budgetSummary.innerHTML = summaryHTML;
 
+    // Datos del usuario para autorrellenar el mensaje (nombre + fecha de boda)
+    const bUser = getUser() || {};
+    const bDj = cart.find(it => it.isDj);
+    const bPkg = cart.find(it => it.isPackage);
+    function fmtWeddingDate(iso) {
+      if (!iso) return '';
+      const [y, m, d] = iso.split('-');
+      return (y && m && d) ? d + '/' + m + '/' + y : iso;
+    }
+    const bWedding = fmtWeddingDate(bUser.weddingDate || '');
+
     // Build WhatsApp message
-    let waMsg = '¡Hola SONOPLAY! 👋 Me gustaría solicitar presupuesto para:\n\n';
+    let waMsg = '¡Hola SONOPLAY! 👋';
+    if (bUser.name) waMsg += ' Soy ' + bUser.name + '.';
+    if (bWedding) waMsg += ' Nuestra boda es el ' + bWedding + '.';
+    waMsg += ' Me gustaría solicitar presupuesto para:\n\n';
     cart.forEach(item => {
       waMsg += `• ${item.name}${item.qty > 1 ? ' x' + item.qty : ''} — ${item.price * item.qty} €\n`;
     });
@@ -654,6 +668,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (budgetWhatsappBtn) budgetWhatsappBtn.href = waUrl;
     const budgetWhatsappBtnThanks = document.getElementById('budget-whatsapp-btn-thanks');
     if (budgetWhatsappBtnThanks) budgetWhatsappBtnThanks.href = waUrl;
+
+    // Autorrellena el formulario interno con nombre + fecha de boda (+ DJ y
+    // montaje elegidos). Solo si el usuario no ha escrito nada antes.
+    const bNameInput = document.getElementById('budget-name');
+    const bDescInput = document.getElementById('budget-description');
+    if (bNameInput && !bNameInput.value.trim() && bUser.name) bNameInput.value = bUser.name;
+    if (bDescInput && !bDescInput.value.trim()) {
+      let autoMsg = '¡Hola!';
+      if (bWedding) autoMsg += ' Nuestra boda es el ' + bWedding + '.';
+      const interests = [];
+      if (bPkg) interests.push('el montaje ' + bPkg.name);
+      if (bDj) interests.push(bDj.name);
+      if (interests.length) autoMsg += ' Nos interesa ' + interests.join(' con ') + '.';
+      autoMsg += ' ¿Podríais confirmarnos disponibilidad y enviarnos el presupuesto? ¡Gracias!';
+      bDescInput.value = autoMsg;
+    }
 
     // Resetear al estado FORMULARIO al abrir
     const formState = document.getElementById('budget-form-state');
@@ -712,11 +742,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const pkgItem = cart.find(it => it.isPackage);
       const packageLabel = pkgItem ? pkgItem.name : '';
 
+      const fUser = getUser() || {};
       try {
         const res = await fetch('api/budget.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, description, cart: cartSnapshot, package: packageLabel, _hp: hp })
+          body: JSON.stringify({
+            name, description, cart: cartSnapshot, package: packageLabel, _hp: hp,
+            email: fUser.email || '', phone: fUser.phone || '', weddingDate: fUser.weddingDate || ''
+          })
         });
         const data = await res.json().catch(() => ({ ok: false, error: 'Respuesta inválida' }));
         if (!res.ok || !data.ok) {
