@@ -61,9 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const authToggleText = document.getElementById('auth-toggle-text');
   const authSubmit     = document.getElementById('auth-submit');
   const authError      = document.getElementById('auth-error');
-  const authNameField  = document.getElementById('auth-name-field');
-  const authPhoneField = document.getElementById('auth-phone-field');
-  const navLoginBtn    = document.getElementById('nav-login-btn');
+  const authNameField    = document.getElementById('auth-name-field');
+  const authPhoneField   = document.getElementById('auth-phone-field');
+  const authWeddingField = document.getElementById('auth-wedding-field');
+  const navLoginBtn      = document.getElementById('nav-login-btn');
 
   if (!authModal || !navLoginBtn) return;
 
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       authToggle.textContent     = ' Inicia sesión';
       authNameField.style.display  = 'block';
       authPhoneField.style.display = 'block';
+      if (authWeddingField) authWeddingField.style.display = 'block';
     } else {
       authTitle.textContent      = 'Iniciar sesión';
       authSubmit.textContent     = 'Entrar';
@@ -100,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       authToggle.textContent     = ' Regístrate';
       authNameField.style.display  = 'none';
       authPhoneField.style.display = 'none';
+      if (authWeddingField) authWeddingField.style.display = 'none';
     }
     delete authSubmit.dataset.originalText;
     hideAuthError();
@@ -125,14 +128,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('auth-pass').value;
     const name     = document.getElementById('auth-name').value.trim();
     const phone    = document.getElementById('auth-phone').value.trim();
+    const weddingInput = document.getElementById('auth-wedding');
+    const weddingDate  = weddingInput ? weddingInput.value.trim() : '';
 
     if (!email || !password) { showAuthError('Email y contraseña son obligatorios'); return; }
 
     if (isRegisterMode) {
       if (!name) { showAuthError('Introduce tu nombre'); return; }
+      if (weddingInput && !weddingDate) { showAuthError('Indícanos la fecha de tu boda o evento'); return; }
       setSubmitting(true);
       try {
-        const r = await apiPost('register', { name, email, password, phone });
+        const r = await apiPost('register', { name, email, password, phone, weddingDate });
         if (!r.ok) { showAuthError(r.error || 'Error en el registro'); return; }
         // Sesión local con el usuario devuelto por el servidor
         localStorage.setItem('sonoplay_user', JSON.stringify(r.user));
@@ -260,10 +266,11 @@ document.addEventListener('DOMContentLoaded', () => {
       authModal.style.display = 'none';
       updateAuthUI();
 
-      // Si el usuario Google no tiene teléfono guardado, lo pedimos antes de continuar.
-      // Aparece la primera vez tras registrarse y en cada login hasta que lo introduzca.
-      if (!user.phone) {
-        showPhonePrompt({ email, googleId, name });
+      // Si el usuario Google no tiene teléfono o fecha de boda guardados, los
+      // pedimos antes de continuar. Aparece la primera vez tras registrarse y
+      // en cada login hasta que los introduzca.
+      if (!user.phone || !user.weddingDate) {
+        showPhonePrompt({ email, googleId, name, phone: user.phone || '', weddingDate: user.weddingDate || '' });
       }
     } catch (err) {
       showAuthError('No se pudo conectar al servidor.');
@@ -283,9 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
       '<div style="background:var(--dark2,#151520);border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:20px;padding:36px 30px;max-width:420px;width:100%;text-align:center;animation:cartSlideIn 0.3s;">' +
         '<div style="font-size:2.5rem;margin-bottom:10px;">📱</div>' +
         '<h3 style="color:#fff;font-size:1.35rem;font-weight:700;margin:0 0 8px;">¡Bienvenido' + (ctx.name ? ', ' + escapeHTML(ctx.name.split(' ')[0]) : '') + '! 👋</h3>' +
-        '<p style="color:var(--text-muted,#9ca3af);font-size:0.92rem;line-height:1.5;margin:0 0 22px;">Para terminar de configurar tu cuenta y que podamos contactarte rápido con tu presupuesto, déjanos tu <strong style="color:var(--cyan,#06b6d4);">número de teléfono</strong>.</p>' +
+        '<p style="color:var(--text-muted,#9ca3af);font-size:0.92rem;line-height:1.5;margin:0 0 22px;">Para terminar de configurar tu cuenta y que podamos contactarte rápido con tu presupuesto, déjanos tu <strong style="color:var(--cyan,#06b6d4);">número de teléfono</strong> y la <strong style="color:var(--cyan,#06b6d4);">fecha de tu boda o evento</strong>.</p>' +
         '<form id="phone-prompt-form">' +
           '<input type="tel" id="phone-prompt-input" placeholder="Ej. 600 12 34 56" required autocomplete="tel" inputmode="tel" style="width:100%;background:var(--dark3,#1f1f2e);border:1px solid var(--border,rgba(255,255,255,0.1));color:#fff;padding:14px 16px;border-radius:12px;font-size:1rem;margin-bottom:8px;font-family:inherit;outline:none;text-align:center;letter-spacing:0.05em;" />' +
+          '<label style="display:block;color:var(--text-muted,#9ca3af);font-size:0.78rem;text-align:left;margin:8px 0 4px;">Fecha de tu boda / evento</label>' +
+          '<input type="date" id="wedding-prompt-input" required style="width:100%;background:var(--dark3,#1f1f2e);border:1px solid var(--border,rgba(255,255,255,0.1));color:#fff;padding:14px 16px;border-radius:12px;font-size:1rem;margin-bottom:8px;font-family:inherit;outline:none;text-align:center;color-scheme:dark;" />' +
           '<div id="phone-prompt-error" style="display:none;color:#ef4444;font-size:0.85rem;margin:6px 0 12px;"></div>' +
           '<button type="submit" id="phone-prompt-submit" style="width:100%;background:var(--cyan,#06b6d4);color:#000;border:none;padding:14px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit;transition:opacity 0.2s;">Guardar y continuar</button>' +
         '</form>' +
@@ -293,11 +302,16 @@ document.addEventListener('DOMContentLoaded', () => {
       '</div>';
     document.body.appendChild(overlay);
 
-    const form    = overlay.querySelector('#phone-prompt-form');
-    const input   = overlay.querySelector('#phone-prompt-input');
-    const errEl   = overlay.querySelector('#phone-prompt-error');
-    const submit  = overlay.querySelector('#phone-prompt-submit');
-    const skipBtn = overlay.querySelector('#phone-prompt-skip');
+    const form     = overlay.querySelector('#phone-prompt-form');
+    const input    = overlay.querySelector('#phone-prompt-input');
+    const weddingI = overlay.querySelector('#wedding-prompt-input');
+    const errEl    = overlay.querySelector('#phone-prompt-error');
+    const submit   = overlay.querySelector('#phone-prompt-submit');
+    const skipBtn  = overlay.querySelector('#phone-prompt-skip');
+
+    // Prerrellena lo que ya sepamos (ej. tiene teléfono pero falta la fecha)
+    if (ctx.phone) input.value = ctx.phone;
+    if (ctx.weddingDate && weddingI) weddingI.value = ctx.weddingDate;
 
     setTimeout(() => input.focus(), 100);
 
@@ -307,16 +321,18 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       errEl.style.display = 'none';
       const phone = input.value.trim();
+      const weddingDate = weddingI ? weddingI.value.trim() : '';
       if (phone.replace(/\D/g, '').length < 6) { showErr('Introduce un teléfono válido'); return; }
+      if (weddingI && !weddingDate) { showErr('Indícanos la fecha de tu boda o evento'); return; }
 
       submit.disabled = true;
       submit.textContent = 'Guardando…';
       try {
-        const r = await apiPost('update-phone', { email: ctx.email, googleId: ctx.googleId, phone });
+        const r = await apiPost('update-phone', { email: ctx.email, googleId: ctx.googleId, phone, weddingDate });
         if (!r || !r.ok) { showErr((r && r.error) || 'Error al guardar el teléfono'); return; }
-        // Actualiza la sesión local con el teléfono nuevo
+        // Actualiza la sesión local con los datos nuevos
         const u = getUser();
-        if (u) { u.phone = phone; localStorage.setItem('sonoplay_user', JSON.stringify(u)); }
+        if (u) { u.phone = phone; u.weddingDate = weddingDate; localStorage.setItem('sonoplay_user', JSON.stringify(u)); }
         overlay.remove();
       } catch (err) {
         showErr('No se pudo conectar al servidor');

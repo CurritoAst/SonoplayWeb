@@ -651,7 +651,8 @@
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Teléfono</th>
-                <th>Fecha</th>
+                <th>Fecha boda</th>
+                <th>Registro</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -855,6 +856,7 @@
           <td>${escapeHtml(u.name || '-')}${leadBadge}</td>
           <td>${escapeHtml(u.email)}</td>
           <td>${escapeHtml(u.phone || '-')}</td>
+          <td>${escapeHtml(u.weddingDate || '-')}</td>
           <td>${escapeHtml((u.createdAt || u.date || '-').toString().split('T')[0])}</td>
           <td><button class="btn-danger" onclick="deleteUser(${i})">Eliminar</button></td>
         </tr>

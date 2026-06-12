@@ -146,3 +146,11 @@ function safe_email($v): string {
     $v = strtolower(trim_str($v));
     return filter_var($v, FILTER_VALIDATE_EMAIL) ? $v : '';
 }
+
+/** Valida una fecha YYYY-MM-DD (input type=date). Devuelve '' si no es válida. */
+function safe_date($v): string {
+    $v = trim_str($v);
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $v)) return '';
+    [$y, $m, $d] = array_map('intval', explode('-', $v));
+    return checkdate($m, $d, $y) ? $v : '';
+}

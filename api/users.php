@@ -44,25 +44,27 @@ $action = $body['action'] ?? '';
 
 // ---------------- REGISTER ----------------
 if ($action === 'register') {
-    $name  = trim_str($body['name']  ?? '');
-    $email = safe_email($body['email'] ?? '');
-    $pass  = trim_str($body['password'] ?? '');
-    $phone = trim_str($body['phone'] ?? '');
+    $name    = trim_str($body['name']  ?? '');
+    $email   = safe_email($body['email'] ?? '');
+    $pass    = trim_str($body['password'] ?? '');
+    $phone   = trim_str($body['phone'] ?? '');
+    $wedding = safe_date($body['weddingDate'] ?? '');
     if (!$name || !$email || !$pass) json_error('Faltan campos obligatorios');
 
     $err = null; $out = null;
-    with_locked_json('users.json', function ($users) use ($name, $email, $pass, $phone, &$err, &$out) {
+    with_locked_json('users.json', function ($users) use ($name, $email, $pass, $phone, $wedding, &$err, &$out) {
         foreach ($users as $u) {
             if (isset($u['email']) && strtolower($u['email']) === $email) { $err = 'Ya existe una cuenta con ese email'; return null; }
         }
         $newUser = [
-            'id'        => bin2hex(random_bytes(8)),
-            'name'      => $name,
-            'email'     => $email,
-            'password'  => password_hash($pass, PASSWORD_DEFAULT),
-            'phone'     => $phone,
-            'role'      => 'user',
-            'createdAt' => date('c'),
+            'id'          => bin2hex(random_bytes(8)),
+            'name'        => $name,
+            'email'       => $email,
+            'password'    => password_hash($pass, PASSWORD_DEFAULT),
+            'phone'       => $phone,
+            'weddingDate' => $wedding,
+            'role'        => 'user',
+            'createdAt'   => date('c'),
         ];
         $users[] = $newUser;
         unset($newUser['password']);
@@ -136,16 +138,18 @@ if ($action === 'update-phone') {
     $email    = safe_email($body['email'] ?? '');
     $googleId = trim_str($body['googleId'] ?? '');
     $phone    = trim_str($body['phone'] ?? '');
+    $wedding  = safe_date($body['weddingDate'] ?? '');
     if (!$email) json_error('Email requerido');
     if (!$phone) json_error('Teléfono requerido');
     if (strlen($phone) < 6 || strlen($phone) > 30) json_error('Teléfono no válido');
 
     $err = null; $out = null;
-    with_locked_json('users.json', function ($users) use ($email, $googleId, $phone, &$err, &$out) {
+    with_locked_json('users.json', function ($users) use ($email, $googleId, $phone, $wedding, &$err, &$out) {
         foreach ($users as $idx => $u) {
             if (isset($u['email']) && strtolower($u['email']) === $email) {
                 if (!empty($u['googleId']) && (!$googleId || $u['googleId'] !== $googleId)) { $err = 'Verificación fallida'; return null; }
                 $users[$idx]['phone'] = $phone;
+                if ($wedding) $users[$idx]['weddingDate'] = $wedding;
                 $ret = $users[$idx];
                 unset($ret['password']);
                 $out = $ret;
@@ -206,14 +210,15 @@ if ($action === 'migrate') {
                     : password_hash($u['password'], PASSWORD_DEFAULT);
             }
             $existing[] = [
-                'id'        => $u['id'] ?? bin2hex(random_bytes(8)),
-                'name'      => trim_str($u['name'] ?? ''),
-                'email'     => $email,
-                'password'  => $pwd,
-                'phone'     => trim_str($u['phone'] ?? ''),
-                'googleId'  => trim_str($u['googleId'] ?? ''),
-                'role'      => ($u['role'] ?? 'user') === 'admin' ? 'admin' : 'user',
-                'createdAt' => $u['createdAt'] ?? date('c'),
+                'id'          => $u['id'] ?? bin2hex(random_bytes(8)),
+                'name'        => trim_str($u['name'] ?? ''),
+                'email'       => $email,
+                'password'    => $pwd,
+                'phone'       => trim_str($u['phone'] ?? ''),
+                'weddingDate' => safe_date($u['weddingDate'] ?? ''),
+                'googleId'    => trim_str($u['googleId'] ?? ''),
+                'role'        => ($u['role'] ?? 'user') === 'admin' ? 'admin' : 'user',
+                'createdAt'   => $u['createdAt'] ?? date('c'),
             ];
             $emails[$email] = true;
             $added++;
