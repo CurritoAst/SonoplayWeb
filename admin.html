@@ -382,6 +382,7 @@
       <a href="#" data-panel="precios">Precios</a>
       <a href="#" data-panel="contenido">Contenido</a>
       <a href="#" data-panel="extras">Servicios Extras</a>
+      <a href="#" data-panel="estadisticas">Estadísticas</a>
       <a href="#" data-panel="usuarios">Usuarios</a>
     </nav>
 
@@ -633,6 +634,22 @@
         </div>
 
         <button class="btn-save" id="save-extras">Guardar extras</button>
+      </div>
+
+      <!-- ESTADÍSTICAS -->
+      <div class="admin-panel" id="panel-estadisticas">
+        <h2>Estadísticas</h2>
+        <p class="subtitle">Qué montajes y DJs son los más solicitados — basado en los presupuestos creados por los usuarios</p>
+
+        <div class="admin-card">
+          <h3>🏗️ Montajes más solicitados</h3>
+          <div id="stats-montajes"></div>
+        </div>
+
+        <div class="admin-card">
+          <h3>🎧 DJs más solicitados</h3>
+          <div id="stats-djs"></div>
+        </div>
       </div>
 
       <!-- USUARIOS -->
@@ -919,7 +936,74 @@
       }
       renderLeadsTable();
       renderUsersTable(); // refresca los badges 🔥 de la tabla de usuarios
+      renderStats();
       checkLeadNotifications();
+    }
+
+    // -------- ESTADÍSTICAS (montajes y DJs más solicitados) --------
+    // Se calculan a partir de los presupuestos que han creado los usuarios
+    // (leads.json): cada presupuesto que incluye un montaje/DJ suma uno.
+    const STATS_MONTAJES = [
+      { key: 'OPCION BASIC',  label: 'Basic' },
+      { key: 'OPCION OVALO',  label: 'Ovalo' },
+      { key: 'OPCION TOTEMS', label: 'Totems' },
+      { key: 'OPCION CUBO',   label: 'Cubo' },
+      { key: 'OPCION EQUIS',  label: 'Equis' },
+      { key: 'OPCION HEXA',   label: 'Hexa' }
+    ];
+
+    function renderStats() {
+      const mCount = {}; STATS_MONTAJES.forEach(m => mCount[m.key] = 0);
+      const djCount = {};
+      leadsCache.forEach(l => {
+        if (!Array.isArray(l.cart)) return;
+        l.cart.forEach(it => {
+          const name = (it.name || '').trim();
+          const up = name.toUpperCase();
+          const m = STATS_MONTAJES.find(x => up === x.key);
+          if (m) mCount[m.key]++;
+          if (/^DJ\s/i.test(name)) {
+            const dj = name.replace(/^DJ\s+/i, '').replace(/\s*\(5h\)\s*$/i, '').trim();
+            if (dj) djCount[dj] = (djCount[dj] || 0) + 1;
+          }
+        });
+      });
+      renderRanking('stats-montajes', STATS_MONTAJES.map(m => ({ label: m.label, count: mCount[m.key] })));
+      renderRanking('stats-djs', Object.keys(djCount).map(k => ({ label: k, count: djCount[k] })));
+    }
+
+    function renderRanking(elId, arr) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      if (!arr.length || arr.every(a => a.count === 0)) {
+        el.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aún no hay datos. Aparecerán en cuanto los usuarios empiecen a crear presupuestos.</p>';
+        return;
+      }
+      const sorted = arr.slice().sort((a, b) => b.count - a.count);
+      const max = sorted[0].count || 1;
+      const withData = sorted.filter(a => a.count > 0);
+      const topLabel = withData[0].label;
+      const leastLabel = withData[withData.length - 1].label;
+      el.innerHTML = sorted.map(a => {
+        const pct = Math.round(a.count / max * 100);
+        let tag = '';
+        if (a.count > 0 && a.label === topLabel) {
+          tag = ' <span style="background:rgba(34,197,94,0.18); color:#22c55e; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap;">⭐ El más solicitado</span>';
+        } else if (a.count > 0 && a.label === leastLabel && withData.length > 1) {
+          tag = ' <span style="background:rgba(239,68,68,0.15); color:#ef4444; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap;">🔻 El menos solicitado</span>';
+        }
+        const barColor = a.count === 0 ? 'rgba(255,255,255,0.08)' : 'var(--cyan)';
+        return `
+          <div style="margin-bottom: 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; gap:8px;">
+              <span style="font-weight:600; color:#fff; font-size:0.9rem;">${escapeHtml(a.label)}${tag}</span>
+              <span style="color:var(--text-muted); font-size:0.85rem; white-space:nowrap;">${a.count} ${a.count === 1 ? 'vez' : 'veces'}</span>
+            </div>
+            <div style="height:10px; background:var(--dark3); border-radius:999px; overflow:hidden;">
+              <div style="height:100%; width:${Math.max(pct, a.count > 0 ? 6 : 0)}%; background:${barColor}; border-radius:999px; transition:width 0.4s;"></div>
+            </div>
+          </div>`;
+      }).join('');
     }
 
     function fmtDateTime(iso) {

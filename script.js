@@ -651,6 +651,51 @@ document.addEventListener('DOMContentLoaded', () => {
   cartClose.addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', closeCart);
 
+  // ---- PROMO NOVIOS + DESCUENTOS ----
+  // Promo "novios": 5% EXTRA para las parejas que se registren entre
+  // PROMO_START y PROMO_END (incluidos). Se SUMA al descuento directo del
+  // 10% por umbral que ya existía. Para cambiarla o quitarla, edita estas
+  // constantes (PROMO_PERCENT = 0 la desactiva).
+  const PROMO_PERCENT = 5;
+  const PROMO_START   = '2026-06-13'; // desde hoy
+  const PROMO_END     = '2026-10-31'; // hasta final de octubre (incluido)
+  const PROMO_LABEL   = 'reserva hasta octubre';
+
+  function userQualifiesForPromo() {
+    if (PROMO_PERCENT <= 0) return false;
+    const u = getUser();
+    if (!u || u.role === 'admin') return false;
+    const reg = (u.createdAt || u.date || '').toString();
+    let d = null;
+    if (/^\d{4}-\d{2}-\d{2}/.test(reg)) d = reg.slice(0, 10);                 // ISO del servidor
+    else if (/^\d{2}\/\d{2}\/\d{4}/.test(reg)) { const p = reg.slice(0, 10).split('/'); d = p[2] + '-' + p[1] + '-' + p[0]; }
+    if (!d) return false;
+    return d >= PROMO_START && d <= PROMO_END;
+  }
+
+  // Desglose de descuentos sobre un subtotal: tramos aplicados, total
+  // descontado y total final. Única fuente de verdad para carrito, modal,
+  // WhatsApp y el total que se registra como lead.
+  function getDiscount(subtotal) {
+    const p = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
+    const threshold   = p['discount-threshold'] !== undefined ? parseFloat(p['discount-threshold']) : 4000;
+    const basePercent = p['discount-percent']   !== undefined ? parseFloat(p['discount-percent'])   : 10;
+    const lines = [];
+    let discount = 0;
+    if (threshold > 0 && subtotal >= threshold && basePercent > 0) {
+      const a = subtotal * basePercent / 100;
+      discount += a;
+      lines.push({ label: 'Descuento directo (' + basePercent + '%)', amount: a });
+    }
+    if (userQualifiesForPromo()) {
+      const a = subtotal * PROMO_PERCENT / 100;
+      discount += a;
+      lines.push({ label: 'Promo novios · ' + PROMO_LABEL + ' (' + PROMO_PERCENT + '%)', amount: a });
+    }
+    return { subtotal: subtotal, discount: discount, finalTotal: subtotal - discount, lines: lines };
+  }
+  function fmtEur(n) { return n.toFixed(2).replace(/\.00$/, ''); }
+
   // ---- LEADS (presupuestos abandonados) ----
   // El lead se registra en el servidor desde que el usuario logueado tiene
   // algo en el carrito (ve precios). Si cierra la página sin enviar la
@@ -674,18 +719,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function leadCartPayload() {
     const user = getUser() || {};
     const djItem = cart.find(it => it.isDj);
-    const savedP = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
-    const th = savedP['discount-threshold'] !== undefined ? parseFloat(savedP['discount-threshold']) : 4000;
-    const pc = savedP['discount-percent'] !== undefined ? parseFloat(savedP['discount-percent']) : 10;
-    let total = cart.reduce((s, it) => s + it.price * it.qty, 0);
-    if (th > 0 && total >= th && pc > 0) total = total - total * (pc / 100);
+    const subtotal = cart.reduce((s, it) => s + it.price * it.qty, 0);
+    const d = getDiscount(subtotal);
     return {
       name: user.name || '',
       phone: user.phone || '',
       weddingDate: user.weddingDate || '',
       dj: djItem ? djItem.name : '',
       cart: cart.map(it => ({ name: it.name, price: it.price * it.qty, qty: it.qty })),
-      total: Math.round(total * 100) / 100
+      total: Math.round(d.finalTotal * 100) / 100
     };
   }
 
@@ -742,19 +784,14 @@ document.addEventListener('DOMContentLoaded', () => {
       summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.85rem;"><span style="color: var(--text);">${item.name}${item.qty > 1 ? ' x' + item.qty : ''}</span><span style="color: var(--cyan); font-weight: 700;">${itemTotal} €</span></div>`;
     });
     if (cart.length > 0) {
-      const savedPrices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
-      const threshold = savedPrices['discount-threshold'] !== undefined ? parseFloat(savedPrices['discount-threshold']) : 4000;
-      const percent = savedPrices['discount-percent'] !== undefined ? parseFloat(savedPrices['discount-percent']) : 10;
-      let finalTotal = total;
-      let discountAmount = 0;
-      
-      if (threshold > 0 && total >= threshold && percent > 0) {
-        discountAmount = total * (percent / 100);
-        finalTotal = total - discountAmount;
-        summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 8px 0 0; margin-top: 8px; border-top: 1px solid var(--border); font-size: 0.85rem;"><span style="color: var(--text-muted);">Subtotal</span><span style="color: var(--text-muted); text-decoration: line-through;">${total.toFixed(2).replace(/\.00$/, '')} €</span></div>`;
-        summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #ef4444; font-weight: 600; font-size: 0.85rem;">Descuento directo (${percent}%)</span><span style="color: #ef4444; font-weight: 700; font-size: 0.85rem;">-${discountAmount.toFixed(2).replace(/\.00$/, '')} €</span></div>`;
+      const d = getDiscount(total);
+      if (d.discount > 0) {
+        summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 8px 0 0; margin-top: 8px; border-top: 1px solid var(--border); font-size: 0.85rem;"><span style="color: var(--text-muted);">Subtotal</span><span style="color: var(--text-muted); text-decoration: line-through;">${fmtEur(total)} €</span></div>`;
+        d.lines.forEach(ln => {
+          summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #ef4444; font-weight: 600; font-size: 0.85rem;">${ln.label}</span><span style="color: #ef4444; font-weight: 700; font-size: 0.85rem;">-${fmtEur(ln.amount)} €</span></div>`;
+        });
       }
-      summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 8px 0 0; border-top: 1px solid var(--border); font-size: 0.95rem; margin-top: 4px;"><span style="color: #fff; font-weight: 700;">Total estimado</span><span style="color: var(--cyan); font-weight: 900;">${finalTotal.toFixed(2).replace(/\.00$/, '')} €</span></div>`;
+      summaryHTML += `<div style="display: flex; justify-content: space-between; padding: 8px 0 0; border-top: 1px solid var(--border); font-size: 0.95rem; margin-top: 4px;"><span style="color: #fff; font-weight: 700;">Total estimado</span><span style="color: var(--cyan); font-weight: 900;">${fmtEur(d.finalTotal)} €</span></div>`;
     } else {
       summaryHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">No hay servicios seleccionados</p>';
     }
@@ -780,18 +817,13 @@ document.addEventListener('DOMContentLoaded', () => {
       waMsg += `• ${item.name}${item.qty > 1 ? ' x' + item.qty : ''} — ${item.price * item.qty} €\n`;
     });
     if (cart.length > 0) {
-      const savedPrices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
-      const threshold = savedPrices['discount-threshold'] !== undefined ? parseFloat(savedPrices['discount-threshold']) : 4000;
-      const percent = savedPrices['discount-percent'] !== undefined ? parseFloat(savedPrices['discount-percent']) : 10;
-      
-      if (threshold > 0 && total >= threshold && percent > 0) {
-        const discountAmount = total * (percent / 100);
-        const finalTotal = total - discountAmount;
-        waMsg += `\nSubtotal: ${total} €`;
-        waMsg += `\n❌ Descuento (${percent}%): -${discountAmount.toFixed(2).replace(/\.00$/, '')} €`;
-        waMsg += `\n✅ Total estimado: ${finalTotal.toFixed(2).replace(/\.00$/, '')} €\n`;
+      const d = getDiscount(total);
+      if (d.discount > 0) {
+        waMsg += `\nSubtotal: ${fmtEur(total)} €`;
+        d.lines.forEach(ln => { waMsg += `\n❌ ${ln.label}: -${fmtEur(ln.amount)} €`; });
+        waMsg += `\n✅ Total estimado: ${fmtEur(d.finalTotal)} €\n`;
       } else {
-        waMsg += `\nTotal estimado: ${total} €\n`;
+        waMsg += `\nTotal estimado: ${fmtEur(total)} €\n`;
       }
     }
     waMsg += '\n¿Podrían darme más información? ¡Gracias!';
@@ -964,24 +996,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const discountInfoEl = document.getElementById('cart-discount-info');
     
     if (total > 0) {
-      const savedPrices = JSON.parse(localStorage.getItem('sonoplay_prices') || '{}');
-      const threshold = savedPrices['discount-threshold'] !== undefined ? parseFloat(savedPrices['discount-threshold']) : 4000;
-      const percent = savedPrices['discount-percent'] !== undefined ? parseFloat(savedPrices['discount-percent']) : 10;
-      
-      // If we meet condition, calculate
-      if (threshold > 0 && total >= threshold && percent > 0) {
-        const discountAmount = total * (percent / 100);
-        finalTotal = total - discountAmount;
+      const d = getDiscount(total);
+      if (d.discount > 0) {
+        finalTotal = d.finalTotal;
         discountHtml = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <span style="color: var(--text-muted); font-size: 0.95rem;">Subtotal:</span>
-            <span style="color: var(--text-muted); font-size: 1rem; text-decoration: line-through;">${total.toFixed(2).replace(/\.00$/, '')} €</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: rgba(239, 68, 68, 0.1); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
-            <span style="color: #ef4444; font-size: 0.95rem; font-weight: 600;">Descuento directo (${percent}%)</span>
-            <span style="color: #ef4444; font-size: 1rem; font-weight: 700;">-${discountAmount.toFixed(2).replace(/\.00$/, '')} €</span>
-          </div>
-        `;
+            <span style="color: var(--text-muted); font-size: 1rem; text-decoration: line-through;">${fmtEur(total)} €</span>
+          </div>`;
+        d.lines.forEach(ln => {
+          discountHtml += `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: rgba(239, 68, 68, 0.1); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
+            <span style="color: #ef4444; font-size: 0.9rem; font-weight: 600;">${ln.label}</span>
+            <span style="color: #ef4444; font-size: 1rem; font-weight: 700;">-${fmtEur(ln.amount)} €</span>
+          </div>`;
+        });
       }
     }
     
