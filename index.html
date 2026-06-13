@@ -47,7 +47,7 @@
   <link rel="stylesheet" href="styles.css?v=18" />
   <link rel="preload" href="images/Video-sonoplay.webm" as="video" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="script.js?v=20"></script>
+  <script defer src="script.js?v=21"></script>
   <script defer src="auth-shared.js?v=7"></script>
   <script defer src="gallery.js?v=3"></script>
   <script defer src="chatbot.js?v=5"></script>
@@ -639,12 +639,14 @@
                  data-package-id="hexa"
                  data-package-title="OPCION HEXA"
                  data-gallery-title="Opción Hexa"
-                 data-gallery-meta="Montaje · 1 foto + vídeo"
+                 data-gallery-meta="Montaje · 3 fotos + vídeo"
                  data-gallery-items='[
-                   {"type":"image","src":"images/foto-hexa.jpeg","alt":"Montaje Opcion Hexa"},
-                   {"type":"video","src":"images/video-hexa.mp4"}
+                   {"type":"image","src":"images/opcion-hexa/hexa-1.jpeg","alt":"Montaje Opcion Hexa — vista 1"},
+                   {"type":"image","src":"images/opcion-hexa/hexa-2.jpeg","alt":"Montaje Opcion Hexa — vista 2"},
+                   {"type":"image","src":"images/opcion-hexa/hexa-3.jpeg","alt":"Montaje Opcion Hexa — vista 3"},
+                   {"type":"video","src":"images/opcion-hexa/hexa.mp4"}
                  ]'>
-          <img class="poster-img" src="images/foto-hexa.jpeg" alt="Opción Hexa" loading="lazy">
+          <img class="poster-img" src="images/opcion-hexa/hexa-1.jpeg" alt="Opción Hexa" loading="lazy">
           <div class="poster-bottom">
             <h3 class="poster-title">OPCION HEXA</h3>
             <p class="poster-short">Medio hexágono a doble altura con pantallas LED y técnico de iluminación. La opción más espectacular.</p>
@@ -1108,7 +1110,7 @@
 
   <!-- ======== LIGHTBOX VIDEO ======== -->
   <div id="video-lightbox" onclick="if(event.target===this){this.style.display='none'; document.getElementById('video-lb-player').pause();}" style="display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; cursor: default;">
-    <video id="video-lb-player" src="images/video-hexa.mp4" controls autoplay style="max-width: 92vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8);"></video>
+    <video id="video-lb-player" src="images/opcion-hexa/hexa.mp4" controls autoplay style="max-width: 92vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8);"></video>
     <button onclick="document.getElementById('video-lightbox').style.display='none'; document.getElementById('video-lb-player').pause();" style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: #fff; font-size: 2.5rem; cursor: pointer;">&times;</button>
   </div>
 

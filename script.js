@@ -520,11 +520,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectDj(djName) {
       const existingDj = cart.find(item => item.isDj);
       const isSame = existingDj && existingDj.djName === djName;
+      const toast = document.getElementById('dj-toast');
+
+      // Para elegir un DJ hay que haber elegido antes un montaje.
+      // (Si está quitando el DJ que ya tenía, se permite igualmente.)
+      if (!cart.some(item => item.isPackage) && !isSame) {
+        if (toast) {
+          toast.textContent = '👉 Primero elige un montaje para tu boda';
+          toast.style.top = '30px';
+          setTimeout(() => { toast.style.top = '-100px'; }, 3000);
+        }
+        setTimeout(() => {
+          const weddings = document.getElementById('weddings');
+          if (weddings) {
+            const top = weddings.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+        }, 400);
+        return;
+      }
 
       const existingDjIdx = cart.findIndex(item => item.isDj);
       if (existingDjIdx !== -1) cart.splice(existingDjIdx, 1);
 
-      const toast = document.getElementById('dj-toast');
       if (isSame) {
         // Toggle: clic sobre el DJ ya elegido → lo quita
         if (toast) {
