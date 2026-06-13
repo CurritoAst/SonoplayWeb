@@ -231,6 +231,7 @@ function leads_notify_pending(bool $force = false): void {
 
     $now = time();
     $notified = [];
+    $lastLead = null;
     foreach ($leads as $l) {
         if (($l['status'] ?? '') !== 'abandonado') continue;
         if (empty($l['cart'])) continue;
@@ -239,7 +240,7 @@ function leads_notify_pending(bool $force = false): void {
         $threshold = !empty($l['left']) ? LEADS_LEFT_GRACE : LEADS_ABANDON_AFTER;
         if (!$viewed || $viewed > $now - $threshold) continue; // aún activo
         if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > $now - LEADS_RENOTIFY_AFTER) continue;
-        if (leads_send_alert($l)) $notified[strtolower($l['email'] ?? '')] = true;
+        if (leads_send_alert($l)) { $notified[strtolower($l['email'] ?? '')] = true; $lastLead = $l; }
     }
     if (count($notified) === 0) return;
 
@@ -251,6 +252,142 @@ function leads_notify_pending(bool $force = false): void {
         }
         return $leads;
     });
+
+    // Push a los dispositivos del admin (aunque tengan el navegador cerrado)
+    $who   = $lastLead['name'] ?: ($lastLead['email'] ?? 'Un cliente');
+    $total = !empty($lastLead['total']) ? ' (' . number_format((float)$lastLead['total'], 0, ',', '.') . ' €)' : '';
+    $extra = count($notified) > 1 ? ' y ' . (count($notified) - 1) . ' más' : '';
+    push_notify_admins('🔥 Presupuesto abandonado', $who . $total . $extra . ' — toca para verlo en el panel.');
+}
+
+/* ============================================================
+   WEB PUSH (VAPID) — notificaciones al admin con el navegador cerrado
+   Implementación en PHP puro (sin Composer): envío "payloadless" (sin
+   cuerpo cifrado), solo el JWT VAPID firmado con ES256 vía openssl. El
+   service worker recibe el push y muestra la notificación.
+   ============================================================ */
+
+const VAPID_SUBJECT = 'mailto:producciones@sonoplay.es';
+
+function b64url_encode(string $data): string {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+/** Devuelve (y crea la primera vez) el par de claves VAPID. */
+function vapid_keys(): ?array {
+    $k = read_json('push-keys.json', null);
+    if (is_array($k) && !empty($k['privPem']) && !empty($k['pub'])) return $k;
+    if (!function_exists('openssl_pkey_new')) return null;
+
+    $res = openssl_pkey_new(['curve_name' => 'prime256v1', 'private_key_type' => OPENSSL_KEYTYPE_EC]);
+    if (!$res) return null;
+    openssl_pkey_export($res, $privPem);
+    $det = openssl_pkey_get_details($res);
+    if (empty($det['ec']['x']) || empty($det['ec']['y'])) return null;
+
+    $x = str_pad($det['ec']['x'], 32, "\0", STR_PAD_LEFT);
+    $y = str_pad($det['ec']['y'], 32, "\0", STR_PAD_LEFT);
+    $k = ['privPem' => $privPem, 'pub' => b64url_encode("\x04" . $x . $y)];
+    write_json('push-keys.json', $k);
+    return $k;
+}
+
+/** Clave pública VAPID en base64url (para el navegador). */
+function vapid_public_key(): string {
+    $k = vapid_keys();
+    return $k['pub'] ?? '';
+}
+
+/** Convierte la firma ECDSA DER de openssl a 64 bytes crudos (R||S). */
+function ecdsa_der_to_raw(string $der): string {
+    $off = 0;
+    if (strlen($der) < 8 || ord($der[$off++]) !== 0x30) return '';
+    $len = ord($der[$off++]);
+    if ($len & 0x80) { $n = $len & 0x7f; $off += $n; }
+    if (ord($der[$off++]) !== 0x02) return '';
+    $rlen = ord($der[$off++]); $r = substr($der, $off, $rlen); $off += $rlen;
+    if (ord($der[$off++]) !== 0x02) return '';
+    $slen = ord($der[$off++]); $s = substr($der, $off, $slen);
+    $r = ltrim($r, "\0"); $s = ltrim($s, "\0");
+    return str_pad($r, 32, "\0", STR_PAD_LEFT) . str_pad($s, 32, "\0", STR_PAD_LEFT);
+}
+
+/** JWT VAPID firmado (ES256) para la audiencia (origen del push service). */
+function vapid_jwt(string $aud, string $privPem): string {
+    $header  = b64url_encode(json_encode(['typ' => 'JWT', 'alg' => 'ES256']));
+    $payload = b64url_encode(json_encode(['aud' => $aud, 'exp' => time() + 43200, 'sub' => VAPID_SUBJECT]));
+    $input = $header . '.' . $payload;
+    $der = '';
+    if (!openssl_sign($input, $der, $privPem, OPENSSL_ALGO_SHA256)) return '';
+    $raw = ecdsa_der_to_raw($der);
+    if (strlen($raw) !== 64) return '';
+    return $input . '.' . b64url_encode($raw);
+}
+
+/** Envía un push (sin payload) a un endpoint. Devuelve el código HTTP. */
+function push_send_one(array $sub, array $keys): int {
+    $endpoint = $sub['endpoint'] ?? '';
+    if (!$endpoint) return 0;
+    $p = parse_url($endpoint);
+    if (empty($p['scheme']) || empty($p['host'])) return 0;
+    $aud = $p['scheme'] . '://' . $p['host'];
+    $jwt = vapid_jwt($aud, $keys['privPem']);
+    if (!$jwt) return 0;
+
+    $headers = [
+        'Authorization: vapid t=' . $jwt . ', k=' . $keys['pub'],
+        'TTL: 86400',
+        'Content-Length: 0',
+    ];
+    if (function_exists('curl_init')) {
+        $ch = curl_init($endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => '',
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 8,
+        ]);
+        curl_exec($ch);
+        $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $code;
+    }
+    $ctx = stream_context_create(['http' => [
+        'method'  => 'POST',
+        'header'  => implode("\r\n", $headers),
+        'content' => '',
+        'timeout' => 8,
+        'ignore_errors' => true,
+    ]]);
+    @file_get_contents($endpoint, false, $ctx);
+    if (isset($http_response_header[0]) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $m)) return (int)$m[1];
+    return 0;
+}
+
+/**
+ * Envía push a todos los dispositivos del admin suscritos. Poda los que
+ * ya no existen (404/410). El título/cuerpo van por el data del SW si el
+ * navegador lo soporta; en payloadless el SW usa su texto por defecto.
+ */
+function push_notify_admins(string $title, string $body): void {
+    $subs = read_json('push-subs.json', []);
+    if (!is_array($subs) || count($subs) === 0) return;
+    $keys = vapid_keys();
+    if (!$keys) return;
+
+    $dead = [];
+    foreach ($subs as $sub) {
+        $code = push_send_one($sub, $keys);
+        if ($code === 404 || $code === 410) $dead[$sub['endpoint']] = true;
+    }
+    if ($dead) {
+        with_locked_json('push-subs.json', function ($subs) use ($dead) {
+            return array_values(array_filter($subs, function ($s) use ($dead) {
+                return empty($dead[$s['endpoint'] ?? '']);
+            }));
+        });
+    }
 }
 
 // Corre al terminar cualquier petición a la API (la respuesta ya se envió,

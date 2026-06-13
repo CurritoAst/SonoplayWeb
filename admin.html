@@ -128,6 +128,31 @@
     .users-table th { text-align: left; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
     .users-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 
+    /* Tablas como tarjetas apiladas en móvil */
+    .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    @media (max-width: 680px) {
+      .users-table, .users-table tbody, .users-table tr, .users-table td { display: block; width: 100%; }
+      .users-table thead { display: none; }
+      .users-table tr {
+        border: 1px solid var(--border); border-radius: 14px; margin-bottom: 14px;
+        padding: 6px 14px; background: var(--dark3);
+      }
+      .users-table td {
+        display: flex; justify-content: space-between; align-items: center; gap: 14px;
+        padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: right;
+      }
+      .users-table tr td:last-child { border-bottom: none; }
+      .users-table td::before {
+        content: attr(data-label); font-weight: 700; color: var(--text-muted);
+        font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;
+        text-align: left; flex-shrink: 0;
+      }
+      .users-table td:empty { display: none; }
+      /* Las celdas de acciones, a lo ancho */
+      .users-table td.cell-actions { flex-direction: column; align-items: stretch; text-align: center; }
+      .users-table td.cell-actions::before { text-align: center; margin-bottom: 4px; }
+    }
+
     .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
     .stat-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
     .stat-card .num { font-size: 2rem; font-weight: 900; color: var(--cyan); }
@@ -331,6 +356,10 @@
       .admin-sidebar a:hover, .admin-sidebar a.active { border-left-color: transparent; border-bottom-color: var(--cyan); }
       .form-row { grid-template-columns: 1fr; }
       .price-editor { grid-template-columns: 1fr; gap: 8px; }
+      .admin-header { flex-wrap: wrap; gap: 12px; padding: 16px 18px; }
+      .admin-header h1 { font-size: 1.1rem; }
+      .admin-header-actions { flex-wrap: wrap; gap: 8px; }
+      .admin-content { padding: 20px 16px; }
     }
   </style>
 </head>
@@ -647,20 +676,22 @@
         </div>
 
         <div class="admin-card">
-          <table class="users-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th>Fecha boda</th>
-                <th>Registro</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="users-list">
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
+                  <th>Fecha boda</th>
+                  <th>Registro</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="users-list">
+              </tbody>
+            </table>
+          </div>
           <p id="no-users" style="color: var(--text-muted); text-align: center; padding: 30px;">No hay usuarios registrados todavía.</p>
         </div>
       </div>
@@ -855,12 +886,12 @@
           : '';
         return `
         <tr>
-          <td>${escapeHtml(u.name || '-')}${leadBadge}</td>
-          <td>${escapeHtml(u.email)}</td>
-          <td>${escapeHtml(u.phone || '-')}</td>
-          <td>${escapeHtml(u.weddingDate || '-')}</td>
-          <td>${escapeHtml((u.createdAt || u.date || '-').toString().split('T')[0])}</td>
-          <td><button class="btn-danger" onclick="deleteUser(${i})">Eliminar</button></td>
+          <td data-label="Nombre">${escapeHtml(u.name || '-')}${leadBadge}</td>
+          <td data-label="Email">${escapeHtml(u.email)}</td>
+          <td data-label="Teléfono">${escapeHtml(u.phone || '-')}</td>
+          <td data-label="Fecha boda">${escapeHtml(u.weddingDate || '-')}</td>
+          <td data-label="Registro">${escapeHtml((u.createdAt || u.date || '-').toString().split('T')[0])}</td>
+          <td class="cell-actions" data-label="Acciones"><button class="btn-danger" onclick="deleteUser(${i})">Eliminar</button></td>
         </tr>
       `;
       }).join('');
@@ -956,13 +987,13 @@
           : '';
         return `
         <tr>
-          <td>${escapeHtml(l.name || l.email || '-')}<div style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(l.email || '')}</div>${wedding}</td>
-          <td>${phoneTd}</td>
-          <td style="font-size:0.8rem; line-height:1.5;">${cartTxt}</td>
-          <td style="color: var(--cyan); font-weight: 700; white-space: nowrap;">${l.total ? Number(l.total).toLocaleString('es-ES') + ' €' : '-'}</td>
-          <td style="white-space: nowrap;">${fmtDateTime(l.viewedAt)}</td>
-          <td>${statusBadge}</td>
-          <td style="min-width: 110px;">${confirmBtn}<button class="btn-danger" style="display: block; width: 100%;" onclick="deleteLead('${escapeHtml(l.id || '')}')">🗑 Eliminar</button></td>
+          <td data-label="Cliente">${escapeHtml(l.name || l.email || '-')}<div style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(l.email || '')}</div>${wedding}</td>
+          <td data-label="Teléfono">${phoneTd}</td>
+          <td data-label="Presupuesto" style="font-size:0.8rem; line-height:1.5;">${cartTxt}</td>
+          <td data-label="Precio visto" style="color: var(--cyan); font-weight: 700; white-space: nowrap;">${l.total ? Number(l.total).toLocaleString('es-ES') + ' €' : '-'}</td>
+          <td data-label="Visto el" style="white-space: nowrap;">${fmtDateTime(l.viewedAt)}</td>
+          <td data-label="Estado">${statusBadge}</td>
+          <td class="cell-actions" data-label="Acciones" style="min-width: 110px;">${confirmBtn}<button class="btn-danger" style="display: block; width: 100%;" onclick="deleteLead('${escapeHtml(l.id || '')}')">🗑 Eliminar</button></td>
         </tr>`;
       }).join('');
     }
@@ -1008,7 +1039,14 @@
     const notifsBtn = document.getElementById('admin-notifs-btn');
     let adminSwReg = null;
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('admin-sw.js').then(r => { adminSwReg = r; }).catch(() => {});
+      navigator.serviceWorker.register('admin-sw.js').then(r => {
+        adminSwReg = r;
+        // Si los avisos ya estaban activos, reasegura la suscripción push
+        if (localStorage.getItem('sonoplay_admin_notifs') === 'on'
+            && 'Notification' in window && Notification.permission === 'granted') {
+          subscribeWebPush();
+        }
+      }).catch(() => {});
     }
 
     function notifsEnabled() {
@@ -1030,6 +1068,7 @@
       if (!('Notification' in window)) return;
       if (notifsEnabled()) {
         localStorage.setItem('sonoplay_admin_notifs', 'off');
+        unsubscribeWebPush();
         showToast('Avisos desactivados en este dispositivo');
         updateNotifsBtn();
         return;
@@ -1037,13 +1076,60 @@
       const perm = await Notification.requestPermission();
       if (perm === 'granted') {
         localStorage.setItem('sonoplay_admin_notifs', 'on');
-        showToast('🔔 Avisos activados — te llegarán mientras el panel esté abierto');
-        showLeadNotification({ name: 'Prueba', total: 0, phone: '', email: '_test' }, true);
+        const pushOk = await subscribeWebPush();
+        if (pushOk) {
+          showToast('🔔 Avisos activados — te llegarán aunque cierres el navegador');
+          try { await apiAdminPost('api/push.php', { action: 'test' }); } catch (e) {}
+        } else {
+          showToast('🔔 Avisos activados — mientras el panel esté abierto');
+          showLeadNotification({ name: 'Prueba', total: 0, phone: '', email: '_test' }, true);
+        }
       } else {
         showToast('No se concedió el permiso de notificaciones');
       }
       updateNotifsBtn();
     });
+
+    // ---- WEB PUSH (avisos con el navegador cerrado) ----
+    function urlB64ToUint8Array(base64) {
+      const padding = '='.repeat((4 - base64.length % 4) % 4);
+      const b64 = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const raw = atob(b64);
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      return arr;
+    }
+
+    async function subscribeWebPush() {
+      try {
+        if (!('PushManager' in window)) return false;
+        const reg = adminSwReg || await navigator.serviceWorker.ready;
+        if (!reg || !reg.pushManager) return false;
+        const r = await apiGet(withKey('api/push.php?action=key'));
+        if (!r || !r.ok || !r.key) return false;
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlB64ToUint8Array(r.key)
+          });
+        }
+        await apiAdminPost('api/push.php', { action: 'subscribe', subscription: sub.toJSON() });
+        return true;
+      } catch (e) {
+        return false; // sin push (iOS no-PWA, navegador sin soporte…) — quedan los avisos en-página
+      }
+    }
+
+    async function unsubscribeWebPush() {
+      try {
+        const reg = adminSwReg || await navigator.serviceWorker.ready;
+        const sub = reg && reg.pushManager ? await reg.pushManager.getSubscription() : null;
+        if (!sub) return;
+        await apiAdminPost('api/push.php', { action: 'unsubscribe', endpoint: sub.endpoint });
+        await sub.unsubscribe();
+      } catch (e) { /* silencioso */ }
+    }
     updateNotifsBtn();
 
     function showLeadNotification(l, isTest) {
