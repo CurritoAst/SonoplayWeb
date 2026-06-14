@@ -3684,9 +3684,16 @@ img, video { max-width: 100%; height: auto; }
   table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
-/* Hero: en pantallas muy pequeñas reducir un poco el título y subtítulo */
+/* Hero: en móvil reducir el título para que NO se desborde (descuadraba
+   todo el hero hacia la derecha). El eyebrow largo con letter-spacing
+   también se aprieta para que quepa. */
+@media (max-width: 600px) {
+  .hero-title, .hero-title-new { font-size: clamp(1.9rem, 8.5vw, 2.8rem) !important; }
+  .hero-title-new .hero-accent { letter-spacing: -0.02em; }
+  .hero-eyebrow { letter-spacing: 0.12em !important; font-size: 0.72rem !important; }
+}
 @media (max-width: 420px) {
-  .hero-title, .hero-title-new { font-size: clamp(2.2rem, 11vw, 3rem) !important; }
+  .hero-title, .hero-title-new { font-size: clamp(1.7rem, 8vw, 2.3rem) !important; }
   .hero-subtitle { font-size: 0.95rem !important; }
   .section-inner { padding-left: 16px !important; padding-right: 16px !important; }
 }
