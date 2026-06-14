@@ -170,6 +170,8 @@ const LEADS_LEFT_GRACE      = 120;    // cerró la página: avisar si no vuelve 
                                       // (una recarga reactiva el lead y cancela el aviso)
 const LEADS_NOTIFY_THROTTLE = 300;    // escaneo como mucho cada 5 min
 const LEADS_RENOTIFY_AFTER  = 86400;  // máx. 1 email por lead cada 24 h
+const LEADS_NOTIFY_MAX_AGE  = 7200;   // solo se avisa de abandonos de las últimas 2h:
+                                      // los leads viejos (ya gestionados) NO se notifican
 
 /** Email de aviso interno a producciones@ (texto plano UTF-8). */
 function sonoplay_alert_mail(string $subject, array $lines): bool {
@@ -239,6 +241,9 @@ function leads_notify_pending(bool $force = false): void {
         // Si cerró la página basta la gracia corta; si sigue abierta, 15 min de inactividad
         $threshold = !empty($l['left']) ? LEADS_LEFT_GRACE : LEADS_ABANDON_AFTER;
         if (!$viewed || $viewed > $now - $threshold) continue; // aún activo
+        // Solo abandonos recientes: los viejos (ya gestionados) no se reavisan,
+        // ni aunque nunca llegaran a tener notifiedAt (p.ej. antes del cron).
+        if ($viewed < $now - LEADS_NOTIFY_MAX_AGE) continue;
         if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > $now - LEADS_RENOTIFY_AFTER) continue;
         if (leads_send_alert($l)) { $notified[strtolower($l['email'] ?? '')] = true; $lastLead = $l; }
     }
