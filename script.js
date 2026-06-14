@@ -1046,11 +1046,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---- RESTAURAR CARRITO GUARDADO ----
+  const MONTAJE_NAMES = ['OPCION BASIC','OPCION OVALO','OPCION TOTEMS','OPCION CUBO','OPCION EQUIS','OPCION HEXA'];
   (function restoreCart() {
     try {
       const saved = JSON.parse(localStorage.getItem('sonoplay_cart') || '[]');
       if (Array.isArray(saved)) {
-        saved.forEach(it => { if (it && it.name && typeof it.price === 'number') cart.push(it); });
+        saved.forEach(it => {
+          if (it && it.name && typeof it.price === 'number') {
+            // Re-deriva isPackage por si el carrito se guardó con el flag mal
+            if (MONTAJE_NAMES.includes(it.name)) it.isPackage = true;
+            cart.push(it);
+          }
+        });
+        // Por si un carrito viejo tuviera más de un montaje, deja solo el último
+        const pkgs = cart.filter(it => it.isPackage);
+        if (pkgs.length > 1) {
+          pkgs.slice(0, -1).forEach(p => { const i = cart.indexOf(p); if (i !== -1) cart.splice(i, 1); });
+        }
       }
     } catch (e) { /* datos corruptos — empezamos de cero */ }
     if (cart.length > 0) updateCartUI();
@@ -1072,7 +1084,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         btn.classList.remove('added');
         btn.textContent = '+ Añadir';
-        if (btn.closest('.package-card')) {
+        if (btn.dataset.package === 'true' || btn.closest('.package-card')) {
           btn.textContent = '+ Añadir al presupuesto';
         }
       }
@@ -1086,10 +1098,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const price = parseFloat(btn.dataset.price) || 0;
       const unit = btn.dataset.unit || '';
 
-      // Check if it's a package (montaje) - only allow one at a time.
-      // Ceremonia Civil usa el mismo estilo visual de .package-card pero NO es un paquete:
-      // es un extra opcional que coexiste con cualquier montaje.
-      const isPackage = btn.closest('.package-card') && btn.dataset.name !== 'Ceremonia Civil';
+      // Es un montaje (paquete) si el botón lleva data-package="true".
+      // Los montajes están en .package-poster (no .package-card) y solo se
+      // permite UNO a la vez. Ceremonia Civil y los extras NO son montajes.
+      const isPackage = btn.dataset.package === 'true';
 
       if (isPackage) {
         // Remove any existing package from cart
