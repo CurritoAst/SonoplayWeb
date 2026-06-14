@@ -3369,6 +3369,9 @@ body.gallery-locked { overflow: hidden; }
   box-shadow: 0 4px 15px rgba(6, 182, 212, 0.5);
 }
 
+/* Etiqueta de nombre del DJ: solo se muestra en móvil (en lugar del logo) */
+.dj-name-label { display: none; }
+
 /* ============================================
    MÓVIL — Compactar para reducir scroll
    ============================================ */
@@ -3414,19 +3417,21 @@ body.gallery-locked { overflow: hidden; }
   .festival-card-overlay { padding: 14px 16px 12px !important; }
   .festival-card-overlay h3 { font-size: 1.25rem !important; }
 
-  /* DJs carousel: altura suficiente para la foto + el logo completo debajo */
-  #dj-coverflow { height: 430px !important; }
-  /* Banda uniforme para el logo: misma posición, mismo alto y centrado para
-     TODOS los DJs. Anula los margin-top por-DJ (manu -25, rafa -15…) que en
-     móvil descuadraban/solapaban el logo con la foto. */
-  .dj-slide > div:last-child {
-    margin-top: 8px !important;
-    height: 64px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+  /* DJs en móvil: SIN logos (descuadraban). Mostramos el nombre del DJ como
+     texto debajo de la foto, y se resalta al seleccionarlo. */
+  #dj-coverflow { height: 400px !important; }
+  .dj-logo-wrap { display: none !important; }
+  .dj-name-label {
+    display: block !important;
+    text-align: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    margin-top: 14px;
+    line-height: 1.2;
   }
-  .dj-slide > div:last-child img { max-height: 58px !important; width: auto !important; max-width: 90% !important; }
+  .dj-slide.dj-selected .dj-name-label { color: var(--cyan); }
 }
 
 @media (max-width: 480px) {
@@ -3461,10 +3466,9 @@ body.gallery-locked { overflow: hidden; }
   .stat-num { font-size: 2rem !important; }
   .stat-label { font-size: 0.72rem !important; }
 
-  /* DJ carousel: alto que deja ver foto + logo completo */
-  #dj-coverflow { height: 400px !important; }
-  .dj-slide > div:last-child { height: 58px !important; }
-  .dj-slide > div:last-child img { max-height: 52px !important; }
+  /* DJ carousel (pantallas pequeñas): un poco más bajo y nombre algo menor */
+  #dj-coverflow { height: 370px !important; }
+  .dj-name-label { font-size: 0.95rem; margin-top: 12px; }
 }
 
 /* ============================================

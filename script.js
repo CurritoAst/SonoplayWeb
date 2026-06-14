@@ -574,6 +574,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 500);
     }
 
+    // En móvil ocultamos los logos (descuadraban) y mostramos el NOMBRE del DJ
+    // como texto debajo de la foto. Marcamos el contenedor del logo y añadimos
+    // una etiqueta de nombre a cada slide (CSS decide cuándo mostrarla).
+    djSlides.forEach(slide => {
+      const logoImg = slide.querySelector('img[src*="logo-"]');
+      if (logoImg && logoImg.parentElement) logoImg.parentElement.classList.add('dj-logo-wrap');
+      if (!slide.querySelector('.dj-name-label')) {
+        const label = document.createElement('div');
+        label.className = 'dj-name-label';
+        label.textContent = slide.dataset.dj || '';
+        slide.appendChild(label);
+      }
+    });
+
     // Marca visualmente el slide del DJ que está en el carrito
     window.syncDjSelection = function () {
       const djItem = cart.find(it => it.isDj);
