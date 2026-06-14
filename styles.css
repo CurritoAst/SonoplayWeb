@@ -3416,8 +3416,17 @@ body.gallery-locked { overflow: hidden; }
 
   /* DJs carousel: altura suficiente para la foto + el logo completo debajo */
   #dj-coverflow { height: 430px !important; }
-  /* Limita el alto del logo para que quepa entero (no se corte) */
-  .dj-slide > div:last-child img { max-height: 62px !important; width: auto !important; max-width: 88% !important; }
+  /* Banda uniforme para el logo: misma posición, mismo alto y centrado para
+     TODOS los DJs. Anula los margin-top por-DJ (manu -25, rafa -15…) que en
+     móvil descuadraban/solapaban el logo con la foto. */
+  .dj-slide > div:last-child {
+    margin-top: 8px !important;
+    height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .dj-slide > div:last-child img { max-height: 58px !important; width: auto !important; max-width: 90% !important; }
 }
 
 @media (max-width: 480px) {
@@ -3453,8 +3462,9 @@ body.gallery-locked { overflow: hidden; }
   .stat-label { font-size: 0.72rem !important; }
 
   /* DJ carousel: alto que deja ver foto + logo completo */
-  #dj-coverflow { height: 390px !important; }
-  .dj-slide > div:last-child img { max-height: 56px !important; }
+  #dj-coverflow { height: 400px !important; }
+  .dj-slide > div:last-child { height: 58px !important; }
+  .dj-slide > div:last-child img { max-height: 52px !important; }
 }
 
 /* ============================================
