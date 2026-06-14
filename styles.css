@@ -3414,8 +3414,10 @@ body.gallery-locked { overflow: hidden; }
   .festival-card-overlay { padding: 14px 16px 12px !important; }
   .festival-card-overlay h3 { font-size: 1.25rem !important; }
 
-  /* DJs carousel más compacto */
-  #dj-coverflow { height: 380px !important; }
+  /* DJs carousel: altura suficiente para la foto + el logo completo debajo */
+  #dj-coverflow { height: 430px !important; }
+  /* Limita el alto del logo para que quepa entero (no se corte) */
+  .dj-slide > div:last-child img { max-height: 62px !important; width: auto !important; max-width: 88% !important; }
 }
 
 @media (max-width: 480px) {
@@ -3450,8 +3452,9 @@ body.gallery-locked { overflow: hidden; }
   .stat-num { font-size: 2rem !important; }
   .stat-label { font-size: 0.72rem !important; }
 
-  /* DJ carousel más bajo */
-  #dj-coverflow { height: 320px !important; }
+  /* DJ carousel: alto que deja ver foto + logo completo */
+  #dj-coverflow { height: 390px !important; }
+  .dj-slide > div:last-child img { max-height: 56px !important; }
 }
 
 /* ============================================
