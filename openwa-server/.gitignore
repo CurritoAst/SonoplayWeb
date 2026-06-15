@@ -1,0 +1,7 @@
+node_modules/
+.env
+# Sesión/tokens de WhatsApp generados por open-wa (NUNCA subir)
+*_session.data.json
+.wwebjs_auth/
+tokens/
+session/

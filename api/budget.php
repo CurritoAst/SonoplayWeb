@@ -107,4 +107,16 @@ if (!$ok) {
     json_error('No se pudo enviar el aviso. Llámanos o escríbenos por WhatsApp.', 500);
 }
 
+// WhatsApp automático de confirmación al cliente (si dejó teléfono y el
+// servicio open-wa está configurado). No bloquea: si falla, da igual.
+if ($phone) {
+    $waLines = [];
+    $waLines[] = '¡Hola' . ($name ? ' ' . $name : '') . '! 👋 Soy el equipo de *SONOPLAY*.';
+    $waLines[] = 'Hemos recibido tu solicitud de presupuesto' . ($wedding ? ' para el ' . date('d/m/Y', strtotime($wedding)) : '') . '. ✅';
+    if ($pkg) $waLines[] = 'Montaje de interés: ' . $pkg;
+    $waLines[] = '';
+    $waLines[] = 'Te contactamos enseguida con tu presupuesto personalizado. ¡Gracias por confiar en nosotros! 🎶';
+    send_whatsapp($phone, implode("\n", $waLines));
+}
+
 json_response(['ok' => true]);

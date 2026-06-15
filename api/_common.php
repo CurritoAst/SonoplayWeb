@@ -12,6 +12,54 @@ const SONOPLAY_ADMIN_KEY = 'admin123';
 
 const DATA_DIR = __DIR__ . '/../data';
 
+// ---- WhatsApp automático (servicio open-wa en el VPS de IONOS) ----
+// Rellena estos dos valores cuando el servicio del VPS esté en marcha.
+// Mientras estén vacíos, no se envía ningún WhatsApp (la web sigue funcionando).
+const WA_API_URL   = '';   // ej: https://wa.sonoplay.es/send  (o http://IP_DEL_VPS:3000/send)
+const WA_API_TOKEN = '';   // el mismo WA_TOKEN del .env del VPS
+
+// ¿Enviar también un WhatsApp a quien ABANDONA un presupuesto sin enviarlo?
+// ⚠️ Es un mensaje no solicitado → mayor riesgo de que reporten/baneen el
+// número. Déjalo en false salvo que lo tengas claro. La confirmación al
+// enviar presupuesto (budget.php) es segura y va aparte de esta opción.
+const WA_NOTIFY_ABANDONED = false;
+
+/**
+ * Envía un WhatsApp al cliente a través del servicio open-wa del VPS.
+ * No bloquea la web: si falla o no está configurado, devuelve false en silencio.
+ */
+function send_whatsapp(string $phone, string $message): bool {
+    if (!WA_API_URL || !WA_API_TOKEN) return false;
+    $digits = preg_replace('/\D/', '', $phone);
+    if (!$digits || mb_strlen($message) < 2) return false;
+
+    $payload = json_encode(['token' => WA_API_TOKEN, 'phone' => $digits, 'message' => $message], JSON_UNESCAPED_UNICODE);
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init(WA_API_URL);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 12,
+        ]);
+        curl_exec($ch);
+        $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $code >= 200 && $code < 300;
+    }
+    $ctx = stream_context_create(['http' => [
+        'method'  => 'POST',
+        'header'  => "Content-Type: application/json\r\n",
+        'content' => $payload,
+        'timeout' => 12,
+        'ignore_errors' => true,
+    ]]);
+    $res = @file_get_contents(WA_API_URL, false, $ctx);
+    return $res !== false;
+}
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 header('X-Content-Type-Options: nosniff');
@@ -245,7 +293,18 @@ function leads_notify_pending(bool $force = false): void {
         // ni aunque nunca llegaran a tener notifiedAt (p.ej. antes del cron).
         if ($viewed < $now - LEADS_NOTIFY_MAX_AGE) continue;
         if (!empty($l['notifiedAt']) && strtotime($l['notifiedAt']) > $now - LEADS_RENOTIFY_AFTER) continue;
-        if (leads_send_alert($l)) { $notified[strtolower($l['email'] ?? '')] = true; $lastLead = $l; }
+        if (leads_send_alert($l)) {
+            $notified[strtolower($l['email'] ?? '')] = true;
+            $lastLead = $l;
+            // WhatsApp al cliente que abandonó (solo si está activado)
+            if (WA_NOTIFY_ABANDONED && !empty($l['phone'])) {
+                $waMsg = '¡Hola' . (!empty($l['name']) ? ' ' . $l['name'] : '') . '! 👋 Soy el equipo de *SONOPLAY*. '
+                       . 'Vimos que estabas preparando tu presupuesto'
+                       . (!empty($l['weddingDate']) ? ' para el ' . date('d/m/Y', strtotime($l['weddingDate'])) : '')
+                       . '. ¿Te ayudamos a terminarlo o resolvemos cualquier duda? Estamos aquí para lo que necesites. 🎶';
+                send_whatsapp($l['phone'], $waMsg);
+            }
+        }
     }
     if (count($notified) === 0) return;
 
