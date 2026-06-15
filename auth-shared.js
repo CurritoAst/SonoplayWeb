@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
           try { google.accounts.id.disableAutoSelect(); } catch (_) {}
         }
         updateAuthUI();
+        window.dispatchEvent(new CustomEvent('sonoplay:auth-changed'));
       }
     } else {
       openAuthModal();
@@ -222,6 +223,50 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updateAuthUI();
+
+  // ============== CARTEL PROMO REGISTRO (5% nuevos, solo no logueados) ==============
+  // Aparece en toda la web solo si el visitante NO ha iniciado sesión, anunciando
+  // el 5% de descuento por registrarse. Se puede cerrar (no reaparece esa sesión).
+  function setupRegisterPromo() {
+    if (document.getElementById('register-promo-banner')) return;
+    const PROMO_END = '2026-10-31';
+    if (new Date().toISOString().slice(0, 10) > PROMO_END) return; // promo terminada
+
+    const banner = document.createElement('div');
+    banner.id = 'register-promo-banner';
+    banner.style.cssText = 'display:none;position:fixed;left:20px;bottom:24px;z-index:1500;max-width:330px;background:linear-gradient(135deg,#1c1c2e,#232340);border:1px solid rgba(245,200,66,0.45);border-radius:16px;padding:18px 30px 18px 18px;box-shadow:0 12px 40px rgba(0,0,0,0.5);animation:cartSlideIn 0.4s ease;';
+    banner.innerHTML =
+      '<button id="register-promo-close" aria-label="Cerrar" style="position:absolute;top:6px;right:10px;background:none;border:none;color:#9ca3af;font-size:1.4rem;cursor:pointer;line-height:1;">&times;</button>' +
+      '<div style="display:flex;gap:12px;align-items:flex-start;">' +
+        '<div style="font-size:1.9rem;line-height:1;">🎉</div>' +
+        '<div>' +
+          '<p style="color:#fff;font-weight:800;font-size:1.02rem;margin:0 0 4px;">5% de descuento extra</p>' +
+          '<p style="color:#9ca3af;font-size:0.85rem;margin:0 0 12px;line-height:1.45;">Regístrate ahora y consíguelo en el presupuesto de tu boda.</p>' +
+          '<button id="register-promo-btn" style="background:#f5c842;color:#000;border:none;padding:9px 18px;border-radius:10px;font-weight:700;font-size:0.88rem;cursor:pointer;font-family:inherit;">Registrarme gratis →</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(banner);
+
+    const style = document.createElement('style');
+    style.textContent = '@media (max-width:600px){#register-promo-banner{left:12px!important;max-width:240px!important;bottom:18px!important;padding:14px 26px 14px 16px!important;}}';
+    document.head.appendChild(style);
+
+    function refresh() {
+      const dismissed = sessionStorage.getItem('sonoplay_promo_dismissed') === '1';
+      banner.style.display = (!isLoggedIn() && !dismissed) ? 'block' : 'none';
+    }
+    banner.querySelector('#register-promo-close').addEventListener('click', () => {
+      sessionStorage.setItem('sonoplay_promo_dismissed', '1');
+      banner.style.display = 'none';
+    });
+    banner.querySelector('#register-promo-btn').addEventListener('click', () => {
+      if (!isRegisterMode) toggleAuthMode();
+      openAuthModal();
+    });
+    window.addEventListener('sonoplay:auth-changed', refresh);
+    setTimeout(refresh, 1400); // aparece tras la carga inicial
+  }
+  setupRegisterPromo();
 
   // ============== GOOGLE SIGN-IN ==============
 
