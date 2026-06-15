@@ -232,24 +232,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const PROMO_END = '2026-10-31';
     if (new Date().toISOString().slice(0, 10) > PROMO_END) return; // promo terminada
 
+    // Estilos del cartel (incluye responsive)
+    if (!document.getElementById('register-promo-styles')) {
+      const style = document.createElement('style');
+      style.id = 'register-promo-styles';
+      style.textContent =
+        '#register-promo-banner{display:none;position:fixed;left:24px;bottom:24px;z-index:1500;width:400px;max-width:calc(100vw - 48px);' +
+        'background:linear-gradient(135deg,#16161f 0%,#20203a 100%);border:1px solid rgba(245,200,66,0.45);border-radius:20px;' +
+        'padding:24px 24px 22px;box-shadow:0 20px 55px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.02) inset;' +
+        "font-family:'Montserrat',sans-serif;animation:cartSlideIn .45s cubic-bezier(.16,1,.3,1);overflow:hidden;}" +
+        '#register-promo-banner::before{content:"";position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(245,200,66,0.18),transparent 70%);pointer-events:none;}' +
+        '#register-promo-banner .rp-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#8a8ab0;font-size:1.5rem;line-height:1;cursor:pointer;padding:0;transition:color .2s;}' +
+        '#register-promo-banner .rp-close:hover{color:#fff;}' +
+        '#register-promo-banner .rp-label{display:inline-block;color:#f5c842;font-size:0.68rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px;}' +
+        '#register-promo-banner .rp-row{display:flex;gap:16px;align-items:center;margin-bottom:18px;}' +
+        '#register-promo-banner .rp-badge{flex-shrink:0;width:74px;height:74px;border-radius:18px;background:linear-gradient(135deg,#f5c842,#f0a73a);color:#1a1407;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(245,200,66,0.45);}' +
+        '#register-promo-banner .rp-pct{font-size:1.7rem;font-weight:900;line-height:1;}' +
+        '#register-promo-banner .rp-dto{font-size:0.6rem;font-weight:800;letter-spacing:0.12em;margin-top:3px;}' +
+        '#register-promo-banner .rp-title{color:#fff;font-size:1.18rem;font-weight:800;line-height:1.25;margin:0 0 5px;}' +
+        '#register-promo-banner .rp-sub{color:#a0a0c4;font-size:0.86rem;line-height:1.45;margin:0;}' +
+        '#register-promo-banner .rp-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#f5c842,#f0a73a);color:#1a1407;border:none;padding:14px;border-radius:13px;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .2s;box-shadow:0 6px 18px rgba(245,200,66,0.35);}' +
+        '#register-promo-banner .rp-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(245,200,66,0.5);}' +
+        '@media (max-width:600px){#register-promo-banner{left:12px;right:12px;bottom:90px;width:auto;max-width:none;padding:20px 18px 18px;border-radius:18px;}' +
+        '#register-promo-banner .rp-badge{width:64px;height:64px;}#register-promo-banner .rp-pct{font-size:1.5rem;}' +
+        '#register-promo-banner .rp-title{font-size:1.08rem;}}';
+      document.head.appendChild(style);
+    }
+
     const banner = document.createElement('div');
     banner.id = 'register-promo-banner';
-    banner.style.cssText = 'display:none;position:fixed;left:20px;bottom:24px;z-index:1500;max-width:330px;background:linear-gradient(135deg,#1c1c2e,#232340);border:1px solid rgba(245,200,66,0.45);border-radius:16px;padding:18px 30px 18px 18px;box-shadow:0 12px 40px rgba(0,0,0,0.5);animation:cartSlideIn 0.4s ease;';
     banner.innerHTML =
-      '<button id="register-promo-close" aria-label="Cerrar" style="position:absolute;top:6px;right:10px;background:none;border:none;color:#9ca3af;font-size:1.4rem;cursor:pointer;line-height:1;">&times;</button>' +
-      '<div style="display:flex;gap:12px;align-items:flex-start;">' +
-        '<div style="font-size:1.9rem;line-height:1;">🎉</div>' +
+      '<button class="rp-close" id="register-promo-close" aria-label="Cerrar">&times;</button>' +
+      '<span class="rp-label">★ Oferta · Nuevos clientes</span>' +
+      '<div class="rp-row">' +
+        '<div class="rp-badge"><span class="rp-pct">5%</span><span class="rp-dto">DTO</span></div>' +
         '<div>' +
-          '<p style="color:#fff;font-weight:800;font-size:1.02rem;margin:0 0 4px;">5% de descuento extra</p>' +
-          '<p style="color:#9ca3af;font-size:0.85rem;margin:0 0 12px;line-height:1.45;">Regístrate ahora y consíguelo en el presupuesto de tu boda.</p>' +
-          '<button id="register-promo-btn" style="background:#f5c842;color:#000;border:none;padding:9px 18px;border-radius:10px;font-weight:700;font-size:0.88rem;cursor:pointer;font-family:inherit;">Registrarme gratis →</button>' +
+          '<p class="rp-title">Regístrate y ahorra un 5%</p>' +
+          '<p class="rp-sub">Descuento extra en el presupuesto de tu boda, solo por crear tu cuenta gratis.</p>' +
         '</div>' +
-      '</div>';
+      '</div>' +
+      '<button class="rp-btn" id="register-promo-btn">Registrarme gratis →</button>';
     document.body.appendChild(banner);
-
-    const style = document.createElement('style');
-    style.textContent = '@media (max-width:600px){#register-promo-banner{left:12px!important;max-width:240px!important;bottom:18px!important;padding:14px 26px 14px 16px!important;}}';
-    document.head.appendChild(style);
 
     function refresh() {
       const dismissed = sessionStorage.getItem('sonoplay_promo_dismissed') === '1';
