@@ -3688,19 +3688,42 @@ body.gallery-locked { overflow: hidden; }
   margin-top: 14px;
 }
 
+  /* Pie del modal con el botón "Añadir al presupuesto" */
+  #package-modal-footer:empty { display: none; }
+  #package-modal-footer { margin-top: 18px; }
+
 @media (max-width: 880px) {
-  /* En móvil el overlay hace de scroller y el modal fluye a su altura
-     natural, así se puede desplazar hasta el botón "Añadir al presupuesto".
-     ANTES el modal quedaba recortado a 95vh con overflow:hidden y centrado,
-     dejando el botón fuera de pantalla y SIN poder añadir montajes en iPhone. */
-  #package-modal-overlay { align-items: flex-start; }
+  /* En móvil: media arriba (fijo), cuerpo con scroll propio y el botón
+     "Añadir al presupuesto" en un PIE FIJO siempre visible. Así no hay que
+     hacer scroll para encontrarlo (antes parecía que no estaba). */
+  #package-modal-overlay { align-items: center; padding: 14px; }
   #package-modal {
     grid-template-columns: 1fr;
-    max-height: none;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
-  #package-modal-media { min-height: 260px; height: 260px; }
-  #package-modal-content { padding: 30px 26px; max-height: none; }
-  #package-modal-title { font-size: 1.6rem; }
+  #package-modal-media { min-height: 200px; height: 200px; flex-shrink: 0; }
+  #package-modal-content {
+    padding: 24px 22px 0;
+    max-height: none;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #package-modal-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  #package-modal-footer {
+    flex-shrink: 0;
+    margin-top: 0;
+    padding: 12px 0 16px;
+    background: var(--dark2);
+    border-top: 1px solid var(--border);
+  }
+  #package-modal-footer .cart-add-btn { width: 100%; margin: 0 !important; }
+  #package-modal-title { font-size: 1.5rem; }
 }
 
 /* ============================================
@@ -3752,8 +3775,7 @@ img, video { max-width: 100%; height: auto; }
    — con el overflow:hidden de base recorta el precio y el botón "Añadir al
    presupuesto" en iPhone, y deja sin poder añadir los montajes. */
 @media (max-width: 600px) {
-  #package-modal { max-height: none; }
-  #package-modal-media { min-height: 200px !important; height: 220px !important; }
+  #package-modal-media { min-height: 180px !important; height: 190px !important; }
   .package-poster .poster-title { font-size: 1.15rem; }
 }
 

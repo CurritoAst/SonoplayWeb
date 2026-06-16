@@ -1615,6 +1615,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 50);
         });
       }
+      // Mueve el botón a un pie fijo: así en móvil SIEMPRE se ve (antes quedaba
+      // abajo del todo y había que hacer scroll, dando sensación de que no estaba).
+      const modalFooter = document.getElementById('package-modal-footer');
+      if (modalFooter) {
+        modalFooter.innerHTML = '';
+        if (clonedBtn) modalFooter.appendChild(clonedBtn);
+      }
 
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
