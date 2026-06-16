@@ -1577,8 +1577,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = poster.dataset.packageTitle || '';
       const fullContent = poster.querySelector('.poster-full-content');
 
-      modalImg.src = img ? img.src : '';
-      modalImg.alt = img ? (img.alt || title) : title;
+      // Montajes sin foto ni vídeo (data-no-media): ocultamos la imagen y el
+      // botón de galería y mostramos el aviso "Próximamente agregaremos imágenes".
+      const noMedia = poster.dataset.noMedia === 'true';
+      const noMediaEl = document.getElementById('package-modal-no-media');
+      if (noMedia) {
+        modalImg.removeAttribute('src');
+        modalImg.style.display = 'none';
+        if (noMediaEl) noMediaEl.hidden = false;
+        if (galleryBtn) galleryBtn.style.display = 'none';
+      } else {
+        modalImg.style.display = '';
+        modalImg.src = img && img.tagName === 'IMG' ? img.src : '';
+        modalImg.alt = img ? (img.alt || title) : title;
+        if (noMediaEl) noMediaEl.hidden = true;
+        if (galleryBtn) galleryBtn.style.display = '';
+      }
       modalTitle.textContent = title;
 
       modalBody.innerHTML = '';

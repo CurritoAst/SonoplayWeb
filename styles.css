@@ -3578,6 +3578,17 @@ body.gallery-locked { overflow: hidden; }
 
 .package-poster .poster-full-content { display: none; }
 
+/* Montajes sin foto ni vídeo: placeholder "Próximamente agregaremos imágenes" */
+.package-poster .poster-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; text-align: center; padding: 24px 24px 130px;
+  background: linear-gradient(150deg, var(--dark2), var(--dark3));
+  color: var(--text-muted);
+}
+.package-poster .poster-placeholder svg { color: var(--cyan); opacity: 0.55; }
+.package-poster .poster-placeholder span { font-size: 0.9rem; font-weight: 600; line-height: 1.45; }
+
 @media (max-width: 980px) {
   .package-deck { grid-template-columns: repeat(2, 1fr); gap: 20px; }
 }
@@ -3642,6 +3653,16 @@ body.gallery-locked { overflow: hidden; }
   width: 100%; height: 100%; object-fit: cover;
   display: block;
 }
+#package-modal-no-media {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; text-align: center; padding: 30px;
+  color: var(--text-muted);
+}
+#package-modal-no-media[hidden] { display: none; }
+#package-modal-no-media svg { color: var(--cyan); opacity: 0.55; }
+#package-modal-no-media span { font-size: 1rem; font-weight: 600; }
 
 #package-modal-content {
   padding: 44px 38px;
@@ -3668,9 +3689,14 @@ body.gallery-locked { overflow: hidden; }
 }
 
 @media (max-width: 880px) {
+  /* En móvil el overlay hace de scroller y el modal fluye a su altura
+     natural, así se puede desplazar hasta el botón "Añadir al presupuesto".
+     ANTES el modal quedaba recortado a 95vh con overflow:hidden y centrado,
+     dejando el botón fuera de pantalla y SIN poder añadir montajes en iPhone. */
+  #package-modal-overlay { align-items: flex-start; }
   #package-modal {
     grid-template-columns: 1fr;
-    max-height: 95vh;
+    max-height: none;
   }
   #package-modal-media { min-height: 260px; height: 260px; }
   #package-modal-content { padding: 30px 26px; max-height: none; }
@@ -3721,9 +3747,12 @@ img, video { max-width: 100%; height: auto; }
   .hero-ctas .btn-primary, .hero-ctas .btn-ghost, .hero-ctas .btn-outline { width: 100%; text-align: center; }
 }
 
-/* Modal de paquete: en móvil ocupa casi toda la pantalla y scrollea bien */
+/* Modal de paquete: en móvil el overlay hace de scroller (igual que en el
+   bloque de 880px). OJO: NO volver a poner max-height en #package-modal aquí
+   — con el overflow:hidden de base recorta el precio y el botón "Añadir al
+   presupuesto" en iPhone, y deja sin poder añadir los montajes. */
 @media (max-width: 600px) {
-  #package-modal { max-height: 94vh; }
+  #package-modal { max-height: none; }
   #package-modal-media { min-height: 200px !important; height: 220px !important; }
   .package-poster .poster-title { font-size: 1.15rem; }
 }
