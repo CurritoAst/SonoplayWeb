@@ -15,8 +15,8 @@ const DATA_DIR = __DIR__ . '/../data';
 // ---- WhatsApp automático (servicio open-wa en el VPS de IONOS) ----
 // Rellena estos dos valores cuando el servicio del VPS esté en marcha.
 // Mientras estén vacíos, no se envía ningún WhatsApp (la web sigue funcionando).
-const WA_API_URL   = 'http://87.106.229.29:3000/send';   // VPS IONOS (servicio Baileys)
-const WA_API_TOKEN = 'Sono_wa_K9mQ2xP7rZ4tB6nW';         // el mismo WA_TOKEN del .env del VPS
+const WA_API_URL   = 'https://wa.sonoplay.es/send';   // VPS IONOS via HTTPS (Plesk proxy -> :3000)
+const WA_API_TOKEN = 'Sono_wa_K9mQ2xP7rZ4tB6nW';     // el mismo WA_TOKEN del .env del VPS
 
 // ¿Enviar también un WhatsApp a quien ABANDONA un presupuesto sin enviarlo?
 // ⚠️ Es un mensaje no solicitado → mayor riesgo de que reporten/baneen el
