@@ -18,6 +18,10 @@ const DATA_DIR = __DIR__ . '/../data';
 const WA_API_URL   = 'https://wa.sonoplay.es/send';   // VPS IONOS via HTTPS (Plesk proxy -> :3000)
 const WA_API_TOKEN = 'Sono_wa_K9mQ2xP7rZ4tB6nW';     // el mismo WA_TOKEN del .env del VPS
 
+// Número del ADMIN para recibir avisos por WhatsApp (ej. nueva solicitud de
+// presupuesto). Déjalo vacío para no enviar avisos al admin.
+const WA_ADMIN_PHONE = '';   // <-- pon aquí tu móvil, ej. 600112233
+
 // ¿Enviar también un WhatsApp a quien ABANDONA un presupuesto sin enviarlo?
 // ⚠️ Es un mensaje no solicitado → mayor riesgo de que reporten/baneen el
 // número. Déjalo en false salvo que lo tengas claro. La confirmación al
@@ -221,6 +225,10 @@ const LEADS_RENOTIFY_AFTER  = 86400;  // máx. 1 email por lead cada 24 h
 const LEADS_NOTIFY_MAX_AGE  = 7200;   // solo se avisa de abandonos de las últimas 2h:
                                       // los leads viejos (ya gestionados) NO se notifican
 
+// Recordatorio al ADMIN por WhatsApp de presupuestos pendientes (sin gestionar).
+const WA_REMIND_AFTER  = 43200;  // 12 h sin gestionar → recordatorio al admin
+const WA_REMIND_REPEAT = 86400;  // si sigue sin gestionar, repite el recordatorio cada 24 h
+
 /** Email de aviso interno a producciones@ (texto plano UTF-8). */
 function sonoplay_alert_mail(string $subject, array $lines): bool {
     $headers  = "From: SONOPLAY Web <no-reply@sonoplay.es>\r\n";
@@ -276,6 +284,9 @@ function leads_notify_pending(bool $force = false): void {
     }
     @touch($stamp);
 
+    // Recordatorio al admin de presupuestos pendientes (>12h sin gestionar)
+    leads_remind_admin();
+
     $leads = read_json('leads.json', []);
     if (!is_array($leads) || count($leads) === 0) return;
 
@@ -322,6 +333,61 @@ function leads_notify_pending(bool $force = false): void {
     $total = !empty($lastLead['total']) ? ' (' . number_format((float)$lastLead['total'], 0, ',', '.') . ' €)' : '';
     $extra = count($notified) > 1 ? ' y ' . (count($notified) - 1) . ' más' : '';
     push_notify_admins('🔥 Presupuesto abandonado', $who . $total . $extra . ' — toca para verlo en el panel.');
+}
+
+/**
+ * Recordatorio al ADMIN por WhatsApp de los presupuestos PENDIENTES (sin
+ * gestionar) que llevan más de WA_REMIND_AFTER (12h). Manda un único mensaje
+ * resumen y vuelve a recordar como mucho cada WA_REMIND_REPEAT (24h) por lead.
+ * Un lead se considera gestionado cuando el admin lo marca "Confirmado".
+ */
+function leads_remind_admin(): void {
+    if (!WA_ADMIN_PHONE) return;
+    $leads = read_json('leads.json', []);
+    if (!is_array($leads) || count($leads) === 0) return;
+
+    $now = time();
+    $pending = [];
+    $ids = [];
+    foreach ($leads as $l) {
+        $status = $l['status'] ?? '';
+        if ($status === 'confirmado') continue;   // ya gestionado
+        if (empty($l['cart'])) continue;
+        // "Pendiente desde": si envió la solicitud → sentAt; si no → viewedAt
+        $ts = ($status === 'enviado' && !empty($l['sentAt']))
+            ? strtotime($l['sentAt'])
+            : (!empty($l['viewedAt']) ? strtotime($l['viewedAt']) : 0);
+        if (!$ts || $ts > $now - WA_REMIND_AFTER) continue;  // aún no han pasado 12h
+        if (!empty($l['reminderAt']) && strtotime($l['reminderAt']) > $now - WA_REMIND_REPEAT) continue;
+        $pending[] = ['lead' => $l, 'ts' => $ts];
+        $ids[$l['id'] ?? ''] = true;
+    }
+    if (count($pending) === 0) return;
+
+    $lines = [];
+    $lines[] = '⏰ *Recordatorio SONOPLAY*';
+    $lines[] = 'Tienes ' . count($pending) . ' presupuesto(s) sin responder:';
+    foreach (array_slice($pending, 0, 10) as $p) {
+        $l = $p['lead'];
+        $hours = max(1, (int)floor(($now - $p['ts']) / 3600));
+        $who = $l['name'] ?: ($l['email'] ?? 'Cliente');
+        $tipo = (($l['status'] ?? '') === 'enviado') ? 'solicitó presupuesto' : 'lo dejó a medias';
+        $tel = !empty($l['phone']) ? ' · 📞 ' . $l['phone'] : '';
+        $lines[] = '';
+        $lines[] = '👤 ' . $who . $tel;
+        $lines[] = '   ' . $tipo . ' hace ' . $hours . ' h';
+    }
+    $lines[] = '';
+    $lines[] = 'Gestiónalos en https://sonoplay.es/admin.html';
+
+    if (send_whatsapp(WA_ADMIN_PHONE, implode("\n", $lines))) {
+        with_locked_json('leads.json', function ($leads) use ($ids) {
+            foreach ($leads as $i => $l) {
+                if (isset($ids[$l['id'] ?? ''])) $leads[$i]['reminderAt'] = date('c');
+            }
+            return $leads;
+        });
+    }
 }
 
 /* ============================================================

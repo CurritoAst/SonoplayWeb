@@ -671,7 +671,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 4px;">
             <h3 style="color: #ef4444;">🔥 Presupuestos abandonados</h3>
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; user-select: none;">
-              <input type="checkbox" id="leads-show-all" style="accent-color: var(--cyan);"> Mostrar también enviados y confirmados
+              <input type="checkbox" id="leads-show-all" style="accent-color: var(--cyan);"> Mostrar también los ya gestionados
             </label>
           </div>
           <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">🟢 <strong>Activo</strong>: está montando su presupuesto ahora mismo. 🔥 <strong>Abandonado</strong>: cerró la página o lleva +15 min sin actividad y no envió la solicitud — llámalo y hazle una oferta.</p>
@@ -1045,11 +1045,10 @@
 
       statLeads.textContent = leadsCache.filter(l => leadState(l) === 'abandonado').length;
 
-      // Los más recientes primero. Activos y abandonados siempre;
-      // enviados y confirmados solo con el check.
+      // Los más recientes primero. Pendientes (activos, abandonados y enviados)
+      // siempre visibles; solo los confirmados (ya gestionados) se ocultan.
       const visible = leadsCache.filter(l => {
-        const s = leadState(l);
-        return showAll || (s !== 'enviado' && s !== 'confirmado');
+        return showAll || leadState(l) !== 'confirmado';
       }).sort((a, b) => (b.viewedAt || '').localeCompare(a.viewedAt || ''));
 
       if (visible.length === 0) {
@@ -1076,8 +1075,8 @@
         }
         if (l.notifiedAt) statusBadge += '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px; white-space:nowrap;">📧 Avisado ' + fmtDateTime(l.notifiedAt) + '</div>';
         const wedding = l.weddingDate ? `<div style="font-size:0.75rem; color:var(--text-muted);">Boda: ${escapeHtml(l.weddingDate)}</div>` : '';
-        const confirmBtn = (state === 'abandonado' || state === 'activo')
-          ? `<button class="btn-save" style="padding: 6px 12px; font-size: 0.78rem; margin-bottom: 6px; display: block; width: 100%;" onclick="confirmLead('${escapeHtml(l.id || '')}')">✔ Confirmar</button>`
+        const confirmBtn = (state !== 'confirmado')
+          ? `<button class="btn-save" style="padding: 6px 12px; font-size: 0.78rem; margin-bottom: 6px; display: block; width: 100%;" onclick="confirmLead('${escapeHtml(l.id || '')}')">✔ Gestionado</button>`
           : '';
         return `
         <tr>

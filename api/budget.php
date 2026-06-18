@@ -119,4 +119,28 @@ if ($phone) {
     send_whatsapp($phone, implode("\n", $waLines));
 }
 
+// Aviso por WhatsApp al ADMIN: nueva solicitud de presupuesto
+if (WA_ADMIN_PHONE) {
+    $adm = [];
+    $adm[] = '📋 *Nueva solicitud de presupuesto* — SONOPLAY';
+    $adm[] = '';
+    $adm[] = '👤 ' . $name;
+    if ($email)   $adm[] = '✉️ ' . $email;
+    if ($phone)   $adm[] = '📞 ' . $phone;
+    if ($wedding) $adm[] = '💍 Boda: ' . date('d/m/Y', strtotime($wedding));
+    if ($pkg)     $adm[] = '🏗️ Montaje: ' . $pkg;
+    if (is_array($cart) && count($cart) > 0) {
+        $adm[] = '';
+        $adm[] = '— Presupuesto —';
+        foreach ($cart as $item) {
+            $iname = trim_str($item['name'] ?? '');
+            if (!$iname) continue;
+            $iprice = isset($item['price']) ? ' — ' . number_format((float)$item['price'], 0, ',', '.') . ' €' : '';
+            $adm[] = '• ' . $iname . $iprice;
+        }
+    }
+    if ($desc) { $adm[] = ''; $adm[] = '📝 ' . $desc; }
+    send_whatsapp(WA_ADMIN_PHONE, implode("\n", $adm));
+}
+
 json_response(['ok' => true]);
