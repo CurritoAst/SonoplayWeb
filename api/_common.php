@@ -342,7 +342,6 @@ function leads_notify_pending(bool $force = false): void {
  * Un lead se considera gestionado cuando el admin lo marca "Confirmado".
  */
 function leads_remind_admin(): void {
-    if (!WA_ADMIN_PHONE) return;
     $leads = read_json('leads.json', []);
     if (!is_array($leads) || count($leads) === 0) return;
 
@@ -364,30 +363,38 @@ function leads_remind_admin(): void {
     }
     if (count($pending) === 0) return;
 
-    $lines = [];
-    $lines[] = '⏰ *Recordatorio SONOPLAY*';
-    $lines[] = 'Tienes ' . count($pending) . ' presupuesto(s) sin responder:';
-    foreach (array_slice($pending, 0, 10) as $p) {
-        $l = $p['lead'];
-        $hours = max(1, (int)floor(($now - $p['ts']) / 3600));
-        $who = $l['name'] ?: ($l['email'] ?? 'Cliente');
-        $tipo = (($l['status'] ?? '') === 'enviado') ? 'solicitó presupuesto' : 'lo dejó a medias';
-        $tel = !empty($l['phone']) ? ' · 📞 ' . $l['phone'] : '';
-        $lines[] = '';
-        $lines[] = '👤 ' . $who . $tel;
-        $lines[] = '   ' . $tipo . ' hace ' . $hours . ' h';
-    }
-    $lines[] = '';
-    $lines[] = 'Gestiónalos en https://sonoplay.es/admin.html';
+    // 1) Notificación PUSH a los dispositivos del admin (navegador, aunque esté cerrado)
+    $n = count($pending);
+    push_notify_admins('⏰ Presupuestos sin responder',
+        'Tienes ' . $n . ' presupuesto' . ($n > 1 ? 's' : '') . ' pendiente' . ($n > 1 ? 's' : '') . ' de gestionar. Toca para verlos.');
 
-    if (send_whatsapp(WA_ADMIN_PHONE, implode("\n", $lines))) {
-        with_locked_json('leads.json', function ($leads) use ($ids) {
-            foreach ($leads as $i => $l) {
-                if (isset($ids[$l['id'] ?? ''])) $leads[$i]['reminderAt'] = date('c');
-            }
-            return $leads;
-        });
+    // 2) WhatsApp al admin (solo si hay número configurado)
+    if (WA_ADMIN_PHONE) {
+        $lines = [];
+        $lines[] = '⏰ *Recordatorio SONOPLAY*';
+        $lines[] = 'Tienes ' . $n . ' presupuesto(s) sin responder:';
+        foreach (array_slice($pending, 0, 10) as $p) {
+            $l = $p['lead'];
+            $hours = max(1, (int)floor(($now - $p['ts']) / 3600));
+            $who = $l['name'] ?: ($l['email'] ?? 'Cliente');
+            $tipo = (($l['status'] ?? '') === 'enviado') ? 'solicitó presupuesto' : 'lo dejó a medias';
+            $tel = !empty($l['phone']) ? ' · 📞 ' . $l['phone'] : '';
+            $lines[] = '';
+            $lines[] = '👤 ' . $who . $tel;
+            $lines[] = '   ' . $tipo . ' hace ' . $hours . ' h';
+        }
+        $lines[] = '';
+        $lines[] = 'Gestiónalos en https://sonoplay.es/admin.html';
+        send_whatsapp(WA_ADMIN_PHONE, implode("\n", $lines));
     }
+
+    // 3) Marca los leads como recordados para no repetir hasta dentro de 24h
+    with_locked_json('leads.json', function ($leads) use ($ids) {
+        foreach ($leads as $i => $l) {
+            if (isset($ids[$l['id'] ?? ''])) $leads[$i]['reminderAt'] = date('c');
+        }
+        return $leads;
+    });
 }
 
 /* ============================================================
