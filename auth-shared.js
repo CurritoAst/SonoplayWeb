@@ -276,8 +276,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function refresh() {
       const dismissed = sessionStorage.getItem('sonoplay_promo_dismissed') === '1';
-      banner.style.display = (!isLoggedIn() && !dismissed) ? 'block' : 'none';
+      // No competir con el banner de cookies: esperar a que se decida primero
+      let cookiesDecided = true;
+      try { cookiesDecided = !!localStorage.getItem('sonoplay_cookie_consent'); } catch (e) {}
+      banner.style.display = (!isLoggedIn() && !dismissed && cookiesDecided) ? 'block' : 'none';
     }
+    window.addEventListener('sonoplay:cookies-decided', refresh);
     banner.querySelector('#register-promo-close').addEventListener('click', () => {
       sessionStorage.setItem('sonoplay_promo_dismissed', '1');
       banner.style.display = 'none';

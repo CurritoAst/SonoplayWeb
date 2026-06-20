@@ -48,7 +48,7 @@
   <link rel="preload" href="images/Video-sonoplay.webm" as="video" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="script.js?v=25"></script>
-  <script defer src="auth-shared.js?v=9"></script>
+  <script defer src="auth-shared.js?v=10"></script>
   <script defer src="gallery.js?v=3"></script>
   <script defer src="chatbot.js?v=5"></script>
 
@@ -106,40 +106,12 @@
   }
   </script>
 
-  <!-- ===== GOOGLE ANALYTICS 4 ===== -->
-  <!-- TODO: reemplaza G-XXXXXXXXXX por tu Measurement ID real de GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX', { 'anonymize_ip': true });
-  </script>
-
-  <!-- ===== GOOGLE TAG MANAGER (head) ===== -->
-  <!-- TODO: reemplaza GTM-XXXXXXX por tu container ID real -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
-
-  <!-- ===== META PIXEL (Facebook / Instagram Ads) ===== -->
-  <!-- TODO: reemplaza 0000000000000000 por tu Pixel ID real -->
-  <script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-    document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '0000000000000000');
-    fbq('track', 'PageView');
-  </script>
+  <!-- ===== ANALÍTICA / MARKETING =====
+       Gestionada por cookies.js CON consentimiento (RGPD). Pon tus IDs reales
+       de Google Analytics / Meta Pixel en cookies.js, NO aquí. -->
+  <script defer src="cookies.js?v=1"></script>
 </head>
 <body>
-  <!-- ===== GTM noscript fallback ===== -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- ======== NAV ======== -->
   <nav id="navbar">

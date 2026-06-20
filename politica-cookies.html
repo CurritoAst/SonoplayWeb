@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Cookies — SONOPLAY</title>
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0f0f17;color:#d8d8ea;font-family:'Montserrat',Arial,sans-serif;line-height:1.7;}
+    .legal-top{background:#15151f;border-bottom:1px solid rgba(255,255,255,0.1);padding:18px 24px;display:flex;justify-content:space-between;align-items:center;}
+    .legal-top img{height:42px;width:auto;}
+    .legal-top a{color:#06b6d4;text-decoration:none;font-weight:600;font-size:0.9rem;}
+    .legal-wrap{max-width:820px;margin:0 auto;padding:48px 22px 80px;}
+    .legal-wrap h1{color:#fff;font-size:2rem;font-weight:900;margin-bottom:8px;}
+    .legal-wrap .upd{color:#8a8ab0;font-size:0.85rem;margin-bottom:34px;}
+    .legal-wrap h2{color:#06b6d4;font-size:1.2rem;font-weight:700;margin:32px 0 12px;}
+    .legal-wrap p,.legal-wrap li{font-size:0.96rem;margin-bottom:12px;}
+    .legal-wrap ul{padding-left:22px;}
+    .legal-wrap a{color:#06b6d4;}
+    table{width:100%;border-collapse:collapse;margin:10px 0 20px;font-size:0.88rem;}
+    th,td{border:1px solid rgba(255,255,255,0.12);padding:9px 12px;text-align:left;}
+    th{color:#fff;background:rgba(255,255,255,0.04);}
+    .cfgbtn{display:inline-block;background:#06b6d4;color:#000;border:none;padding:12px 22px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;font-family:inherit;margin-top:6px;}
+  </style>
+</head>
+<body>
+  <div class="legal-top">
+    <a href="index.html"><img src="images/logosonoplay-largo.png" alt="SONOPLAY"></a>
+    <a href="index.html">← Volver a la web</a>
+  </div>
+  <div class="legal-wrap">
+    <h1>Política de Cookies</h1>
+    <p class="upd">Última actualización: junio de 2026</p>
+
+    <h2>1. ¿Qué son las cookies?</h2>
+    <p>Las cookies son pequeños archivos que se descargan en tu dispositivo al visitar una web. Sirven para que la página funcione, recordar tus preferencias y, si lo autorizas, analizar el uso del sitio o mostrar publicidad.</p>
+
+    <h2>2. ¿Qué cookies usamos?</h2>
+    <p><strong>Cookies técnicas (necesarias, no requieren consentimiento):</strong> permiten el funcionamiento básico, como mantener tu sesión de usuario o recordar el carrito y tu decisión sobre las cookies.</p>
+    <table>
+      <tr><th>Cookie</th><th>Tipo</th><th>Finalidad</th></tr>
+      <tr><td>sonoplay_user</td><td>Técnica (local)</td><td>Mantener tu sesión iniciada</td></tr>
+      <tr><td>sonoplay_cart</td><td>Técnica (local)</td><td>Recordar tu presupuesto/carrito</td></tr>
+      <tr><td>sonoplay_cookie_consent</td><td>Técnica (local)</td><td>Recordar si has aceptado o rechazado las cookies</td></tr>
+    </table>
+    <p><strong>Cookies analíticas y de marketing (solo si las aceptas):</strong> nos ayudan a medir y mejorar la web y, en su caso, a medir campañas publicitarias.</p>
+    <table>
+      <tr><th>Cookie</th><th>Proveedor</th><th>Finalidad</th></tr>
+      <tr><td>_ga, _gid, _ga_*</td><td>Google Analytics</td><td>Estadísticas de uso de la web (anónimas)</td></tr>
+      <tr><td>_fbp, _fbc</td><td>Meta (Facebook/Instagram)</td><td>Medición de campañas publicitarias</td></tr>
+    </table>
+
+    <h2>3. ¿Cómo gestionas las cookies?</h2>
+    <p>Al entrar en la web te mostramos un aviso para <strong>aceptar</strong> o <strong>rechazar</strong> las cookies analíticas y de marketing. Las técnicas no se pueden desactivar porque son necesarias para el funcionamiento. Puedes cambiar tu decisión cuando quieras desde aquí:</p>
+    <p><button class="cfgbtn" onclick="if(window.sonoplayOpenCookies){sonoplayOpenCookies()}else{location.href='index.html'}">⚙️ Configurar cookies</button></p>
+    <p>También puedes eliminar o bloquear las cookies desde la configuración de tu navegador (Chrome, Firefox, Safari, Edge…).</p>
+
+    <h2>4. Más información</h2>
+    <p>Para saber cómo tratamos tus datos personales, consulta nuestra <a href="politica-privacidad.html">Política de Privacidad</a>.</p>
+  </div>
+  <script defer src="cookies.js?v=1"></script>
+</body>
+</html>
