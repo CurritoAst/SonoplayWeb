@@ -673,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeCart() {
-    cartSidebar.style.right = '-420px';
+    cartSidebar.style.right = '-110%';
     cartOverlay.style.opacity = '0';
     cartOverlay.style.pointerEvents = 'none';
     document.body.style.overflow = '';

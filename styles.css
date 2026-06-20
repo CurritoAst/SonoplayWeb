@@ -3376,14 +3376,14 @@ body.gallery-locked { overflow: hidden; }
    MÓVIL — Compactar para reducir scroll
    ============================================ */
 @media (max-width: 768px) {
-  /* Secciones más cortas */
-  .section-inner { padding: 50px 18px !important; }
+  /* Secciones más cortas (menos scroll) */
+  .section-inner { padding: 38px 18px !important; }
 
   /* Títulos con menos margen inferior */
-  .section-title { margin-bottom: 28px !important; }
+  .section-title { margin-bottom: 22px !important; }
 
   /* Eyebrow más cerca del título */
-  .section-eyebrow { margin-bottom: 8px; }
+  .section-eyebrow { margin-bottom: 6px; }
 
   /* Grids principales más apretados */
   .verticals-grid,
@@ -3435,8 +3435,8 @@ body.gallery-locked { overflow: hidden; }
 }
 
 @media (max-width: 480px) {
-  .section-inner { padding: 36px 16px !important; }
-  .section-title { margin-bottom: 22px !important; font-size: 1.6rem !important; }
+  .section-inner { padding: 30px 16px !important; }
+  .section-title { margin-bottom: 18px !important; font-size: 1.6rem !important; }
   .verticals-grid,
   .packages-grid,
   .services-grid,
