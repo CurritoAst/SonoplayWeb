@@ -24,9 +24,12 @@ const { create, ev } = require('@open-wa/wa-automate');
 let lastQr = null;
 ev.on('qr.**', (qrcode) => { lastQr = qrcode; });
 
-const PORT      = process.env.PORT || 3000;
-const WA_TOKEN  = process.env.WA_TOKEN || '';
-const SESSION   = process.env.WA_SESSION || 'SONOPLAY';
+const PORT        = process.env.PORT || 3000;
+const WA_TOKEN    = process.env.WA_TOKEN || '';
+const SESSION     = process.env.WA_SESSION || 'SONOPLAY';
+// Ruta al navegador. Si el VPS tiene Chromium (ej. /usr/bin/chromium) ponla en
+// CHROME_PATH del .env y open-wa lo usa directamente (evita buscar Google Chrome).
+const CHROME_PATH = process.env.CHROME_PATH || '';
 
 if (!WA_TOKEN) {
   console.error('✖ Falta WA_TOKEN en el .env. Aborto por seguridad.');
@@ -113,7 +116,10 @@ create({
   authTimeout: 0,
   blockCrashLogs: true,
   disableSpins: true,
-  useChrome: true,
+  // Si hay CHROME_PATH usamos ese navegador (Chromium del sistema); si no,
+  // dejamos que open-wa intente encontrar Google Chrome.
+  useChrome: !CHROME_PATH,
+  ...(CHROME_PATH ? { executablePath: CHROME_PATH } : {}),
   // En VPS sin sandbox suele hacer falta:
   chromiumArgs: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
 })
