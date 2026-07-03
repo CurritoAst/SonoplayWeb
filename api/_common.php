@@ -18,9 +18,12 @@ const DATA_DIR = __DIR__ . '/../data';
 const WA_API_URL   = 'https://wa.sonoplay.es/send';   // VPS IONOS via HTTPS (Plesk proxy -> :3000)
 const WA_API_TOKEN = 'Sono_wa_K9mQ2xP7rZ4tB6nW';     // el mismo WA_TOKEN del .env del VPS
 
-// Número del ADMIN para recibir avisos por WhatsApp (ej. nueva solicitud de
-// presupuesto). Déjalo vacío para no enviar avisos al admin.
-const WA_ADMIN_PHONE = '';   // <-- pon aquí tu móvil, ej. 600112233
+// Número del ADMIN que RECIBE los avisos/recordatorios por WhatsApp (nueva
+// solicitud, recordatorio de presupuestos pendientes...). Déjalo vacío para
+// no enviar avisos al admin.
+// El número que los ENVÍA es la cuenta de WhatsApp enlazada en el VPS
+// (open-wa) — debe ser el de Administración Sonoplay: 657 46 86 85.
+const WA_ADMIN_PHONE = '34605216881';   // recibe los avisos: 605 21 68 81
 
 // ¿Enviar también un WhatsApp a quien ABANDONA un presupuesto sin enviarlo?
 // ⚠️ Es un mensaje no solicitado → mayor riesgo de que reporten/baneen el
