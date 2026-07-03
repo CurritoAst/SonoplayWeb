@@ -17,7 +17,12 @@
 
 require('dotenv').config();
 const express = require('express');
-const { create } = require('@open-wa/wa-automate');
+const { create, ev } = require('@open-wa/wa-automate');
+
+// Guarda el último QR emitido para poder mostrarlo en el navegador (/qr).
+// Así el 657 puede escanearlo abriendo una URL, sin tocar la consola del VPS.
+let lastQr = null;
+ev.on('qr.**', (qrcode) => { lastQr = qrcode; });
 
 const PORT      = process.env.PORT || 3000;
 const WA_TOKEN  = process.env.WA_TOKEN || '';
@@ -43,6 +48,33 @@ function normalizePhone(raw) {
 
 app.get('/health', (req, res) => {
   res.json({ ok: true, ready: !!waClient, session: SESSION });
+});
+
+// Página del QR para vincular el WhatsApp (abrir en el navegador y escanear
+// con el móvil del 657). Protegida con ?token= para que no lo vincule cualquiera.
+app.get('/qr', (req, res) => {
+  if (req.query.token !== WA_TOKEN) return res.status(403).send('Token inválido');
+  res.set('Content-Type', 'text/html; charset=utf-8');
+  if (waClient) {
+    return res.send('<div style="font-family:sans-serif;text-align:center;padding:40px"><h2>✅ WhatsApp ya está conectado</h2><p>No hace falta escanear nada. El servicio está operativo.</p></div>');
+  }
+  if (!lastQr) {
+    return res.send('<html><head><meta http-equiv="refresh" content="4"></head><body style="font-family:sans-serif;text-align:center;padding:40px"><h2>Generando código QR…</h2><p>Esta página se recarga sola. Espera unos segundos.</p></body></html>');
+  }
+  const img = String(lastQr).startsWith('data:') ? lastQr : 'data:image/png;base64,' + lastQr;
+  res.send(
+    '<html><head><meta http-equiv="refresh" content="12"></head>' +
+    '<body style="font-family:sans-serif;text-align:center;padding:30px;background:#111;color:#fff">' +
+    '<h2>Vincular WhatsApp de SONOPLAY (657 46 86 85)</h2>' +
+    '<img src="' + img + '" style="width:300px;height:300px;background:#fff;padding:10px;border-radius:12px" alt="QR">' +
+    '<ol style="text-align:left;max-width:360px;margin:24px auto;line-height:1.7">' +
+    '<li>En el móvil del <b>657</b>, abre <b>WhatsApp</b>.</li>' +
+    '<li>Menú (⋮) → <b>Dispositivos vinculados</b>.</li>' +
+    '<li><b>Vincular un dispositivo</b> y apunta la cámara a este QR.</li>' +
+    '</ol>' +
+    '<p style="color:#888;font-size:13px">La página se recarga sola. Cuando ponga "conectado", ya está.</p>' +
+    '</body></html>'
+  );
 });
 
 app.post('/send', async (req, res) => {
