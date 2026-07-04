@@ -25,11 +25,9 @@ const WA_API_TOKEN = 'Sono_wa_K9mQ2xP7rZ4tB6nW';     // el mismo WA_TOKEN del .e
 // (open-wa) — debe ser el de Administración Sonoplay: 657 46 86 85.
 const WA_ADMIN_PHONE = '34605216881';   // recibe los avisos: 605 21 68 81
 
-// ¿Enviar también un WhatsApp a quien ABANDONA un presupuesto sin enviarlo?
-// ⚠️ Es un mensaje no solicitado → mayor riesgo de que reporten/baneen el
-// número. Déjalo en false salvo que lo tengas claro. La confirmación al
-// enviar presupuesto (budget.php) es segura y va aparte de esta opción.
-const WA_NOTIFY_ABANDONED = false;
+// Los abandonos avisan por WhatsApp SOLO al admin (WA_ADMIN_PHONE). Al
+// cliente nunca se le escribe por abandonar — solo recibe la confirmación
+// cuando ÉL envía la solicitud (budget.php).
 
 /**
  * Envía un WhatsApp al cliente a través del servicio open-wa del VPS.
@@ -310,13 +308,34 @@ function leads_notify_pending(bool $force = false): void {
         if (leads_send_alert($l)) {
             $notified[strtolower($l['email'] ?? '')] = true;
             $lastLead = $l;
-            // WhatsApp al cliente que abandonó (solo si está activado)
-            if (WA_NOTIFY_ABANDONED && !empty($l['phone'])) {
-                $waMsg = '¡Hola' . (!empty($l['name']) ? ' ' . $l['name'] : '') . '! 👋 Soy el equipo de *SONOPLAY*. '
-                       . 'Vimos que estabas preparando tu presupuesto'
-                       . (!empty($l['weddingDate']) ? ' para el ' . date('d/m/Y', strtotime($l['weddingDate'])) : '')
-                       . '. ¿Te ayudamos a terminarlo o resolvemos cualquier duda? Estamos aquí para lo que necesites. 🎶';
-                send_whatsapp($l['phone'], $waMsg);
+            // WhatsApp SOLO al admin (605) con el presupuesto abandonado.
+            // Al cliente no se le escribe nada por abandonar.
+            if (WA_ADMIN_PHONE) {
+                $wa = [];
+                $wa[] = '🔥 *Presupuesto abandonado* — SONOPLAY';
+                $wa[] = '';
+                $wa[] = '👤 ' . ($l['name'] ?: ($l['email'] ?? 'Cliente'));
+                if (!empty($l['phone']))       $wa[] = '📞 ' . $l['phone'];
+                if (!empty($l['email']))       $wa[] = '✉️ ' . $l['email'];
+                if (!empty($l['weddingDate'])) $wa[] = '💍 Boda: ' . date('d/m/Y', strtotime($l['weddingDate']));
+                if (is_array($l['cart']) && count($l['cart']) > 0) {
+                    $wa[] = '';
+                    $wa[] = '— Lo que estaba mirando —';
+                    foreach (array_slice($l['cart'], 0, 12) as $item) {
+                        $iname = trim_str($item['name'] ?? '');
+                        if (!$iname) continue;
+                        $iprice = isset($item['price']) ? ' — ' . number_format((float)$item['price'], 0, ',', '.') . ' €' : '';
+                        $wa[] = '• ' . $iname . $iprice;
+                    }
+                }
+                if (!empty($l['total'])) {
+                    $wa[] = '';
+                    $wa[] = '💰 Total que vio: ' . number_format((float)$l['total'], 0, ',', '.') . ' €';
+                }
+                $wa[] = '';
+                $wa[] = 'No envió la solicitud. Llámale y hazle una oferta.';
+                $wa[] = 'Panel: https://sonoplay.es/admin.html';
+                send_whatsapp(WA_ADMIN_PHONE, implode("\n", $wa));
             }
         }
     }

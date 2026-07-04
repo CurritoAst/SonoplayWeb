@@ -804,7 +804,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const budgetOverlay = document.getElementById('budget-modal-overlay');
   const budgetCloseBtn = document.getElementById('budget-modal-close');
   const budgetSummary = document.getElementById('budget-summary');
-  const budgetWhatsappBtn = document.getElementById('budget-whatsapp-btn');
 
   function openBudgetModal() {
     // Build summary of cart items
@@ -840,29 +839,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const bWedding = fmtWeddingDate(bUser.weddingDate || '');
 
-    // Build WhatsApp message
-    let waMsg = '¡Hola SONOPLAY! 👋';
-    if (bUser.name) waMsg += ' Soy ' + bUser.name + '.';
-    if (bWedding) waMsg += ' Nuestra boda es el ' + bWedding + '.';
-    waMsg += ' Me gustaría solicitar presupuesto para:\n\n';
-    cart.forEach(item => {
-      waMsg += `• ${item.name}${item.qty > 1 ? ' x' + item.qty : ''} — ${item.price * item.qty} €\n`;
-    });
-    if (cart.length > 0) {
-      const d = getDiscount(total);
-      if (d.discount > 0) {
-        waMsg += `\nSubtotal: ${fmtEur(total)} €`;
-        d.lines.forEach(ln => { waMsg += `\n❌ ${ln.label}: -${fmtEur(ln.amount)} €`; });
-        waMsg += `\n✅ Total estimado: ${fmtEur(d.finalTotal)} €\n`;
-      } else {
-        waMsg += `\nTotal estimado: ${fmtEur(total)} €\n`;
-      }
-    }
-    waMsg += '\n¿Podrían darme más información? ¡Gracias!';
-    const waUrl = 'https://wa.me/34605216881?text=' + encodeURIComponent(waMsg);
-    if (budgetWhatsappBtn) budgetWhatsappBtn.href = waUrl;
-    const budgetWhatsappBtnThanks = document.getElementById('budget-whatsapp-btn-thanks');
-    if (budgetWhatsappBtnThanks) budgetWhatsappBtnThanks.href = waUrl;
+    // (El botón de WhatsApp del modal se eliminó: la confirmación al cliente
+    // la envía el servidor por WhatsApp al enviar la solicitud — budget.php.)
 
     // Autorrellena el formulario interno con nombre + fecha de boda (+ DJ y
     // montaje elegidos). Solo si el usuario no ha escrito nada antes.
