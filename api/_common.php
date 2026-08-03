@@ -227,8 +227,10 @@ const LEADS_NOTIFY_MAX_AGE  = 7200;   // solo se avisa de abandonos de las últi
                                       // los leads viejos (ya gestionados) NO se notifican
 
 // Recordatorio al ADMIN por WhatsApp de presupuestos pendientes (sin gestionar).
-const WA_REMIND_AFTER  = 43200;  // 12 h sin gestionar → recordatorio al admin
+const WA_REMIND_AFTER  = 43200;  // 12 h sin gestionar → entra en el recordatorio
 const WA_REMIND_REPEAT = 86400;  // si sigue sin gestionar, repite el recordatorio cada 24 h
+const WA_REMIND_HOUR   = 12;     // el recordatorio SOLO se envía a las 12 del mediodía
+                                 // (hora española) — un repaso diario, no avisos a cualquier hora
 
 /** Email de aviso interno a producciones@ (texto plano UTF-8). */
 function sonoplay_alert_mail(string $subject, array $lines): bool {
@@ -364,6 +366,13 @@ function leads_notify_pending(bool $force = false): void {
  * Un lead se considera gestionado cuando el admin lo marca "Confirmado".
  */
 function leads_remind_admin(): void {
+    // Ventana horaria: solo entre las 12:00 y las 12:59 (hora de España).
+    // El cron corre cada minuto, así que saldrá pocos minutos después de las 12;
+    // el guard de reminderAt (24h por lead) evita duplicados dentro de la hora.
+    $tz = new DateTimeZone('Europe/Madrid');
+    $hour = (int)(new DateTime('now', $tz))->format('G');
+    if ($hour !== WA_REMIND_HOUR) return;
+
     $leads = read_json('leads.json', []);
     if (!is_array($leads) || count($leads) === 0) return;
 
