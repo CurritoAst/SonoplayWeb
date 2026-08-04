@@ -3836,3 +3836,69 @@ img, video { max-width: 100%; height: auto; }
   .faq-item summary { font-size: 0.92rem; padding: 15px 42px 15px 16px; }
   .faq-item p { padding: 0 16px 16px; font-size: 0.9rem; }
 }
+
+/* ============================================
+   HERO CON VÍDEO DE FONDO (index)
+   ============================================ */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+/* Sombreado sobre el vídeo: legibilidad del texto sin matar la imagen */
+.hero-video-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(9, 9, 16, 0.74) 0%,
+    rgba(9, 9, 16, 0.46) 45%,
+    rgba(9, 9, 16, 0.85) 100%);
+}
+/* Con vídeo, los orbes sobran; la rejilla y partículas quedan como textura sutil */
+.hero-bg.has-video .hero-orb { display: none; }
+.hero-bg.has-video .hero-grid { z-index: 1; opacity: 0.4; }
+.hero-bg.has-video .particles { z-index: 1; }
+.hero-bg.has-video .eq-bars { z-index: 1; }
+/* Texto con sombra suave para flotar sobre el vídeo */
+#hero .hero-title,
+#hero .hero-subtitle,
+#hero .hero-eyebrow,
+#hero .hero-rating { text-shadow: 0 2px 26px rgba(0, 0, 0, 0.55); }
+/* Accesibilidad: si el usuario pide menos movimiento, vídeo fuera (queda el póster + fondo) */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+  .hero-bg.has-video .hero-orb { display: block; }
+}
+
+/* ============================================
+   FUNDIDO DEL HERO AL RESTO DE LA PÁGINA
+   El vídeo se disuelve en el fondo (--dark) al bajar,
+   sin corte seco contra la franja del marquee.
+   ============================================ */
+#hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 260px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(9, 14, 23, 0.55) 55%,
+    var(--dark) 96%);
+  z-index: 1;
+  pointer-events: none;
+}
+/* El indicador "Desplázate" y el contenido quedan por encima del fundido */
+.hero-scroll { z-index: 2; }
+
+/* La franja del marquee pierde el borde superior duro: el fundido ya hace la transición */
+.marquee-strip { border-top-color: transparent; }
+
+@media (max-width: 600px) {
+  #hero::after { height: 160px; }
+}
