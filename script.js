@@ -32,26 +32,8 @@ const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUr
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ---- HERO VÍDEO: versión ligera en móvil ----
-  // En pantallas pequeñas cambia a la variante 720p (la mitad de datos)
-  // ANTES de que el navegador empiece a descargar la 1080p entera.
-  (function heroVideoResponsive() {
-    const video = document.querySelector('.hero-video');
-    if (!video) return;
-    if (window.matchMedia('(max-width: 700px)').matches) {
-      const src = video.querySelector('source');
-      if (src && src.src.indexOf('hero-video.mp4') !== -1) {
-        src.src = src.src.replace('hero-video.mp4', 'hero-video-720.mp4');
-        video.load();
-      }
-    }
-    // Autoplay defensivo: algunos navegadores lo pausan hasta interacción
-    const tryPlay = () => { const p = video.play(); if (p && p.catch) p.catch(() => {}); };
-    tryPlay();
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') tryPlay();
-    });
-  })();
+  // (La lógica del vídeo de fondo del hero vive en auth-shared.js,
+  //  que carga en todas las páginas.)
 
   // ---- NAVBAR SCROLL ----
   const navbar = document.getElementById('navbar');

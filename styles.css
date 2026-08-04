@@ -3902,3 +3902,41 @@ img, video { max-width: 100%; height: auto; }
 @media (max-width: 600px) {
   #hero::after { height: 160px; }
 }
+
+/* Vídeo de fondo: intocable y sin controles nativos superpuestos
+   (elimina el botón de play que pintan iOS/Android sobre el vídeo) */
+.hero-video { pointer-events: none; }
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+}
+
+/* ============================================
+   MÓVIL — ALIGERAR (menos sobrecarga visual)
+   ============================================ */
+@media (max-width: 768px) {
+  /* El indicador "Desplázate" colisiona con los CTAs en pantallas bajas */
+  .hero-scroll { display: none; }
+}
+@media (max-width: 600px) {
+  /* Hero: menos capas — la línea de servicios ya está en el menú y el marquee */
+  #hero .hero-eyebrow { display: none; }
+  #hero .particles { display: none; }
+  .hero-bg .eq-bars { display: none; }
+  .hero-live-badge { font-size: 0.7rem; padding: 7px 14px; margin-bottom: 12px; }
+  .hero-subtitle { font-size: 0.95rem !important; line-height: 1.6; max-width: 34ch; margin-left: auto; margin-right: auto; }
+  .hero-rating { transform: scale(0.92); margin: 10px 0 6px; }
+  .hero-ctas { gap: 8px; margin-top: 10px; }
+  .hero-ctas .btn-primary, .hero-ctas .btn-ghost { padding: 13px 20px; font-size: 0.95rem; }
+
+  /* Secciones: más aire, menos densidad */
+  .section-inner { padding-top: 46px !important; padding-bottom: 46px !important; }
+  .section-desc { font-size: 0.92rem; }
+  .marquee-strip { padding: 11px 0; }
+  .reviews-overall .reviews-score { font-size: 2.6rem; }
+
+  /* FAQ y tarjetas ya compactadas en sus propios bloques */
+}

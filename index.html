@@ -44,11 +44,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 
   <!-- ===== ESTILOS Y RECURSOS ===== -->
-  <link rel="stylesheet" href="styles.css?v=26" />
+  <link rel="stylesheet" href="styles.css?v=27" />
   <link rel="preload" href="images/Video-sonoplay.webm" as="video" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="script.js?v=26"></script>
-  <script defer src="auth-shared.js?v=10"></script>
+  <script defer src="script.js?v=27"></script>
+  <script defer src="auth-shared.js?v=11"></script>
   <script defer src="gallery.js?v=3"></script>
   <script defer src="chatbot.js?v=5"></script>
 
@@ -150,7 +150,7 @@
     <div class="hero-bg has-video">
       <!-- Vídeo de fondo: bucle sin cortes (el final funde con el principio).
            muted+playsinline = autoplay permitido también en móvil. -->
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+      <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="metadata"
              poster="images/hero-poster.jpg" aria-hidden="true" tabindex="-1">
         <source src="images/hero-video.mp4" type="video/mp4">
       </video>

@@ -38,8 +38,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=26" />
-  <script defer src="auth-shared.js?v=10"></script>
+  <link rel="stylesheet" href="styles.css?v=27" />
+  <script defer src="auth-shared.js?v=11"></script>
 
   <!-- ===== ANALÍTICA / MARKETING =====
        Gestionada por cookies.js CON consentimiento (RGPD). Pon tus IDs reales
@@ -71,7 +71,12 @@
 
   <!-- ======== HERO ======== -->
   <section id="hero">
-    <div class="hero-bg">
+    <div class="hero-bg has-video">
+      <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="metadata"
+             poster="images/hero-poster.jpg" aria-hidden="true" tabindex="-1">
+        <source src="images/hero-video.mp4" type="video/mp4">
+      </video>
+      <div class="hero-video-shade" aria-hidden="true"></div>
       <div class="hero-orb orb1"></div>
       <div class="hero-orb orb2"></div>
       <div class="hero-orb orb3"></div>

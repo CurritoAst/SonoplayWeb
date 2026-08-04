@@ -10,6 +10,43 @@ const ADMIN_EMAIL = 'producciones@sonoplay.es'; // Email admin para Google Sign-
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ============== HERO VÍDEO DE FONDO (todas las páginas) ==============
+  // - En móvil sirve la variante 720p (mitad de datos) antes de descargar la 1080p.
+  // - Autoplay blindado: muted forzado por JS + reintentos + play al primer toque.
+  //   Evita el botón de play que muestran iOS/Android cuando bloquean el autoplay
+  //   (modo ahorro de energía, etc.).
+  (function heroVideoSetup() {
+    const video = document.querySelector('.hero-video');
+    if (!video) return;
+
+    // muted por atributo puede no bastar en iOS: fuérzalo por propiedad
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+
+    if (window.matchMedia('(max-width: 700px)').matches) {
+      const src = video.querySelector('source');
+      if (src && src.src.indexOf('hero-video.mp4') !== -1) {
+        src.src = src.src.replace('hero-video.mp4', 'hero-video-720.mp4');
+        video.load();
+      }
+    }
+
+    const tryPlay = () => { const p = video.play(); if (p && p.catch) p.catch(() => {}); };
+    tryPlay();
+    video.addEventListener('loadeddata', tryPlay);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') tryPlay();
+    });
+    // Último recurso: al primer toque/scroll del usuario, arranca (y deja de escuchar)
+    const kick = () => { tryPlay(); document.removeEventListener('touchstart', kick); document.removeEventListener('scroll', kick); };
+    document.addEventListener('touchstart', kick, { passive: true, once: true });
+    document.addEventListener('scroll', kick, { passive: true, once: true });
+  })();
+
+
   // Cuenta admin con email/password — hardcodeada como fallback de gestión.
   // (Cualquier login con admin@sonoplay.es/admin123 funciona sin pasar por servidor.)
   const ADMIN_ACCOUNT = { email: 'admin@sonoplay.es', password: 'admin123', role: 'admin', name: 'Administrador' };
