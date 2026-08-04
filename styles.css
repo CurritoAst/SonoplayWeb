@@ -3940,3 +3940,29 @@ img, video { max-width: 100%; height: auto; }
 
   /* FAQ y tarjetas ya compactadas en sus propios bloques */
 }
+
+/* ============================================
+   VÍDEO INVISIBLE HASTA QUE REPRODUCE
+   Si el móvil bloquea el autoplay (modo ahorro de energía), el
+   usuario ve la FOTO del póster — nunca el botón de play nativo.
+   Cuando el vídeo arranca (o al primer toque), entra con fundido.
+   ============================================ */
+.hero-bg.has-video::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("images/hero-poster.jpg") center / cover no-repeat;
+}
+.hero-video { opacity: 0; transition: opacity 0.7s ease; }
+.hero-video.is-playing { opacity: 1; }
+
+/* Móvil: el badge del hero se montaba sobre el logo — hueco para la navbar */
+@media (max-width: 600px) {
+  #hero .hero-content { padding-top: 78px; }
+}
+
+/* Autoplay bloqueado por el sistema → fondo animado (webp en bucle) en vez
+   del póster estático. Movimiento automático garantizado sin tocar nada. */
+.hero-bg.has-video.video-blocked::before {
+  background-image: url("images/hero-fallback.webp");
+}

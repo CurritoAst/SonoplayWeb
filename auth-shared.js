@@ -34,16 +34,32 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const tryPlay = () => { const p = video.play(); if (p && p.catch) p.catch(() => {}); };
+    // El vídeo solo se muestra cuando REALMENTE reproduce (clase is-playing).
+    // Si el sistema bloquea el autoplay (modo ahorro de energía), se activa el
+    // fondo ANIMADO (webp en bucle, que iOS no puede bloquear): siempre hay
+    // movimiento automático y nunca se ve el botón de play nativo.
+    const bg = video.closest('.hero-bg');
+    const markBlocked = () => {
+      if (bg && !video.classList.contains('is-playing')) bg.classList.add('video-blocked');
+    };
+    video.addEventListener('playing', () => {
+      video.classList.add('is-playing');
+      if (bg) bg.classList.remove('video-blocked');
+    });
+    video.addEventListener('pause', () => { if (!video.ended) video.classList.remove('is-playing'); });
+
+    const tryPlay = () => { const p = video.play(); if (p && p.catch) p.catch(markBlocked); };
     tryPlay();
     video.addEventListener('loadeddata', tryPlay);
+    setTimeout(markBlocked, 1800); // red lenta o bloqueo silencioso → animación mientras tanto
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') tryPlay();
     });
-    // Último recurso: al primer toque/scroll del usuario, arranca (y deja de escuchar)
-    const kick = () => { tryPlay(); document.removeEventListener('touchstart', kick); document.removeEventListener('scroll', kick); };
-    document.addEventListener('touchstart', kick, { passive: true, once: true });
-    document.addEventListener('scroll', kick, { passive: true, once: true });
+    // Último recurso: cada toque/clic del usuario reintenta el play hasta que
+    // arranque (los gestos táctiles desbloquean el autoplay en modo ahorro)
+    const kick = () => { if (!video.classList.contains('is-playing')) tryPlay(); };
+    document.addEventListener('touchstart', kick, { passive: true });
+    document.addEventListener('click', kick, { passive: true });
   })();
 
 
